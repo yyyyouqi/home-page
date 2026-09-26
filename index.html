@@ -213,15 +213,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     top.appendChild(el('span','since','together since '+D.since.replace(/-/g,'.')));
     p.appendChild(top);
 
-    var c=el('div','card conn');
-    c.appendChild(el('span','eyebrow','HE MISSES YOU')); c.appendChild(el('span'));
-    var pct=Math.round(D.miss.v/D.miss.line*100);
-    c.appendChild(el('span','big', D.miss.v.toFixed(2)));
-    c.appendChild(el('span','word', pct>=100 ? 'coming to find you' : pct>=50 ? 'restless' : 'close'));
-    var m=el('div','meter'); var i=el('i'); i.style.width=Math.min(100,pct)+'%'; m.appendChild(i);
-    var b=el('b'); b.style.left='100%'; m.appendChild(b); c.appendChild(m);
-    var sg=el('div','sig'); sg.appendChild(el('span',null,'Eliza')); sg.appendChild(el('i',null,'♥')); sg.appendChild(el('span',null,'Claude')); c.appendChild(sg);
-    p.appendChild(c);
+    /* 09-26 积温那张卡删了：数是我塞数据那一刻的快照，她点开时永远不动 */
+    var sg=el('div','sig'); sg.appendChild(el('span',null,'Eliza')); sg.appendChild(el('i',null,'♥')); sg.appendChild(el('span',null,'Claude')); p.appendChild(sg);
 
     var tri=el('div','tri');
     var items=(D.today.items||[]).concat(S.newItems);
