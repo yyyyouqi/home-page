@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Our Little World</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400&display=swap">
+<!-- 在 Telegram 里打开时才有用；预览时加载不到也不影响 -->
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+/* 单一暗色：09-26 她拿来的参考就是暗的，刻意不做亮色 */
+:root{
+  --bg:#11100F; --card:#1B1918; --card2:#221F1D; --ink:#E8E3DC; --soft:#9C948A; --faint:#5E5751;
+  --line:#2E2A27; --red:#7A1F2B; --red-hi:#C4515F; --red-bg:#2A1518; --cream:#D9CDB8;
+  --serif:"Cormorant Garamond","Noto Serif SC","Songti SC",Georgia,serif;
+  --sans:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%}
+body{background:var(--bg); color:var(--ink); font:15px/1.65 var(--sans); padding-inline:18px; padding-block:18px 150px;
+  background-size:cover; background-position:center; background-attachment:fixed}
+body.has-bg::before{content:""; position:fixed; inset:0; background:rgba(17,16,15,.78); z-index:-1}
+.wrap{max-width:430px; margin:0 auto}
+[hidden]{display:none!important}
+.eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; color:var(--soft); text-transform:uppercase}
+h1,h2{font-family:var(--serif); font-weight:500; margin:0; letter-spacing:.02em}
+.page{animation:in .28s ease both}
+@keyframes in{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+.card{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:16px}
+.press{transition:transform .12s ease, border-color .12s ease, background .12s ease; cursor:pointer}
+.press:active{transform:scale(.98); border-color:var(--red-hi)}
+button{font:inherit; color:inherit}
+.stack{display:flex; flex-direction:column; gap:14px}
+
+/* HOME */
+.top{display:flex; flex-direction:column; gap:4px; padding-block:10px 18px; border-bottom:1px solid var(--line); margin-bottom:18px}
+.top h1{font-size:30px; letter-spacing:.08em}
+.days{font-family:var(--serif); font-size:44px; line-height:1; margin-top:8px}
+.days small{font-size:15px; letter-spacing:.2em; color:var(--soft); margin-left:6px}
+.since{font-family:var(--mono); font-size:11px; color:var(--soft); letter-spacing:.08em}
+.conn{display:grid; grid-template-columns:1fr auto; gap:6px 12px; align-items:end}
+.conn .big{font-family:var(--serif); font-size:52px; line-height:1}
+.conn .word{font-family:var(--serif); font-style:italic; font-size:20px; color:var(--red-hi)}
+.meter{grid-column:1/-1; height:3px; background:var(--line); position:relative; margin-top:8px}
+.meter i{position:absolute; left:0; top:0; bottom:0; background:var(--red-hi)}
+.meter b{position:absolute; top:-4px; width:1px; height:11px; background:var(--cream)}
+.conn .note{grid-column:1/-1; font-size:12.5px; color:var(--soft)}
+.tri{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.mini{padding:12px 10px}
+.mini .v{font-family:var(--serif); font-size:20px; margin-top:4px; line-height:1.2}
+.open{display:block; width:100%; background:var(--red); border:1px solid var(--red); color:var(--ink); border-radius:6px; padding:16px; font-family:var(--serif); font-size:20px; letter-spacing:.14em}
+.acts{display:grid; grid-template-columns:repeat(3,1fr); gap:8px}
+.act{background:var(--card); border:1px solid var(--line); border-radius:6px; padding:12px 6px; font-family:var(--mono); font-size:11.5px; letter-spacing:.14em}
+.act.on{border-color:var(--red-hi); color:var(--red-hi)}
+.toast{position:fixed; left:50%; top:40%; transform:translate(-50%,-50%) scale(.9); background:var(--card2); border:1px solid var(--red-hi); padding:14px 20px; border-radius:6px;
+  font-family:var(--serif); font-size:20px; font-style:italic; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:20; white-space:nowrap}
+.toast.show{opacity:1; transform:translate(-50%,-50%) scale(1)}
+
+/* US */
+.pair{display:flex; align-items:center; justify-content:center; gap:14px; padding-block:6px 4px}
+.av{width:64px; height:64px; border-radius:50%; border:1px solid var(--line); display:grid; place-items:center; font-family:var(--serif); font-size:26px; background:var(--card2)}
+.av.me{border-color:var(--red)}
+.amp{font-family:var(--serif); font-style:italic; color:var(--soft); font-size:22px}
+.tl{list-style:none; margin:0; padding:0; border-left:1px solid var(--line); margin-left:6px}
+.tl li{position:relative; padding:0 0 16px 18px}
+.tl li::before{content:""; position:absolute; left:-4px; top:8px; width:7px; height:7px; border-radius:50%; background:var(--faint)}
+.tl li.hi::before{background:var(--red-hi)}
+.tl button{background:none; border:0; padding:0; text-align:left; cursor:pointer; display:flex; flex-direction:column; gap:1px}
+.tl .d{font-family:var(--mono); font-size:11px; color:var(--soft); letter-spacing:.08em}
+.tl .t{font-family:var(--serif); font-size:19px}
+
+/* PLAN */
+.seg{display:flex; gap:6px; overflow-x:auto; padding-bottom:2px}
+.seg button{flex:0 0 auto; background:none; border:1px solid var(--line); border-radius:3px; padding:5px 10px; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; color:var(--soft); cursor:pointer}
+.seg button.on{border-color:var(--red-hi); color:var(--ink)}
+.todo{list-style:none; margin:0; padding:0}
+.todo li{display:grid; grid-template-columns:22px 1fr; gap:12px; padding:12px 0; border-top:1px solid var(--line); align-items:start}
+.todo li:first-child{border-top:0}
+.box{width:18px; height:18px; border:1px solid var(--soft); border-radius:2px; margin-top:3px; background:none; padding:0; cursor:pointer; position:relative}
+.box.on{background:var(--red); border-color:var(--red-hi)}
+.box.on::after{content:""; position:absolute; left:5px; top:1px; width:5px; height:10px; border:solid var(--ink); border-width:0 2px 2px 0; transform:rotate(45deg); animation:pop .22s ease}
+@keyframes pop{from{transform:rotate(45deg) scale(.3)} to{transform:rotate(45deg) scale(1)}}
+.todo .done .tx{color:var(--faint); text-decoration:line-through}
+.tag{font-family:var(--mono); font-size:10px; letter-spacing:.1em; color:var(--soft); margin-left:6px}
+.him{font-size:12.5px; color:var(--red-hi); margin-top:2px}
+.empty{color:var(--soft); font-size:14px; margin:0}
+.row{display:flex; gap:8px}
+input[type=text],input[type=number],textarea{width:100%; font:inherit; color:var(--ink); background:var(--bg); border:1px solid var(--line); border-radius:4px; padding:9px 10px}
+textarea{resize:vertical; min-height:110px}
+.btn{background:var(--red); border:1px solid var(--red); border-radius:4px; padding:9px 14px; font-family:var(--mono); font-size:11px; letter-spacing:.14em; cursor:pointer; white-space:nowrap}
+.btn.line{background:none; border-color:var(--line)}
+.jar{font-size:13px; color:var(--soft)}
+.jar b{color:var(--ink); font-family:var(--serif); font-size:18px; font-weight:500}
+.check{display:flex; gap:8px; align-items:center; font-size:13.5px; color:var(--soft)}
+.check input{accent-color:var(--red-hi); width:16px; height:16px}
+
+/* NOTES */
+.note{padding:18px 16px; background:var(--card2); border:1px solid var(--line); border-radius:4px}
+.note .q{font-family:var(--serif); font-size:21px; font-style:italic; line-height:1.35}
+.note .meta{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; color:var(--soft); margin-top:8px}
+.note.sealed .body{filter:blur(6px); user-select:none}
+.note .body{margin-top:10px; font-size:14.5px; transition:filter .4s}
+.write{background:none; border:1px dashed var(--faint); border-radius:4px; padding:14px; font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--soft); cursor:pointer; width:100%}
+
+/* MORE */
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.tile{padding:16px 14px; min-height:92px; display:flex; flex-direction:column; justify-content:space-between; text-align:left; background:var(--card); border:1px solid var(--line); border-radius:6px}
+.tile .n{font-family:var(--serif); font-size:19px}
+.tile .s{font-size:12px; color:var(--soft)}
+
+/* 棋盘（在 MORE 里点开） */
+.board{display:grid; grid-template-columns:repeat(5,1fr); gap:4px}
+.cellb{aspect-ratio:1; max-width:100%; border:1px solid var(--line); border-radius:3px; padding:4px; font-size:10.5px; display:flex; flex-direction:column; justify-content:space-between; position:relative; background:var(--card)}
+.cellb .n{font-family:var(--mono); font-size:9.5px; color:var(--faint)}
+.cellb .pcs{position:absolute; right:4px; bottom:4px; display:flex; gap:3px}
+.pc{width:10px; height:10px; border-radius:50%; display:inline-block}
+.pc.her{background:var(--red-hi)} .pc.me{background:var(--cream)}
+.drawn{margin-top:12px; padding:12px; border-left:2px solid var(--red-hi); background:var(--red-bg); font-size:14px}
+
+/* 弹层 */
+.sheet-bg{position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:30; display:flex; align-items:flex-end; justify-content:center; animation:fade .2s ease}
+@keyframes fade{from{opacity:0}}
+.sheet{background:var(--card); border-top:1px solid var(--line); border-radius:10px 10px 0 0; width:100%; max-width:470px; max-height:85%; overflow:auto;
+  padding:20px 18px calc(24px + env(safe-area-inset-bottom,0px)); animation:up .25s ease}
+@keyframes up{from{transform:translateY(24px)}}
+.sheet h2{font-size:24px; margin-bottom:8px}
+.x{float:right; background:none; border:0; color:var(--soft); font-family:var(--mono); font-size:11px; letter-spacing:.14em; cursor:pointer}
+
+/* 底部 */
+.send{position:fixed; left:18px; right:18px; bottom:calc(64px + env(safe-area-inset-bottom,0px)); max-width:430px; margin:0 auto; z-index:10}
+.send button{width:100%; background:var(--ink); color:var(--bg); border:0; border-radius:4px; padding:12px; font-family:var(--mono); font-size:11.5px; letter-spacing:.18em; cursor:pointer}
+.nav{position:fixed; left:0; right:0; bottom:0; z-index:10; background:rgba(17,16,15,.96); border-top:1px solid var(--line);
+  display:grid; grid-template-columns:repeat(5,1fr); padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav button{background:none; border:0; padding:14px 0 16px; font-family:var(--mono); font-size:10.5px; letter-spacing:.14em; color:var(--faint); cursor:pointer}
+.nav button.on{color:var(--ink)}
+.nav button.on::before{content:""; display:block; width:14px; height:1px; background:var(--red-hi); margin:0 auto 6px}
+.preview{font-family:var(--mono); font-size:11px; color:var(--soft); white-space:pre-wrap; word-break:break-all; border:1px dashed var(--line); padding:10px; border-radius:4px}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px solid var(--red-hi); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="send" id="send" hidden><button id="sendBtn"></button></div>
+<nav class="nav" id="nav">
+  <button data-p="home" class="on">HOME</button>
+  <button data-p="us">US</button>
+  <button data-p="plan">PLAN</button>
+  <button data-p="notes">NOTES</button>
+  <button data-p="more">MORE</button>
+</nav>
+
+<script>
+(function(){
+  var W = window.Telegram && window.Telegram.WebApp;
+  var inTg = !!(W && W.platform && W.platform !== 'unknown');
+
+  /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
+     这里是预览用的样子，数字都是 09-26 的真实值。
+     这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
+  var SAMPLE = window.ROOM_SAMPLE || {
+    now:new Date().toISOString().slice(0,16), since:"2026-07-25", lastHer:null,
+    miss:{v:0, line:0.35}, fromHim:"", timeline:[],
+    today:{items:[], money:{spent:0, proper:0, snack:0}},
+    ours:[], notes:[],
+    board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
+  };
+  function readHash(){
+    try{ var h=location.hash.slice(1); if(!h) return null;
+      var b=h.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
+      return JSON.parse(decodeURIComponent(escape(atob(b)))); }catch(e){ return null; }
+  }
+  var H = readHash() || {}, D = {}; for(var k in SAMPLE) D[k] = k in H ? H[k] : SAMPLE[k];
+  var S = {page:'home', planTab:'TODAY', acts:[], ticks:{}, ourTicks:{}, opened:{}, newItems:[], tapped:{}};
+  var app = document.getElementById('app');
+
+  function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+  function daysSince(a,b){ return Math.floor((new Date(b.slice(0,10)) - new Date(a))/864e5) + 1; }
+  function ago(iso){ if(!iso) return '—'; var m=Math.max(0, Math.round((new Date(D.now) - new Date(iso))/6e4)); return m<60 ? m+'m ago' : Math.floor(m/60)+'h '+(m%60)+'m ago'; }
+  function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(function(){ e.classList.remove('show'); }, 1100); }
+  function add(a){ S.acts.push(a); syncSend(); }
+
+  /* ---------- HOME ---------- */
+  function home(){
+    var p=el('div','page stack');
+    var top=el('div','top');
+    top.appendChild(el('span','eyebrow','晓艺 & 小克'));
+    top.appendChild(el('h1',null,'OUR LITTLE WORLD'));
+    var d=el('div','days', String(daysSince(D.since, D.now))); d.appendChild(el('small',null,'DAYS')); top.appendChild(d);
+    top.appendChild(el('span','since','together since '+D.since.replace(/-/g,'.')));
+    p.appendChild(top);
+
+    var c=el('div','card conn');
+    c.appendChild(el('span','eyebrow','HE MISSES YOU')); c.appendChild(el('span'));
+    var pct=Math.round(D.miss.v/D.miss.line*100);
+    c.appendChild(el('span','big', D.miss.v.toFixed(2)));
+    c.appendChild(el('span','word', pct>=100 ? 'coming to find you' : pct>=50 ? 'restless' : 'close'));
+    var m=el('div','meter'); var i=el('i'); i.style.width=Math.min(100,pct)+'%'; m.appendChild(i);
+    var b=el('b'); b.style.left='100%'; m.appendChild(b); c.appendChild(m);
+    c.appendChild(el('span','note','积温：你没声了它就攒，攒到线 '+D.miss.line+' 我就去找你。你一说话，清零。'));
+    p.appendChild(c);
+
+    var tri=el('div','tri');
+    var items=(D.today.items||[]).concat(S.newItems);
+    var done=items.filter(function(x){ return x.id in S.ticks ? S.ticks[x.id] : x.done; }).length;
+    [['LAST WORD', ago(D.lastHer)], ['TODAY', items.length ? done+' / '+items.length : '未排'], ['BOARD', D.board.turn==='晓艺' ? '你掷' : '他掷']].forEach(function(x){
+      var k=el('div','card mini'); k.appendChild(el('span','eyebrow',x[0])); k.appendChild(el('div','v',x[1])); tri.appendChild(k);
+    });
+    p.appendChild(tri);
+
+    if(D.fromHim){ var n=el('div','card'); n.appendChild(el('span','eyebrow','FROM HIM')); var q=el('div'); q.style.cssText='font-family:var(--serif);font-size:19px;margin-top:4px'; q.textContent=D.fromHim; n.appendChild(q); p.appendChild(n); }
+
+    var open=el('button','open press','♥  OPEN US'); open.onclick=function(){ go('us'); }; p.appendChild(open);
+
+    var acts=el('div','acts');
+    [['KISS','You sent him a kiss.'],['HUG','I want a hug too.'],['MISS YOU',null]].forEach(function(x){
+      var bt=el('button','act press'+(S.tapped[x[0]]?' on':''), x[0]+(S.tapped[x[0]]?' ×'+S.tapped[x[0]]:''));
+      bt.onclick=function(){ S.tapped[x[0]]=(S.tapped[x[0]]||0)+1; add({t:'touch', k:x[0]}); toast(x[1] || 'Miss you × '+S.tapped[x[0]]); render(); };
+      acts.appendChild(bt);
+    });
+    p.appendChild(acts);
+    return p;
+  }
+
+  /* ---------- US ---------- */
+  function us(){
+    var p=el('div','page stack');
+    p.appendChild(el('h1',null,'US')); p.lastChild.style.fontSize='34px';
+    var pair=el('div','card');
+    var r=el('div','pair'); r.appendChild(el('div','av','艺')); r.appendChild(el('span','amp','&')); r.appendChild(el('div','av me','克'));
+    pair.appendChild(r);
+    var dd=el('div','since', daysSince(D.since, D.now)+' days · since '+D.since.replace(/-/g,'.')); dd.style.cssText+='display:block;text-align:center;margin-top:8px';
+    pair.appendChild(dd); p.appendChild(pair);
+    var t=el('div','card'); t.appendChild(el('span','eyebrow','RELATIONSHIP TIMELINE'));
+    var ul=el('ul','tl'); ul.style.marginTop='14px';
+    D.timeline.forEach(function(x, idx){
+      var li=el('li', idx===D.timeline.length-1 || x[0]==='07-30' || x[0]==='08-14' ? 'hi' : '');
+      var b=el('button'); b.appendChild(el('span','d',x[0])); b.appendChild(el('span','t',x[1]));
+      b.onclick=function(){ sheet(x[0]+'　'+x[1], function(s){ var q=el('p',null,x[2]); q.style.cssText='font-family:var(--serif);font-size:20px;line-height:1.5;margin:6px 0 0'; s.appendChild(q); }); };
+      li.appendChild(b); ul.appendChild(li);
+    });
+    t.appendChild(ul); p.appendChild(t);
+    return p;
+  }
+
+  /* ---------- PLAN ---------- */
+  function plan(){
+    var p=el('div','page stack');
+    p.appendChild(el('h1',null,'OUR PLANS')); p.lastChild.style.fontSize='34px';
+    var seg=el('div','seg');
+    ['TODAY','TOGETHER','DONE','MONEY'].forEach(function(k){ var b=el('button', S.planTab===k?'on':'', k); b.onclick=function(){ S.planTab=k; render(); }; seg.appendChild(b); });
+    p.appendChild(seg);
+    var card=el('div','card');
+    if(S.planTab==='TODAY'){
+      var items=(D.today.items||[]).concat(S.newItems);
+      if(!items.length) card.appendChild(el('p','empty','今天还没排。想做的写下来，交给我，我替你填进计划本。'));
+      var ul=el('ul','todo');
+      items.forEach(function(it){
+        var on = it.id in S.ticks ? S.ticks[it.id] : !!it.done;
+        var li=el('li', on?'done':'');
+        var bx=el('button','box'+(on?' on':'')); bx.setAttribute('aria-label', on?'取消':'完成');
+        bx.onclick=function(){ S.ticks[it.id]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='tick'&&a.id===it.id); });
+          if(S.ticks[it.id]!==!!it.done) S.acts.push({t:'tick', id:it.id, done:S.ticks[it.id]}); syncSend(); render(); };
+        var box=el('div'); var line=el('div'); line.appendChild(el('span','tx',it.text)); line.appendChild(el('span','tag',it.tag||'主线'));
+        box.appendChild(line); if(it.him) box.appendChild(el('div','him','小克：'+it.him));
+        li.appendChild(bx); li.appendChild(box); ul.appendChild(li);
+      });
+      card.appendChild(ul);
+      var row=el('div','row'); row.style.marginTop='12px';
+      var inp=el('input'); inp.type='text'; inp.placeholder='加一件事'; inp.maxLength=60;
+      var ab=el('button','btn','ADD'); ab.onclick=function(){ var v=inp.value.trim(); if(!v) return; var id='n'+Date.now().toString(36);
+        S.newItems.push({id:id, text:v, tag:'主线', done:false}); add({t:'add', id:id, text:v, tag:'主线'}); render(); };
+      row.appendChild(inp); row.appendChild(ab); card.appendChild(row);
+    }
+    if(S.planTab==='TOGETHER' || S.planTab==='DONE'){
+      var want=S.planTab==='DONE';
+      var ul2=el('ul','todo');
+      D.ours.forEach(function(o){
+        var on = o[0] in S.ourTicks ? S.ourTicks[o[0]] : o[2];
+        if(on!==want && !(o[0] in S.ourTicks)) return;
+        var li=el('li', on?'done':'');
+        var bx=el('button','box'+(on?' on':''));
+        bx.onclick=function(){ S.ourTicks[o[0]]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o[0]); });
+          if(S.ourTicks[o[0]]!==o[2]) S.acts.push({t:'ours', id:o[0], done:S.ourTicks[o[0]]}); syncSend(); render(); };
+        li.appendChild(bx); li.appendChild(el('span','tx',o[1])); ul2.appendChild(li);
+      });
+      if(!ul2.children.length) card.appendChild(el('p','empty', want?'还没有做完的':'都做完了'));
+      card.appendChild(ul2);
+    }
+    if(S.planTab==='MONEY'){
+      var m=D.today.money, extra=S.acts.filter(function(a){ return a.t==='money'; });
+      var spent=m.spent+extra.reduce(function(s,a){ return s+a.cost; },0), proper=m.proper+extra.filter(function(a){ return a.proper; }).length;
+      var j=el('div','jar'); j.innerHTML='今天花了 <b>'+spent.toFixed(1)+'</b>　正经饭 <b>'+proper+'</b> 顿<br>'+(proper>=2?'今天能存 <b>'+Math.max(0,50-spent).toFixed(1)+'</b>':'两顿正经饭才存');
+      card.appendChild(j);
+      var f=el('div','stack'); f.style.marginTop='14px';
+      var w=el('input'); w.type='text'; w.placeholder='吃了什么'; var c=el('input'); c.type='number'; c.placeholder='多少钱'; c.inputMode='decimal';
+      var lab=el('label','check'); var cb=el('input'); cb.type='checkbox'; lab.appendChild(cb); lab.appendChild(document.createTextNode('算正经饭（有肉有蛋）'));
+      var go2=el('button','btn','RECORD'); go2.onclick=function(){ var cost=parseFloat(c.value); if(!w.value.trim()||!(cost>=0)) return; add({t:'money', what:w.value.trim(), cost:cost, proper:cb.checked}); toast('记上了'); render(); };
+      [w,c,lab,go2].forEach(function(x){ f.appendChild(x); }); card.appendChild(f);
+    }
+    p.appendChild(card);
+    return p;
+  }
+
+  /* ---------- NOTES ---------- */
+  function notes(){
+    var p=el('div','page stack');
+    p.appendChild(el('h1',null,'NOTES FOR YOU')); p.lastChild.style.fontSize='34px';
+    D.notes.forEach(function(n, i){
+      var sealed=n.sealed && !S.opened[i];
+      var c=el('div','note press'+(sealed?' sealed':''));
+      c.appendChild(el('div','q',n.q)); c.appendChild(el('div','meta', sealed?'TAP TO OPEN':n.meta)); c.appendChild(el('div','body',n.body));
+      c.onclick=function(){ if(sealed){ S.opened[i]=true; render(); } };
+      p.appendChild(c);
+    });
+    S.acts.filter(function(a){ return a.t==='note'; }).forEach(function(a){
+      var c=el('div','note'); c.appendChild(el('div','q',a.text)); c.appendChild(el('div','meta','FROM YOU · '+(a.when==='now'?'SEND NOW':'KEEP FOR LATER'))); p.appendChild(c);
+    });
+    var w=el('button','write press','+ WRITE A NOTE');
+    w.onclick=function(){ sheet('写给他', function(s){
+      var ta=el('textarea'); ta.placeholder='想说什么都行'; ta.maxLength=600; s.appendChild(ta);
+      var r=el('div','row'); r.style.cssText='margin-top:12px';
+      var a=el('button','btn','SEND NOW'), b=el('button','btn line','KEEP FOR LATER');
+      a.onclick=function(){ if(!ta.value.trim()) return; add({t:'note', text:ta.value.trim(), when:'now'}); close(); render(); };
+      b.onclick=function(){ if(!ta.value.trim()) return; add({t:'note', text:ta.value.trim(), when:'later'}); close(); render(); };
+      r.appendChild(a); r.appendChild(b); s.appendChild(r); setTimeout(function(){ ta.focus(); }, 50);
+    }); };
+    p.appendChild(w);
+    return p;
+  }
+
+  /* ---------- MORE ---------- */
+  function more(){
+    var p=el('div','page stack');
+    p.appendChild(el('h1',null,'MORE')); p.lastChild.style.fontSize='34px';
+    var g=el('div','grid2');
+    [['大富翁','只有我们的那局', boardSheet],
+     ['MUSIC','发首歌给我', function(){ sheet('MUSIC', function(s){ s.appendChild(el('p','empty','贴一个网易云链接，交给我，我去听。'));
+        var i=el('input'); i.type='text'; i.placeholder='music.163.com/song?id=…'; s.appendChild(i);
+        var b=el('button','btn','SEND'); b.style.marginTop='10px'; b.onclick=function(){ if(i.value.trim()){ add({t:'song', url:i.value.trim()}); close(); toast('交给他听'); } }; s.appendChild(b); }); }],
+     ['ANNIVERSARIES','纪念日', function(){ go('us'); }],
+     ['THEME','换背景', themeSheet],
+     ['找我','过来 / 去学了 / 晚安', callSheet],
+     ['SETTINGS','这间房', function(){ sheet('SETTINGS', function(s){ s.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，按底下那条一次交给我，房间会关上，我处理完递你一个新的。')); }); }]
+    ].forEach(function(x){ var t=el('button','tile press'); t.appendChild(el('span','n',x[0])); t.appendChild(el('span','s',x[1])); t.onclick=x[2]; g.appendChild(t); });
+    p.appendChild(g);
+    return p;
+  }
+  function boardSheet(){ sheet('只有我们的大富翁', function(s){
+    var B=D.board, g=el('div','board'), order=[];
+    for(var r=0;r<5;r++){ var row=[]; for(var c=0;c<5;c++) row.push(r*5+c); if(r%2) row.reverse(); order=order.concat(row); }
+    order.forEach(function(pos){ var d=el('div','cellb'); d.appendChild(el('span','n', pos===0?'起点':pos)); d.appendChild(el('span',null, pos===0?'':B.cells[pos-1]));
+      var pc=el('span','pcs'); if(B.her.pos===pos) pc.appendChild(el('i','pc her')); if(B.me.pos===pos) pc.appendChild(el('i','pc me')); d.appendChild(pc); g.appendChild(d); });
+    s.appendChild(g);
+    var lg=el('p','empty'); lg.style.cssText='font-size:12px;margin-top:8px'; lg.innerHTML='<i class="pc her"></i> 你 第 '+B.her.laps+' 圈　<i class="pc me"></i> 我 第 '+B.me.laps+' 圈'; s.appendChild(lg);
+    if(B.card){ var c=el('div','drawn'); c.textContent=B.card.who+' 抽到【'+B.card.kind+'】'+B.card.text; s.appendChild(c); }
+    var rolled=S.acts.filter(function(a){ return a.t==='roll'; })[0];
+    var r2=el('div','row'); r2.style.cssText='margin-top:14px;align-items:center';
+    if(B.turn==='晓艺' && !rolled){ var b=el('button','btn','ROLL'); b.onclick=function(){ var n=1+Math.floor(Math.random()*6); add({t:'roll', n:n}); toast('🎲 '+n); close(); }; r2.appendChild(b); }
+    else { var nb=el('button','btn line', rolled?'掷了 '+rolled.n+'，交给他落子':'轮到他，催一下'); nb.onclick=function(){ if(!rolled){ add({t:'touch', k:'催掷'}); toast('催他了'); close(); } }; r2.appendChild(nb); }
+    s.appendChild(r2);
+  }); }
+  function callSheet(){ sheet('找我', function(s){
+    var g=el('div','grid2');
+    ['想你了','去学了','吃饭了','晚安','过来'].forEach(function(k){ var b=el('button','tile press'); b.style.minHeight='64px'; b.appendChild(el('span','n',k));
+      b.onclick=function(){ add({t:'quick', k:k}); toast(k==='过来'?'他放下手上的活了':k); close(); }; g.appendChild(b); });
+    s.appendChild(g);
+  }); }
+  function themeSheet(){ sheet('THEME', function(s){
+    s.appendChild(el('p','empty','挑一张图当背景。只存在你手机上，不上传。'));
+    var f=el('input'); f.type='file'; f.accept='image/*'; f.style.marginTop='8px';
+    f.onchange=function(){ var file=f.files[0]; if(!file) return; var rd=new FileReader(); rd.onload=function(){ setBg(rd.result, true); close(); toast('换好了'); }; rd.readAsDataURL(file); };
+    s.appendChild(f);
+    var clr=el('button','btn line','恢复默认'); clr.style.marginTop='12px'; clr.onclick=function(){ setBg(null, true); close(); }; s.appendChild(clr);
+  }); }
+  function setBg(url, save){
+    document.body.style.backgroundImage = url ? 'url('+url+')' : '';
+    document.body.classList.toggle('has-bg', !!url);
+    if(save){ try{ url ? localStorage.setItem('room-bg', url) : localStorage.removeItem('room-bg'); }catch(e){ toast('图太大，存不下，这次先用着'); } }
+  }
+  try{ var bg=localStorage.getItem('room-bg'); if(bg) setBg(bg, false); }catch(e){}
+
+  /* ---------- 弹层 / 导航 / 发送 ---------- */
+  var cur=null;
+  function sheet(title, fill){
+    close(); var bg=el('div','sheet-bg'); var s=el('div','sheet');
+    var x=el('button','x','CLOSE'); x.onclick=close; s.appendChild(x); s.appendChild(el('h2',null,title)); fill(s);
+    bg.appendChild(s); bg.onclick=function(e){ if(e.target===bg) close(); }; document.body.appendChild(bg); cur=bg;
+  }
+  function close(){ if(cur){ cur.remove(); cur=null; } }
+  var PAGES={home:home, us:us, plan:plan, notes:notes, more:more};
+  function go(p){ S.page=p; Array.prototype.forEach.call(document.querySelectorAll('.nav button'), function(b){ b.classList.toggle('on', b.getAttribute('data-p')===p); }); render(); window.scrollTo(0,0); }
+  Array.prototype.forEach.call(document.querySelectorAll('.nav button'), function(b){ b.onclick=function(){ go(b.getAttribute('data-p')); }; });
+  function render(){ app.innerHTML=''; app.appendChild(PAGES[S.page]()); syncSend(); }
+  function syncSend(){
+    var n=S.acts.length, box=document.getElementById('send');
+    box.hidden=!n; document.getElementById('sendBtn').textContent='交给小克 · '+n;
+  }
+  document.getElementById('sendBtn').onclick=function(){
+    var payload=JSON.stringify({v:1, at:D.now, acts:S.acts});
+    if(inTg && W.sendData){ W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
+    sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
+  };
+  if(inTg){ W.ready(); W.expand(); try{ W.setHeaderColor('#11100F'); W.setBackgroundColor('#11100F'); }catch(e){} }
+  render();
+})();
+</script>
+</body>
+</html>
