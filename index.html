@@ -360,7 +360,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
      ['ANNIVERSARIES','纪念日', function(){ go('us'); }],
      ['THEME','换背景', themeSheet],
      ['找我','过来 / 去学了 / 晚安', callSheet],
-     ['SETTINGS','这间房', function(){ sheet('SETTINGS', function(s){ s.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，按底下那条一次交给我，房间会关上，我处理完递你一个新的。')); }); }]
+     ['SETTINGS','这间房', function(){ sheet('SETTINGS', function(s){ s.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，按底下那条一次交给我，房间会关上，我处理完递你一个新的。'));
+        var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' | '+location.hash.slice(0,80); s.appendChild(dbg); }); }]
     ].forEach(function(x){ var t=el('button','tile press'); t.appendChild(el('span','n',x[0])); t.appendChild(el('span','s',x[1])); t.onclick=x[2]; g.appendChild(t); });
     p.appendChild(g);
     return p;
