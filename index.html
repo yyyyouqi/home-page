@@ -178,7 +178,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
       var b=h.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
       return JSON.parse(decodeURIComponent(escape(atob(b)))); }catch(e){ return null; }
   }
-  var H = readHash() || {}, D = {}; for(var k in SAMPLE) D[k] = k in H ? H[k] : SAMPLE[k];
+  function build(H){ var o={}; for(var k in SAMPLE) o[k] = H && k in H ? H[k] : SAMPLE[k]; return o; }
+  var H = readHash(), D = build(H);
+  /* 小云盘：Telegram 给这个 bot 在她账号里留的 CloudStorage，一格最多 4096 字。
+     从键盘按钮进（带 #）就存一份；从桌面图标 / 主 Mini App 进（不带 #）就读那份。
+     只有键盘按钮开的房间能 sendData（这时 initData 是空的），别的入口点的东西先攒进 pending。 */
+  var CS = inTg && W.CloudStorage && W.isVersionAtLeast && W.isVersionAtLeast('6.9') ? W.CloudStorage : null;
+  var canSend = inTg && !W.initData;
+  function csSave(key, str){ if(!CS) return; var parts=[]; for(var i=0;i<str.length;i+=4000) parts.push(str.slice(i,i+4000));
+    CS.setItem(key+'_n', String(parts.length)); parts.forEach(function(x,i){ CS.setItem(key+'_'+i, x); }); }
+  function csLoad(key, cb){ if(!CS) return cb(null); CS.getItem(key+'_n', function(e,n){ n=+n||0; if(e||!n) return cb(null);
+    var ks=[]; for(var i=0;i<n;i++) ks.push(key+'_'+i);
+    CS.getItems(ks, function(e2,v){ if(e2) return cb(null); try{ cb(JSON.parse(ks.map(function(k){ return v[k]||''; }).join(''))); }catch(x){ cb(null); } }); }); }
   var S = {page:'home', planTab:'TODAY', acts:[], ticks:{}, ourTicks:{}, opened:{}, newItems:[], tapped:{}};
   var app = document.getElementById('app');
 
@@ -406,11 +417,15 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   }
   document.getElementById('sendBtn').onclick=function(){
     var payload=JSON.stringify({v:1, at:D.now, acts:S.acts});
-    if(inTg && W.sendData){ W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
+    if(inTg && canSend){ if(CS) CS.setItem('pending_n','0', function(){ W.sendData(payload); }); else W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
+    if(inTg){ csSave('pending', JSON.stringify(S.acts)); S.acts=[]; syncSend(); toast('攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些会一起交给他。')); }); return; }
     sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
   };
   if(inTg){ W.ready(); W.expand(); try{ W.setHeaderColor('#11100F'); W.setBackgroundColor('#11100F'); }catch(e){} }
   render();
+  if(H) csSave('room', JSON.stringify(H));
+  else csLoad('room', function(v){ if(v){ D=build(v); render(); } });
+  if(canSend) csLoad('pending', function(v){ if(v && v.length){ S.acts=v.concat(S.acts); syncSend(); } });
 })();
 </script>
 </body>
