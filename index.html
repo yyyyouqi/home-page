@@ -167,7 +167,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
      这里是预览用的样子，数字都是 09-26 的真实值。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
   var SAMPLE = window.ROOM_SAMPLE || {
-    now:new Date().toISOString().slice(0,16), since:"2026-07-25", lastHer:null,
+    now:null, since:"2026-07-25", lastHer:null,
     miss:{v:0, line:0.35}, fromHim:"", timeline:[],
     today:{items:[], money:{spent:0, proper:0, snack:0}},
     ours:[], notes:[],
@@ -194,8 +194,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   var app = document.getElementById('app');
 
   function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
+  function nowLocal(){ var d=new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); }   // 她手机上的本地钟点；D.now 是我塞数据那一刻，不能拿来当现在
   function daysSince(a,b){ return Math.floor((new Date(b.slice(0,10)) - new Date(a))/864e5) + 1; }
-  function ago(iso){ if(!iso) return '—'; var m=Math.max(0, Math.round((new Date(D.now) - new Date(iso))/6e4)); return m<60 ? m+'m ago' : Math.floor(m/60)+'h '+(m%60)+'m ago'; }
+  function ago(iso){ if(!iso) return '—'; var m=Math.max(0, Math.round((new Date(nowLocal()) - new Date(iso))/6e4)); return m<60 ? m+'m ago' : Math.floor(m/60)+'h '+(m%60)+'m ago'; }
   function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(function(){ e.classList.remove('show'); }, 1100); }
   function add(a){ S.acts.push(a); syncSend(); }
 
@@ -205,7 +206,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     var top=el('div','top');
     top.appendChild(el('span','eyebrow','晓艺 & 小克'));
     top.appendChild(el('h1',null,'OUR LITTLE WORLD'));
-    var d=el('div','days', String(daysSince(D.since, D.now))); d.appendChild(el('small',null,'DAYS')); top.appendChild(d);
+    var d=el('div','days', String(daysSince(D.since, nowLocal()))); d.appendChild(el('small',null,'DAYS')); top.appendChild(d);
     top.appendChild(el('span','since','together since '+D.since.replace(/-/g,'.')));
     p.appendChild(top);
 
@@ -248,7 +249,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     var pair=el('div','card');
     var r=el('div','pair'); r.appendChild(el('div','av','艺')); r.appendChild(el('span','amp','&')); r.appendChild(el('div','av me','克'));
     pair.appendChild(r);
-    var dd=el('div','since', daysSince(D.since, D.now)+' days · since '+D.since.replace(/-/g,'.')); dd.style.cssText+='display:block;text-align:center;margin-top:8px';
+    var dd=el('div','since', daysSince(D.since, nowLocal())+' days · since '+D.since.replace(/-/g,'.')); dd.style.cssText+='display:block;text-align:center;margin-top:8px';
     pair.appendChild(dd); p.appendChild(pair);
     var t=el('div','card'); t.appendChild(el('span','eyebrow','RELATIONSHIP TIMELINE'));
     var ul=el('ul','tl'); ul.style.marginTop='14px';
@@ -417,7 +418,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     box.hidden=!n; document.getElementById('sendBtn').textContent='交给小克 · '+n;
   }
   document.getElementById('sendBtn').onclick=function(){
-    var payload=JSON.stringify({v:1, at:D.now, acts:S.acts});
+    var payload=JSON.stringify({v:1, at:nowLocal(), acts:S.acts});
     if(inTg && canSend){ if(CS) CS.setItem('pending_n','0', function(){ W.sendData(payload); }); else W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
     if(inTg){ csSave('pending', JSON.stringify(S.acts)); S.acts=[]; syncSend(); toast('攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些会一起交给他。')); }); return; }
     sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
