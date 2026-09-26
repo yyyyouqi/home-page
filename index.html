@@ -185,7 +185,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   var H = readHash(), D = build(H);
   /* 小云盘：Telegram 给这个 bot 在她账号里留的 CloudStorage，一格最多 4096 字。
      从键盘按钮进（带 #）就存一份；从桌面图标 / 主 Mini App 进（不带 #）就读那份。
-     只有键盘按钮开的房间能 sendData（这时 initData 是空的），别的入口点的东西先攒进 pending。 */
+     只有键盘按钮开的房间能 sendData（这时 initData 是空的），别的入口点的东西留在草稿 draft 里，从键盘按钮进来再交。 */
   var CS = inTg && W.CloudStorage && W.isVersionAtLeast && W.isVersionAtLeast('6.9') ? W.CloudStorage : null;
   var canSend = inTg && !W.initData;
   function csSave(key, str){ if(!CS) return; var parts=[]; for(var i=0;i<str.length;i+=4000) parts.push(str.slice(i,i+4000));
@@ -413,18 +413,29 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   function syncSend(){
     var n=S.acts.length, box=document.getElementById('send');
     box.hidden=!n; document.getElementById('sendBtn').textContent='交给小克 · '+n;
+    saveDraft();
   }
+  /* 草稿：没交的改动随手存进小云盘，关了房间再进来还在（09-26 她问"再进去东西就没有了吗"）。
+     读回来之前不存，免得开门那一下用空的把草稿盖掉。 */
+  var draftReady = !CS;
+  function saveDraft(){ if(!draftReady) return;
+    csSave('draft', JSON.stringify({acts:S.acts, ticks:S.ticks, ourTicks:S.ourTicks, newItems:S.newItems, tapped:S.tapped})); }
   document.getElementById('sendBtn').onclick=function(){
     var payload=JSON.stringify({v:1, at:nowLocal(), acts:S.acts});
-    if(inTg && canSend){ if(CS) CS.setItem('pending_n','0', function(){ W.sendData(payload); }); else W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
-    if(inTg){ csSave('pending', JSON.stringify(S.acts)); S.acts=[]; syncSend(); toast('攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些会一起交给他。')); }); return; }
+    if(inTg && canSend){ if(CS) CS.setItem('draft_n','0', function(){ W.sendData(payload); }); else W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
+    if(inTg){ toast('攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些都还在，再按一次就交给他。')); }); return; }
     sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
   };
   if(inTg){ W.ready(); W.expand(); try{ W.setHeaderColor('#11100F'); W.setBackgroundColor('#11100F'); }catch(e){} }
   render();
   if(H) csSave('room', JSON.stringify(H));
   else csLoad('room', function(v){ if(v){ D=build(v); render(); } });
-  if(canSend) csLoad('pending', function(v){ if(v && v.length){ S.acts=v.concat(S.acts); syncSend(); } });
+  csLoad('draft', function(v){
+    if(v){ S.acts=v.acts||[]; S.ticks=v.ticks||{}; S.ourTicks=v.ourTicks||{}; S.newItems=v.newItems||[]; S.tapped=v.tapped||{}; }
+    csLoad('pending', function(p){   // 09-26 以前攒的
+      if(p && p.length){ S.acts=p.concat(S.acts); CS.setItem('pending_n','0'); }
+      draftReady=true; render(); });
+  });
 })();
 </script>
 </body>
