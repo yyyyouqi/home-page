@@ -7,6 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400&display=swap">
+<!-- 中文：霞鹜文楷 Light（屏幕版太粗），按字切片，用到哪片下哪片（09-26 她嫌中文丑，要跟英文一个味） -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-light.css">
 <!-- 在 Telegram 里打开时才有用；预览时加载不到也不影响 -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
@@ -14,12 +16,13 @@
 :root{
   --bg:#11100F; --card:#1B1918; --card2:#221F1D; --ink:#E8E3DC; --soft:#9C948A; --faint:#5E5751;
   --line:#2E2A27; --red:#7A1F2B; --red-hi:#C4515F; --red-bg:#2A1518; --cream:#D9CDB8;
-  --serif:"Cormorant Garamond","Noto Serif SC","Songti SC",Georgia,serif;
-  --sans:-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --serif:"Cormorant Garamond","LXGW WenKai","Songti SC",Georgia,serif;
+  --sans:"LXGW WenKai",-apple-system,"PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --mono:"JetBrains Mono","LXGW WenKai",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+html{font-synthesis-weight:none}   /* 文楷只有一个字重，别让浏览器硬描粗 */
 html,body{margin:0; min-height:100%}
 body{background:var(--bg); color:var(--ink); font:15px/1.65 var(--sans); padding-inline:18px; padding-block:18px calc(150px + env(safe-area-inset-bottom,0px));
   background-size:cover; background-position:center; background-attachment:fixed}
