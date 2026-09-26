@@ -174,7 +174,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
-    try{ var h=location.hash.slice(1).split('&')[0]; if(!h || h.indexOf('=')>=0) return null;
+    try{ var h=location.hash.slice(1).split(/[?&]/)[0]; if(!h || h.indexOf('=')>=0) return null;
       var b=h.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
       return JSON.parse(decodeURIComponent(escape(atob(b)))); }catch(e){ return null; }
   }
