@@ -199,6 +199,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
   function nowLocal(){ var d=new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); }   // 她手机上的本地钟点；D.now 是我塞数据那一刻，不能拿来当现在
   function daysSince(a,b){ return Math.floor((new Date(b.slice(0,10)) - new Date(a))/864e5) + 1; }
+  function piggy(m){ m=m||{}; return (m.proper||0)>=2 ? '+¥'+Math.max(0,50-(m.spent||0)).toFixed(1).replace(/\.0$/,'') : '还差'+(2-(m.proper||0))+'顿'; }   // 存钱罐：正经饭 ≥2 顿才存 50-花的（09-26 换掉了不会动的 LAST WORD）
   function ago(iso){ if(!iso) return '—'; var m=Math.max(0, Math.round((new Date(nowLocal()) - new Date(iso))/6e4)); return m<60 ? m+'m ago' : Math.floor(m/60)+'h '+(m%60)+'m ago'; }
   function toast(t){ var e=document.getElementById('toast'); e.textContent=t; e.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(function(){ e.classList.remove('show'); }, 1100); }
   function add(a){ S.acts.push(a); syncSend(); }
@@ -219,7 +220,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     var tri=el('div','tri');
     var items=(D.today.items||[]).concat(S.newItems);
     var done=items.filter(function(x){ return x.id in S.ticks ? S.ticks[x.id] : x.done; }).length;
-    [['LAST WORD', ago(D.lastHer)], ['TODAY', items.length ? done+' / '+items.length : '未排'], ['BOARD', D.board.turn==='晓艺' ? '你掷' : '他掷']].forEach(function(x){
+    [['PIGGY', piggy(D.today.money)], ['TODAY', items.length ? done+' / '+items.length : '未排'], ['BOARD', D.board.turn==='晓艺' ? '你掷' : '他掷']].forEach(function(x){
       var k=el('div','card mini'); k.appendChild(el('span','eyebrow',x[0])); k.appendChild(el('div','v',x[1])); tri.appendChild(k);
     });
     p.appendChild(tri);
