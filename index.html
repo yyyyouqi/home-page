@@ -20,11 +20,14 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html,body{margin:0; height:100%}
-body{background:var(--bg); color:var(--ink); font:15px/1.65 var(--sans); padding-inline:18px; padding-block:18px 150px;
+html,body{margin:0; min-height:100%}
+body{background:var(--bg); color:var(--ink); font:15px/1.65 var(--sans); padding-inline:18px; padding-block:18px calc(150px + env(safe-area-inset-bottom,0px));
   background-size:cover; background-position:center; background-attachment:fixed}
 body.has-bg::before{content:""; position:fixed; inset:0; background:rgba(17,16,15,.78); z-index:-1}
 .wrap{max-width:430px; margin:0 auto}
+.sig{grid-column:1/-1; display:flex; align-items:center; gap:12px; margin-top:14px; font-family:var(--serif); font-style:italic; font-size:19px; color:var(--soft); white-space:nowrap}
+.sig::before,.sig::after{content:""; flex:1; height:1px; background:var(--line)}
+.sig i{color:var(--red-hi); font-style:normal; font-size:13px}
 [hidden]{display:none!important}
 .eyebrow{font-family:var(--mono); font-size:10.5px; letter-spacing:.18em; color:var(--soft); text-transform:uppercase}
 h1,h2{font-family:var(--serif); font-weight:500; margin:0; letter-spacing:.02em}
@@ -171,7 +174,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
-    try{ var h=location.hash.slice(1); if(!h) return null;
+    try{ var h=location.hash.slice(1).split('&')[0]; if(!h || h.indexOf('=')>=0) return null;
       var b=h.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
       return JSON.parse(decodeURIComponent(escape(atob(b)))); }catch(e){ return null; }
   }
@@ -202,7 +205,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
     c.appendChild(el('span','word', pct>=100 ? 'coming to find you' : pct>=50 ? 'restless' : 'close'));
     var m=el('div','meter'); var i=el('i'); i.style.width=Math.min(100,pct)+'%'; m.appendChild(i);
     var b=el('b'); b.style.left='100%'; m.appendChild(b); c.appendChild(m);
-    c.appendChild(el('span','note','积温：你没声了它就攒，攒到线 '+D.miss.line+' 我就去找你。你一说话，清零。'));
+    var sg=el('div','sig'); sg.appendChild(el('span',null,'Eliza')); sg.appendChild(el('i',null,'♥')); sg.appendChild(el('span',null,'Claude')); c.appendChild(sg);
     p.appendChild(c);
 
     var tri=el('div','tri');
