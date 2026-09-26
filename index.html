@@ -359,7 +359,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
      ['THEME','换背景', themeSheet],
      ['找我','过来 / 去学了 / 晚安', callSheet],
      ['SETTINGS','这间房', function(){ sheet('SETTINGS', function(s){ s.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，按底下那条一次交给我，房间会关上，我处理完递你一个新的。'));
-        var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' 草稿:'+(draftReady?'读好了':'没读到')+' 版本:0926b | '+location.hash.slice(0,80); s.appendChild(dbg); }); }]
+        var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' 草稿:'+(draftReady?'读好了':'没读到')+' 版本:0926c | '+location.hash.slice(0,80); s.appendChild(dbg); }); }]
     ].forEach(function(x){ var t=el('button','tile press'); t.appendChild(el('span','n',x[0])); t.appendChild(el('span','s',x[1])); t.onclick=x[2]; g.appendChild(t); });
     p.appendChild(g);
     return p;
@@ -418,11 +418,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:1px soli
   /* 草稿：没交的改动随手存进小云盘，关了房间再进来还在（09-26 她问"再进去东西就没有了吗"）。
      读回来之前不存，免得开门那一下用空的把草稿盖掉。 */
   var draftReady = !CS;
-  function saveDraft(){ if(!draftReady) return;
-    csSave('draft', JSON.stringify({acts:S.acts, ticks:S.ticks, ourTicks:S.ourTicks, newItems:S.newItems, tapped:S.tapped})); }
+  var lastDraft='', draftTimer=null;   // 每次 render 都会走到这里；攒 0.4 秒、没变就不写，别把小云盘的请求排成长队（09-26 排队排到“交给小克”没反应）
+  function saveDraft(){ if(!draftReady) return; clearTimeout(draftTimer); draftTimer=setTimeout(function(){
+    var str=JSON.stringify({acts:S.acts, ticks:S.ticks, ourTicks:S.ourTicks, newItems:S.newItems, tapped:S.tapped});
+    if(str!==lastDraft){ lastDraft=str; csSave('draft', str); } }, 400); }
   document.getElementById('sendBtn').onclick=function(){
     var payload=JSON.stringify({v:1, at:nowLocal(), acts:S.acts});
-    if(inTg && canSend){ if(CS) CS.setItem('draft_n','0', function(){ W.sendData(payload); }); else W.sendData(payload); return; }   // 发完 Telegram 自己会关房间
+    if(inTg && canSend){   // 发完 Telegram 自己会关房间
+      draftReady=false; clearTimeout(draftTimer); toast('飞过去了…');
+      var sent=false; function fly(){ if(sent) return; sent=true; try{ W.sendData(payload); }catch(e){ toast('没飞出去：'+e.message); } }
+      if(CS) CS.setItem('draft_n','0', fly); setTimeout(fly, 800);   // 小云盘不回话也照飞
+      return; }
     if(inTg){ toast('攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些都还在，再按一次就交给他。')); }); return; }
     sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
   };
