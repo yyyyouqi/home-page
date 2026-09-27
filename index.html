@@ -43,31 +43,31 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .hero .av{width:76px; height:76px; border-radius:50%; overflow:hidden; border:3px solid #fff; box-shadow:0 0 0 2px var(--pop), 0 3px 10px #A5BED855; background:var(--surf); flex:none}
 .hero .av svg,.hero .av img{width:100%; height:100%; display:block; object-fit:cover}
 .hero .who{display:grid; justify-items:center; gap:7px}
-.hero .mood{border:0; background:#fff; border-radius:999px; padding:4px 10px; font:700 13px/1.2 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis}
+.hero .mood{border:0; background:#fff; border-radius:999px; padding:4px 10px; font:700 15px/1.2 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis}
 .hero .mood.me{color:var(--pop2); box-shadow:0 0 0 1.5px var(--pop)}
 .moods{display:flex; flex-wrap:wrap; gap:8px}
 .moods .chip{border:0; border-radius:999px; padding:8px 14px; background:#fff; box-shadow:0 0 0 1.5px var(--line); font:700 16px/1.2 var(--hand); color:var(--ink)}
 .moods .chip.on{box-shadow:0 0 0 2px var(--pop2); color:var(--pop2)}
 .hero .mid{display:grid; justify-items:center; min-width:0; text-align:center}
-.hero .lbl{font:700 14px/1 var(--hand); color:var(--soft); margin-right:5px}
+.hero .lbl{font:700 16px/1 var(--hand); color:var(--soft); margin-right:5px}
 .hero .num{font:700 44px/1 var(--hand); color:var(--deep); margin-top:0; white-space:nowrap}
 .hero .num small{font-size:18px; margin-left:4px; color:var(--pop2)}
-.hero .names{font:700 15px/1 var(--hand); color:var(--ink); margin-top:6px}
+.hero .names{font:700 17px/1 var(--hand); color:var(--ink); margin-top:6px}
 .hero .names i{color:var(--pop2); font-style:normal}
-.hero .since{font-size:11px; color:var(--soft); margin-top:4px; letter-spacing:.04em}
+.hero .since{font-size:13px; color:var(--soft); margin-top:4px; letter-spacing:.04em}
 @media (max-width:380px){.hero .av{width:60px; height:60px}.hero .num{font-size:36px}}
 .av{width:30px; height:30px; border-radius:50%; overflow:hidden; border:2px solid #fff; box-shadow:0 2px 6px #A5BED855; background:var(--surf); flex:none}
 .av svg,.av img{width:100%; height:100%; display:block; object-fit:cover}
 .spark{position:absolute; font-size:13px; animation:tw 2.4s ease-in-out infinite}
 @keyframes tw{50%{opacity:.25; transform:scale(.7)}}
 .watchw{margin-top:12px; padding:12px 16px; display:grid; grid-template-columns:62px 1fr; gap:12px; align-items:center; text-align:left; width:100%}
-.watchw .k{font:700 15px/1 var(--hand); color:var(--soft)}
+.watchw .k{font:700 17px/1 var(--hand); color:var(--soft)}
 .watchw .v{font:700 22px/1.15 var(--hand); color:var(--ink); margin-top:3px}
 .watchw .v b{color:var(--pop2); font-size:28px}
-.watchw .s{font-size:11.5px; color:var(--soft); margin-top:2px}
+.watchw .s{font-size:13px; color:var(--soft); margin-top:2px}
 .sticky{margin-top:14px; background:#FFF8E2; border-radius:4px 4px 18px 4px; padding:18px 16px 12px; position:relative; transform:rotate(-1.2deg); box-shadow:0 5px 14px #A5BED844}
 .sticky::before{content:""; position:absolute; top:-9px; left:50%; width:84px; height:20px; transform:translateX(-50%) rotate(2deg); background:repeating-linear-gradient(45deg,#E2ECF8DD 0 6px,#F0E4EDDD 6px 12px); border-radius:2px}
-.sticky .k{font:700 14px/1 var(--hand); color:#B39A62}
+.sticky .k{font:700 16px/1 var(--hand); color:#B39A62}
 .sticky .t{font:700 19px/1.3 var(--hand); color:var(--ink); margin-top:4px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
 
 /* app 图标 */
@@ -77,7 +77,7 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .app:active .ico{transform:scale(.9)}
 .ico svg{width:26px; height:26px; stroke:#fff; stroke-width:2.2; fill:none; stroke-linecap:round; stroke-linejoin:round}
 .ico .dot{position:absolute; top:-4px; right:-4px; min-width:20px; height:20px; border-radius:10px; background:var(--pop2); color:#fff; font:700 11px/20px var(--sans); padding:0 5px; border:2px solid #fff}
-.app span{font-size:13.5px; white-space:nowrap; color:var(--ink); font-weight:700}
+.app span{font-size:15px; white-space:nowrap; color:var(--ink); font-weight:700}
 .gA{background:linear-gradient(145deg,#BFD3EC,#8FAAD0)} .gB{background:linear-gradient(145deg,#F6C9D8,#DDA3BC)}
 .gC{background:linear-gradient(145deg,#D6E3F4,#A5BED8)} .gD{background:linear-gradient(145deg,#EBD6E4,#C9A9C0)}
 
@@ -86,8 +86,8 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
   display:grid; grid-template-columns:repeat(3,1fr); gap:8px; padding:10px; border-radius:30px; background:#FFFFFFB8; backdrop-filter:blur(14px); border:1.5px solid #fff; box-shadow:0 8px 24px #A5BED844}
 .dk{border:0; border-radius:20px; padding:9px 4px 8px; display:flex; flex-direction:column; align-items:center; gap:2px; background:#fff; box-shadow:0 2px 0 var(--line); transition:transform .12s}
 .dk:active{transform:scale(.93)}
-.dk b{font:700 21px/1 var(--hand); color:var(--deep)}
-.dk i{font-style:normal; font-size:12px; color:var(--soft)}
+.dk b{font:700 22px/1 var(--hand); color:var(--deep)}
+.dk i{font-style:normal; font-size:13.5px; color:var(--soft)}
 .dk.on b{color:var(--pop2)}
 .send{position:fixed; left:24px; right:24px; bottom:calc(92px + env(safe-area-inset-bottom,0px)); max-width:400px; margin:0 auto; z-index:9}
 .send button{width:100%; border:0; border-radius:999px; padding:12px 16px; background:linear-gradient(90deg,#8FAAD0,#EE9DB9); color:#fff; font:700 17px/1 var(--hand); letter-spacing:.04em; box-shadow:0 6px 16px #8FAAD066; display:flex; align-items:center; justify-content:center; gap:8px}
@@ -191,13 +191,12 @@ textarea{resize:vertical; min-height:120px}
 .bub.me{color:var(--pop2)}
 .lstat{margin-top:10px; font-size:13px; color:var(--soft); letter-spacing:.02em}
 .disc{position:relative; width:min(72vw,280px,34dvh); aspect-ratio:1; margin:14px 0 6px}
-.disc .wave{position:absolute; inset:-8%; width:116%; height:116%; overflow:visible}
-.disc .wave .w1{fill:#FCE3ECDD; stroke:#F2A9C2; stroke-width:1.6}
-.disc .wave .w2{fill:#E3EEFA99; stroke:#B9CFE8; stroke-width:1.2}
+.disc .wave{position:absolute; inset:-6%; width:112%; height:112%; animation:spin 30s linear infinite}
+.disc .wave path{fill:#FCE3EC; stroke:#F2A9C2; stroke-width:1.6}
 .disc .rec{position:absolute; inset:9%; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 2px,#3A3540 2px 4px); box-shadow:0 8px 22px #7C5A6A55, inset 0 0 0 3px #4a4450; display:grid; place-items:center; animation:spin 12s linear infinite}
 .disc .lbl2{width:40%; aspect-ratio:1; border-radius:50%; overflow:hidden; background:var(--pop); border:3px solid #fff}
 .disc .lbl2 img{width:100%; height:100%; object-fit:cover; display:block}
-.disc.paused .rec{animation-play-state:paused}
+.disc.paused .rec,.disc.paused .wave{animation-play-state:paused}
 .disc .tag{position:absolute; background:#fff; border:1.5px solid #F2A9C2; color:var(--pop2); border-radius:999px; padding:3px 10px; font:700 12px/1.2 var(--sans); letter-spacing:.08em}
 .disc .t1{top:4%; left:-4%} .disc .t2{bottom:6%; right:-4%}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -395,7 +394,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928m';
+  var VERSION = '0928n';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -851,7 +850,7 @@ body{background-color:#FFFBF9}
     top.appendChild(who(ap[0], S.lsay || L.her, true)); top.appendChild(el('span','lh','♥')); top.appendChild(who(ap[1], L.me, false));
     wrap.appendChild(top);
     var disc=el('div','disc'+(S.playing?'':' paused'));
-    disc.innerHTML='<svg class="wave" viewBox="0 0 200 200" aria-hidden="true"><path class="w2" d="'+wavy(0,0)+'"/><path class="w1" d="'+wavy(0,0)+'"/></svg><div class="rec"><div class="lbl2">'+(x&&x.cover?'<img src="'+x.cover+'?param=200y200" alt="">':'')+'</div></div><span class="tag t1">♪ playing</span><span class="tag t2">with u ♡</span>';
+    disc.innerHTML='<svg class="wave" viewBox="0 0 200 200" aria-hidden="true"><path d="'+wavy()+'"/></svg><div class="rec"><div class="lbl2">'+(x&&x.cover?'<img src="'+x.cover+'?param=200y200" alt="">':'')+'</div></div><span class="tag t1">♪ playing</span><span class="tag t2">with u ♡</span>';
     wrap.appendChild(disc);
     var info=el('button','linfo'); info.appendChild(el('b',null, x?x.name:'还没有歌')); info.appendChild(el('span',null, x?x.artist:'点这里贴一首给他')); info.onclick=paste; wrap.appendChild(info);
     var pr=el('div','lprog'), t0=el('span',null,'0:00'), tr=el('div','ltrack'), fill=el('i'), t1=el('span',null, x?fmt(x.dur):'0:00');
@@ -871,26 +870,12 @@ body{background-color:#FFFBF9}
         var a=el('a','btn line','去网易云听'); a.href='https://music.163.com/song?id='+x.id; a.target='_blank'; a.style.display='inline-block'; a.style.textDecoration='none'; sh.appendChild(a); }); };
     wrap.appendChild(said);
     p.appendChild(wrap);
-    clearInterval(S.ltimer); setTimeout(waveLoop,0);
+    clearInterval(S.ltimer);
     if(x){ var dur=x.dur||200; S.pos=S.pos||0;
       var tick=function(){ fill.style.width=(S.pos/dur*100)+'%'; t0.textContent=fmt(S.pos); };
       tick(); if(S.playing) S.ltimer=setInterval(function(){ if(S.app!=='music'){ clearInterval(S.ltimer); return; } S.pos+=1; if(S.pos>=dur) S.pos=0; tick(); },1000); }
   }
-  /* 09-28 她说想要“波浪的唱片旋律”：花边跟着假装的节拍一起一伏，像声波，暂停就平下来 */
-  function wavy(t, amp, ph){ var d='', N=120; ph=ph||0;
-    for(var i=0;i<=N;i++){ var a=i/N*Math.PI*2;
-      var k=Math.sin(a*14+t*2+ph)*.55 + Math.sin(a*5-t*3.1+ph)*.3 + Math.sin(a*23+t*5.3)*.15;
-      var beat=.6+.4*Math.abs(Math.sin(t*2.2))*(.7+.3*Math.sin(a*3+t));
-      var r=88+2.5+amp*beat*k*6;
-      d+=(i?'L':'M')+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1); }
-    return d+'Z'; }
-  function waveLoop(){
-    cancelAnimationFrame(S.wraf); var amp=S.wamp||0, last=0;
-    (function f(ts){ var w1=document.querySelector('.disc .w1'), w2=document.querySelector('.disc .w2'); if(!w1 || S.app!=='music') return;
-      amp += ((S.playing?1:.15)-amp)*.06; S.wamp=amp;
-      if(ts-last>33){ last=ts; var t=ts/1000; w1.setAttribute('d', wavy(t, amp, 0)); w2.setAttribute('d', wavy(t*.8+1.3, amp*1.35, 2)); }
-      S.wraf=requestAnimationFrame(f); })(0);
-  }
+  function wavy(){ var d='', n=14; for(var i=0;i<=n*8;i++){ var a=i/(n*8)*Math.PI*2, r=90+4*Math.sin(a*n); d+=(i?'L':'M')+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1); } return d+'Z'; }   // 09-28 试过跟节拍起伏，她说像蚂蚁蠕动，退回静的跟着转
   function paste(){
     sheet('放一首', function(sh){
       sh.appendChild(el('p','empty','贴网易云的歌曲链接，交给他。他去看歌词和评论，挑一句放上来。'));
