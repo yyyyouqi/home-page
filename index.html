@@ -42,12 +42,15 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .hero{flex:none; padding:16px 12px 14px; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:4px; position:relative; overflow:hidden}
 .hero .av{width:76px; height:76px; border-radius:50%; overflow:hidden; border:3px solid #fff; box-shadow:0 0 0 2px var(--pop), 0 3px 10px #A5BED855; background:var(--surf); flex:none}
 .hero .av svg,.hero .av img{width:100%; height:100%; display:block; object-fit:cover}
+.hero .who{display:grid; justify-items:center; gap:7px}
+.hero .mood{border:0; background:#fff; border-radius:999px; padding:4px 10px; font:700 13px/1.2 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:96px; overflow:hidden; text-overflow:ellipsis}
+.hero .mood.me{color:var(--pop2); box-shadow:0 0 0 1.5px var(--pop)}
+.moods{display:flex; flex-wrap:wrap; gap:8px}
+.moods .chip{border:0; border-radius:999px; padding:8px 14px; background:#fff; box-shadow:0 0 0 1.5px var(--line); font:700 16px/1.2 var(--hand); color:var(--ink)}
+.moods .chip.on{box-shadow:0 0 0 2px var(--pop2); color:var(--pop2)}
 .hero .mid{display:grid; justify-items:center; min-width:0; text-align:center}
-.hero .mid svg{width:100%; height:34px; display:block}
-.hero .mid .ln{fill:none; stroke:var(--pop2); stroke-width:2.4; stroke-linecap:round}
-.hero .mid .ht{fill:var(--pop2)}
 .hero .lbl{font:700 14px/1 var(--hand); color:var(--soft); margin-right:5px}
-.hero .num{font:700 44px/1 var(--hand); color:var(--deep); margin-top:-2px; white-space:nowrap}
+.hero .num{font:700 44px/1 var(--hand); color:var(--deep); margin-top:0; white-space:nowrap}
 .hero .num small{font-size:18px; margin-left:4px; color:var(--pop2)}
 .hero .names{font:700 15px/1 var(--hand); color:var(--ink); margin-top:6px}
 .hero .names i{color:var(--pop2); font-style:normal}
@@ -315,14 +318,14 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928d';
+  var VERSION = '0928e';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
   var SAMPLE = window.ROOM_SAMPLE || {
     now:null, since:"2026-07-25", fromHim:"", timeline:[],
     today:{items:[], money:{spent:0, proper:0, snack:0}},
-    ours:[], notes:[], dates:[], period:{last:null, cycle:28},
+    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''},
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
@@ -330,7 +333,7 @@ body{background-color:#FFFBF9}
       var b=h.replace(/-/g,'+').replace(/_/g,'/'); while(b.length%4) b+='=';
       return JSON.parse(decodeURIComponent(escape(atob(b)))); }catch(e){ return null; }
   }
-  function build(H){ var o={}; for(var k in SAMPLE) o[k] = H && k in H ? H[k] : SAMPLE[k]; return o; }
+  function build(H){ var o={}; for(var k in SAMPLE) o[k] = H && k in H ? H[k] : SAMPLE[k]; if(H) for(k in H) if(!(k in o)) o[k]=H[k]; return o; }
   var H = readHash(), D = build(H);
   /* 小云盘：Telegram 给这个 bot 在她账号里留的 CloudStorage，一格最多 4096 字。
      从键盘按钮进（带 #）就存一份；从桌面图标 / 主 Mini App 进（不带 #）就读那份。
@@ -481,17 +484,35 @@ body{background-color:#FFFBF9}
     ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['notes','纸条','gA',notes], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
     ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['call','找我','gB',call], ['set','设置','gA',settings]
   ];
+  /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
+  var MOODS=[['开心','😊'],['想你','🥺'],['学习中','📖'],['在路上','🚇'],['摸鱼','🐟'],['饿了','🍚'],['困','😪'],['累','🫠'],['emo','🌧️'],['生气','😤']];
+  try{ S.mood=localStorage.getItem('room-mood')||''; }catch(e){ S.mood=''; }
+  if(!S.mood && D.mood && D.mood.her) S.mood=D.mood.her;
+  function pickMood(){
+    sheet('现在的你', function(sh){
+      var g=el('div','moods');
+      MOODS.forEach(function(m){ var b=el('button','chip'+(S.mood===m[0]?' on':''), m[1]+' '+m[0]);
+        b.onclick=function(){ S.mood=m[0]; try{ localStorage.setItem('room-mood', m[0]); }catch(e){} add({t:'mood', k:m[0]}); close(); cheer('hold','交给小克就知道了'); refreshApp(); };
+        g.appendChild(b); });
+      sh.appendChild(g);
+    });
+  }
   function home(){
     var p=el('div');
     var hr=new Date().getHours(), night = hr>=19 || hr<6;
-    var h=el('div','widget hero');   /* 09-28 照计划本：两边大头像，中间一根线串着心和天数（她想看清楚头像） */
-    var ap=avPair(S.avatar); var a1=el('div','av'); a1.innerHTML=ap[0]; var a2=el('div','av'); a2.innerHTML=ap[1];
-    var M=el('div','mid');
-    M.innerHTML='<svg viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true"><path d="M0 22 C40 4 70 36 100 20 S160 6 200 22" class="ln"/><path d="M100 13 c-4 -6 -12 -2 -8 4 l8 8 l8 -8 c4 -6 -4 -10 -8 -4z" class="ht"/></svg>';
+    var h=el('div','widget hero');   /* 09-28 照计划本两边大头像；02:46 她说中间那根线丑，去掉，头像下面挂状态，她自己点着换 */
+    var ap=avPair(S.avatar), M=el('div','mid');
     var n=el('div','num'); n.appendChild(el('span','lbl','在一起')); n.appendChild(document.createTextNode(String(daysSince(D.since, nowLocal())))); n.appendChild(el('small',null,'天')); M.appendChild(n);
     var nm=el('div','names'); nm.innerHTML='Eliza <i>♥</i> Claude'; M.appendChild(nm);
     M.appendChild(el('div','since','since '+D.since.replace(/-/g,'.')));
-    h.appendChild(a1); h.appendChild(M); h.appendChild(a2);
+    function side(html, mood, mineSide){
+      var c=el('div','who'), a=el('div','av'); a.innerHTML=html; c.appendChild(a);
+      var m=MOODS.filter(function(x){ return x[0]===mood; })[0] || ['','·'], st=el(mineSide?'button':'div','mood'+(mineSide?' me':''));
+      st.textContent = mood ? m[1]+' '+mood : (mineSide?'＋ 状态':'…');
+      if(mineSide) st.onclick=pickMood;
+      c.appendChild(st); return c;
+    }
+    h.appendChild(side(ap[0], S.mood, true)); h.appendChild(M); h.appendChild(side(ap[1], (D.mood||{}).me||'', false));
     [['6%','8%','✦','#A5BED8'],['50%','4%','♥','#F8C8D8'],['94%','86%','✧','#D0AEC0']].forEach(function(s,i){ var e=el('span','spark',s[2]); e.style.left=s[0]; e.style.top=s[1]; e.style.color=s[3]; e.style.animationDelay=(i*.7)+'s'; h.appendChild(e); });
     p.appendChild(h);
 
