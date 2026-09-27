@@ -198,7 +198,7 @@ textarea{resize:vertical; min-height:120px}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927d';
+  var VERSION = '0927e';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -318,8 +318,8 @@ textarea{resize:vertical; min-height:120px}
     var P=D.period||{}, lastLocal=S.acts.filter(function(a){ return a.t==='period'; }).pop();
     var last=lastLocal ? lastLocal.d : P.last;
     if(last){ var t=new Date(now.slice(0,10)+'T00:00'), l=new Date(last+'T00:00'), cyc=P.cycle||28, k=Math.max(1, Math.ceil((t-l)/864e5/cyc)); var nd=new Date(+l+k*cyc*864e5);
-      out.push({id:'period', name:'小姨妈', kind:'period', days:Math.round((nd-t)/864e5), mmdd:'', last:last}); }
-    else out.push({id:'period', name:'小姨妈', kind:'period', days:null, mmdd:''});
+      out.push({id:'period', name:'大姨妈', kind:'period', days:Math.round((nd-t)/864e5), mmdd:'', last:last}); }
+    else out.push({id:'period', name:'大姨妈', kind:'period', days:null, mmdd:''});
     return out.sort(function(a,b){ return (a.days==null?999:a.days)-(b.days==null?999:b.days); });
   }
   function dd(n){ return n===0 ? '就是今天' : n==null ? '还没记' : '还有 '+n+' 天'; }
@@ -494,7 +494,7 @@ textarea{resize:vertical; min-height:120px}
       b.appendChild(m);
       var l=el('div','left'); l.innerHTML = c.days==null ? '—' : c.days===0 ? '<b>今天</b>' : '还有<b>'+c.days+'</b>'; b.appendChild(l);
       b.onclick=function(){
-        if(c.kind==='period'){ sheet('小姨妈', function(s){ s.appendChild(el('p','empty','今天来了就点一下，他从今天开始重新算，也会提醒你多喝热的、别碰冰的。'));
+        if(c.kind==='period'){ sheet('大姨妈', function(s){ s.appendChild(el('p','empty','今天来了就点一下，他从今天开始重新算，也会提醒你多喝热的、别碰冰的。'));
           var bt=el('button','btn pink','今天来了'); bt.style.marginTop='12px'; bt.onclick=function(){ S.acts=S.acts.filter(function(a){ return a.t!=='period'; }); add({t:'period', d:nowLocal().slice(0,10)}); close(); cheer('hug','抱抱，记下了'); refreshApp(); }; s.appendChild(bt); }); return; }
         var tl=(D.timeline||[]).filter(function(x){ return x[0]===c.mmdd; })[0];
         sheet(c.name, function(s){ s.appendChild(svgEl(scene(c.kind==='bday'?'tea':'hug'),'bn','width:160px;height:120px;display:block;margin:0 auto'));
