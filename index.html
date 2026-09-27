@@ -283,6 +283,19 @@ body{background-color:#FFFBF9}
 .tile:nth-child(3n+2){background:repeating-linear-gradient(0deg,#CFE0F377 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#CFE0F377 0 7px,transparent 7px 14px),#F7FAFE}
 .tile:nth-child(3n){background:repeating-linear-gradient(0deg,#F6DFA055 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F6DFA055 0 7px,transparent 7px 14px),#FFFCF2}
 .ribbon{background:#F8C8D8; color:#fff} .ribbon::after{border-color:#F8C8D8; border-right-color:transparent}
+
+/* 09-27：她说方舟最好看的是进出场动态。房间里东西一层一层依次浮上来，关掉时往回收 */
+.win .body>*{animation:rise-in .42s cubic-bezier(.2,.9,.25,1) both}
+.win .body>*:nth-child(1){animation-delay:.08s} .win .body>*:nth-child(2){animation-delay:.14s} .win .body>*:nth-child(3){animation-delay:.2s}
+.win .body>*:nth-child(4){animation-delay:.26s} .win .body>*:nth-child(5){animation-delay:.32s} .win .body>*:nth-child(6){animation-delay:.38s}
+.win .body>*:nth-child(n+7){animation-delay:.44s}
+.win .bar{animation:drop .35s cubic-bezier(.2,.9,.25,1) both}
+.shelf>*{animation:rise-in .4s cubic-bezier(.2,.9,.25,1) both} .shelf>*:nth-child(2){animation-delay:.06s} .shelf>*:nth-child(3){animation-delay:.12s} .shelf>*:nth-child(n+4){animation-delay:.18s}
+@keyframes rise-in{from{opacity:0; transform:translateY(18px) scale(.98)} to{opacity:1; transform:none}}
+@keyframes drop{from{opacity:0; transform:translateY(-14px)} to{opacity:1; transform:none}}
+.win.closing .body>*{animation:fall-out .18s ease both} .win.closing .body>*:nth-child(n+3){animation-delay:.03s}
+@keyframes fall-out{to{opacity:0; transform:translateY(10px)}}
+.win.refresh .body>*{animation:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 </style>
 </head>
@@ -295,7 +308,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927i';
+  var VERSION = '0927j';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -522,7 +535,7 @@ body{background-color:#FFFBF9}
     document.body.appendChild(win);
     if(inTg && W.BackButton){ try{ W.BackButton.show(); }catch(e){} }
   }
-  function refreshApp(){ if(!win || !S.app) return; var body=win.querySelector('.body'); var y=win.scrollTop; body.innerHTML=''; APPS.filter(function(x){ return x[0]===S.app; })[0][3](body); win.scrollTop=y; }
+  function refreshApp(){ if(!win || !S.app) return; win.classList.add('refresh'); var body=win.querySelector('.body'); var y=win.scrollTop; body.innerHTML=''; APPS.filter(function(x){ return x[0]===S.app; })[0][3](body); win.scrollTop=y; }
   function closeWin(now){ if(!win) return; var w=win; win=null; if(now){ w.remove(); return; } w.classList.add('closing'); setTimeout(function(){ w.remove(); },200); }
   function closeApp(){ S.app=null; closeWin(false); if(inTg && W.BackButton){ try{ W.BackButton.hide(); }catch(e){} } render(); }
   if(inTg && W.BackButton){ try{ W.BackButton.onClick(function(){ if(cur) close(); else closeApp(); }); }catch(e){} }
