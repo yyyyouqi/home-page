@@ -229,11 +229,12 @@ textarea{resize:vertical; min-height:120px}
 .mini .mtt{min-width:0; display:grid; gap:2px}
 .mini .mtt b{font:700 15px/1.2 var(--sans); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .mini .mtt span{font-size:12px; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.mini.ci .cico{font-size:26px; line-height:1}
+.mini.ci .cico{font-size:30px; line-height:1}
+.mini.ci{justify-content:center; gap:10px}
 .mini.ci-m{background:#FFFBEF} .mini.ci-n{background:#F1F4FC}
 .mini.ci.done .v b{color:var(--pop2)}
 .hero .mood .mt2{display:inline-block}
-.ios .hero .mood .mt2{transform:translateY(.14em)}
+.ios .hero .mood .mt2{transform:translateY(.14em)}   /* 她 09-28 07:11 在 iPhone 上看过：刚刚好 */
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -416,7 +417,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928z';
+  var VERSION = '0929a';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -628,7 +629,7 @@ body{background-color:#FFFBF9}
     /* 09-28 06:10 她说中间两个大框去掉，换四个小组件：怀表倒计时 / 小克留的 / 今天 / 在听 */
     var cds=countdowns(), c0=cds[0], it0=todayItems(), dn0=it0.filter(isDone).length;
     var m4=el('div','mini4');
-    function mini(cls, k, fn){ var b=el('button','widget mini '+cls); b.appendChild(el('div','k',k)); if(fn) b.onclick=function(){ fn(b); }; m4.appendChild(b); return b; }
+    function mini(cls, k, fn){ var b=el('button','widget mini '+cls); if(k) b.appendChild(el('div','k',k)); if(fn) b.onclick=function(){ fn(b); }; m4.appendChild(b); return b; }
     var w=mini('mw','白兔子的怀表', function(b){ openApp('watch', b); });
     var wr=el('div','mr'); wr.appendChild(svgEl(watchFace(c0), null, 'width:44px;height:44px'));
     var wv=el('div','v'); wv.innerHTML = c0.days===0 ? '<b>今天</b>' : '<b>'+c0.days+'</b><small>天</small>'; wr.appendChild(wv); w.appendChild(wr);
@@ -644,8 +645,8 @@ body{background-color:#FFFBF9}
       var v=el('div','v'); v.innerHTML = hers ? '<b>'+hers+'</b>' : '<small>'+empty+'</small>'; r.appendChild(v); t.appendChild(r);
       var n=streak(k); t.appendChild(el('div','s', (his?'他 '+his+' · ':'')+(n?'连续 '+n+' 天':'还没打过')));
     }
-    ciTile('m','早安打卡','☀️','点一下说早安');
-    ciTile('n','晚安打卡','🌙','睡前点一下');
+    ciTile('m','','☀️','点一下说早安');   // 09-28 她说“早安打卡”“晚安打卡”那八个字删掉
+    ciTile('n','','🌙','睡前点一下');
     p.appendChild(m4);
 
     var items=todayItems(), done=items.filter(isDone).length;
