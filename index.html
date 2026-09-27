@@ -118,7 +118,7 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .tag{display:inline-block; font-size:10.5px; font-weight:700; color:var(--deep); background:var(--surf); border-radius:999px; padding:0 7px; margin-left:6px; vertical-align:2px}
 .him{font:700 15px/1.3 var(--hand); color:var(--pop2); margin-top:3px}
 .row{display:flex; gap:8px}
-input[type=text],input[type=number],textarea{width:100%; font:inherit; color:var(--ink); background:#FAFCFF; border:1.5px solid var(--line); border-radius:14px; padding:10px 12px; outline:none}
+input[type=text],input[type=number],textarea{width:100%; font:inherit; font-size:16px; color:var(--ink); background:#FAFCFF; border:1.5px solid var(--line); border-radius:14px; padding:10px 12px; outline:none}   /* 09-28 iPhone 上输入框字小于 16px 一点就自动放大、不缩回去（她加头像时撞到的） */
 input:focus,textarea:focus{border-color:var(--blue)}
 textarea{resize:vertical; min-height:120px}
 .btn{border:0; border-radius:999px; padding:9px 16px; background:var(--deep); color:#fff; font:700 16px/1 var(--hand); white-space:nowrap}
@@ -314,7 +314,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928a';
+  var VERSION = '0928b';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
