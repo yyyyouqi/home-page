@@ -239,6 +239,50 @@ textarea{resize:vertical; min-height:120px}
 .sendin{width:100%; border:0; border-radius:999px; padding:14px 16px; background:linear-gradient(90deg,#8FAAD0,#EE9DB9); color:#fff; font:700 19px/1 var(--hand); box-shadow:0 6px 16px #8FAAD066; display:flex; align-items:center; justify-content:center; gap:8px}
 .sendin svg{width:22px; height:22px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 .sendin[disabled]{background:#DCE3EE; box-shadow:none; color:#9A97A8}
+
+/* 09-27 第五版：她发来小红书 Iris_M 的前端说"我喜欢这样的，很萌"。一帧帧拆下来看：点点网格纸底、卡片内一圈虚线缝线、
+   角上胶带、到处是小标签、格子布、钟外一圈蕾丝花边、字小东西密。手法学过来，角色用我们自己的（她那是三丽鸥，不抄） */
+:root{ --dots:radial-gradient(circle, #EDD9E3 1.1px, transparent 1.4px) 0 0/15px 15px; }
+body{background-color:#FFFBF9}
+.win{background:var(--dots), #FFFBF9 !important}
+.bar{justify-content:center; background:#FFFBF9EE; margin:8px auto 0; width:calc(100% - 28px); max-width:412px; border:1.5px solid #F3DFE8; border-radius:18px; padding:9px 12px; position:sticky; top:8px}
+.bar .back{position:absolute; left:8px; background:none; font-size:22px; padding:2px 8px; color:#D48AA8}
+.bar h1{font:700 18px/1 var(--sans); color:#6F6C84; letter-spacing:.06em}
+.bar .mini-ico{position:absolute; right:8px; width:40px; height:28px}
+.body{padding-top:14px}
+.card,.body .card:nth-of-type(odd),.body .card.blue,.body .card.pink{background-color:#FFFDFB; background-image:none; border:1.5px solid #F3DFE8; box-shadow:0 3px 10px #EDD9E355; border-radius:20px}
+.card::after,.banner::after{content:""; position:absolute; inset:5px; border:1.3px dashed #EDC7D6; border-radius:15px; pointer-events:none}
+.card.blue::after{border-color:#C7D7EC} .card.yel{background-color:#FFFBEA} .card.yel::after{border-color:#EFD9A0}
+.env{position:relative; border:1.5px solid #F3DFE8 !important}
+.env:not(.sealed)::before{content:""; position:absolute; inset:5px; border:1.3px dashed #EDC7D6; border-radius:13px; pointer-events:none}
+.banner{position:relative; background:#FFFDFB; background-image:var(--dots); border:1.5px solid #F3DFE8; box-shadow:0 3px 10px #EDD9E355; border-radius:22px; padding:8px 16px 8px 8px; grid-template-columns:120px 1fr; margin-bottom:4px}
+.banner svg{width:120px; height:90px}
+.banner .t{font:700 20px/1.2 var(--sans); color:#5F5C74}
+.banner .s{font-size:12px}
+.lace::after{display:none}
+.pill{display:inline-block; font:700 10.5px/1.6 var(--sans); border:1.2px solid #EDC7D6; color:#D48AA8; background:#FFF6F9; border-radius:999px; padding:0 8px; margin-left:6px; vertical-align:1px; letter-spacing:0}
+.pill.b{border-color:#C7D7EC; color:#7C95B8; background:#F2F7FD} .pill.y{border-color:#EFD9A0; color:#B39A62; background:#FFFBEA}
+.tag{border:1.2px solid #C7D7EC; background:#F2F7FD; color:#7C95B8}
+.ging-p{background:repeating-linear-gradient(0deg,#F8C8D866 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F8C8D866 0 7px,transparent 7px 14px),#FFF7FA}
+.ging-b{background:repeating-linear-gradient(0deg,#CFE0F388 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#CFE0F388 0 7px,transparent 7px 14px),#F7FAFE}
+.ging-y{background:repeating-linear-gradient(0deg,#F6DFA066 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F6DFA066 0 7px,transparent 7px 14px),#FFFCF2}
+.shelf{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.book{position:relative; aspect-ratio:3/4.2; border-radius:10px; border:1.5px solid #F3DFE8; padding:10px 7px 8px; display:flex; flex-direction:column; justify-content:space-between; text-align:center; box-shadow:0 3px 8px #EDD9E355; cursor:pointer}
+.book .lab{background:#FFFDFB; border:1.3px dashed #E8B9CC; border-radius:6px; padding:6px 4px; font:700 12.5px/1.35 var(--sans); color:#5F5C74}
+.book .heart{align-self:center}
+.book::before{content:""; position:absolute; top:-7px; right:10px; width:30px; height:13px; transform:rotate(8deg); background:repeating-linear-gradient(45deg,#F8C8D8CC 0 4px,#FFFFFFCC 4px 8px); border-radius:2px}
+.book.done{opacity:.72}
+.chip{border:1.5px solid #F3DFE8; box-shadow:0 3px 8px #EDD9E344}
+.chip:nth-child(1){background-color:#FFF3F7} .chip:nth-child(2){background-color:#F2F7FD} .chip:nth-child(3){background-color:#FFFBEA}
+.chip .v{color:#D48AA8} .chip:nth-child(2) .v{color:#7C95B8} .chip:nth-child(3) .v{color:#B39A62}
+.cd,.cd:nth-child(odd),.cd:nth-child(even){background:#FFFDFB; border:1.5px solid #F3DFE8; position:relative}
+.cd .day{background:#FFF3F7; border:1.3px dashed #EDC7D6} .cd.bday .day{background:#FFFBEA; border-color:#EFD9A0}
+.frame,.frame:nth-child(n){background-color:#FFFDFB; border:1.5px solid #F3DFE8}
+.tile,.tile:nth-child(n){color:#5F5C74; font-size:20px; border:1.5px solid #F3DFE8}
+.tile:nth-child(3n+1){background:repeating-linear-gradient(0deg,#F8C8D855 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F8C8D855 0 7px,transparent 7px 14px),#FFF7FA}
+.tile:nth-child(3n+2){background:repeating-linear-gradient(0deg,#CFE0F377 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#CFE0F377 0 7px,transparent 7px 14px),#F7FAFE}
+.tile:nth-child(3n){background:repeating-linear-gradient(0deg,#F6DFA055 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F6DFA055 0 7px,transparent 7px 14px),#FFFCF2}
+.ribbon{background:#F8C8D8; color:#fff} .ribbon::after{border-color:#F8C8D8; border-right-color:transparent}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 </style>
 </head>
@@ -251,7 +295,7 @@ textarea{resize:vertical; min-height:120px}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927h';
+  var VERSION = '0927i';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -381,9 +425,16 @@ textarea{resize:vertical; min-height:120px}
     return out.sort(function(a,b){ return (a.days==null?999:a.days)-(b.days==null?999:b.days); });
   }
   function dd(n){ return n===0 ? '就是今天' : n==null ? '还没记' : '还有 '+n+' 天'; }
-  function watchFace(c){   // 表盘：指针按剩下的天数转（一年一圈）
+  function doily(r){   // 蕾丝花边圈：一圈小扇贝 + 一圈珍珠点
+    var s='';
+    for(var i=0;i<36;i++){ var a=i*Math.PI/18; s+='<circle cx="'+(r*Math.cos(a)).toFixed(1)+'" cy="'+(r*Math.sin(a)).toFixed(1)+'" r="5.2" fill="#FFF3F7" stroke="#EDC7D6" stroke-width="1"/>'; }
+    s+='<circle r="'+(r-2)+'" fill="#FFF3F7"/>';
+    for(var j=0;j<36;j++){ var b=(j+.5)*Math.PI/18; s+='<circle cx="'+((r-6)*Math.cos(b)).toFixed(1)+'" cy="'+((r-6)*Math.sin(b)).toFixed(1)+'" r="1.4" fill="'+(j%3?'#F8C8D8':'#CFE0F3')+'"/>'; }
+    return s;
+  }
+  function watchFace(c, lace){   // 表盘：指针按剩下的天数转（一年一圈）
     var ang = c && c.days!=null ? (1 - Math.min(c.days,365)/365)*360 : 0;
-    var s='<g transform="translate(75 62)"><circle r="42" fill="#FFFDF6" stroke="#E8C77C" stroke-width="5"/><circle r="36" fill="none" stroke="#F3E6C4" stroke-width="1.5"/>';
+    var s='<g transform="translate(75 62)'+(lace?' scale(.82)':'')+'">'+(lace?doily(56):'')+'<circle r="42" fill="#FFFDF6" stroke="#E8C77C" stroke-width="5"/><circle r="36" fill="none" stroke="#F3E6C4" stroke-width="1.5"/>';
     for(var i=0;i<12;i++){ var a=i*Math.PI/6; s+='<circle cx="'+(30*Math.sin(a)).toFixed(1)+'" cy="'+(-30*Math.cos(a)).toFixed(1)+'" r="'+(i%3?1.6:3)+'" fill="'+(i%3?'#D0AEC0':'#EE9DB9')+'"/>'; }
     s+='<g transform="rotate('+ang.toFixed(1)+')"><path d="M0 4 V-26" stroke="#686578" stroke-width="3.5" stroke-linecap="round"/></g><path d="M0 0 L13 7" stroke="#8FAAD0" stroke-width="3" stroke-linecap="round"/><circle r="4" fill="#EE9DB9"/>';
     return s+'<path d="M0 -42 v-7" stroke="#E8C77C" stroke-width="5"/><circle cy="-53" r="5.5" fill="none" stroke="#E8C77C" stroke-width="3"/></g>';
@@ -464,7 +515,8 @@ textarea{resize:vertical; min-height:120px}
     closeWin(true);
     win=el('div','win');
     if(from){ var r=from.getBoundingClientRect(); win.style.transformOrigin=(r.left+r.width/2)+'px '+(r.top+r.height/2)+'px'; }
-    var bar=el('div','bar'); var bk=el('button','back','‹ 主屏'); bk.onclick=closeApp; bar.appendChild(bk); bar.appendChild(el('h1',null,a[1]));
+    var bar=el('div','bar'); var bk=el('button','back','‹'); bk.setAttribute('aria-label','回主屏'); bk.onclick=closeApp; bar.appendChild(bk); bar.appendChild(el('h1',null,a[1]));
+    var mi=svgEl(cat(52,70,-8)+dog(98,70,8),'mini-ico'); mi.setAttribute('viewBox','20 26 110 76'); bar.appendChild(mi);
     win.appendChild(bar);
     var body=el('div','body'); a[3](body); win.appendChild(body);
     document.body.appendChild(win);
@@ -508,17 +560,19 @@ textarea{resize:vertical; min-height:120px}
     var seg=el('div','seg');
     [['TOGETHER','想一起做'],['DONE','做到啦']].forEach(function(k){ var b=el('button', S.oursTab===k[0]?'on':'', k[1]); b.onclick=function(){ S.oursTab=k[0]; refreshApp(); }; seg.appendChild(b); });
     p.appendChild(seg);
-    var want=S.oursTab==='DONE', c=el('div','card tilt taped b'), ul=el('ul','todo'); stk(c,'star','right:-6px;bottom:-8px');
+    var want=S.oursTab==='DONE', shelf=el('div','shelf'), G=['ging-p','ging-b','ging-y'], k=0;
     D.ours.forEach(function(o){
       var on = o[0] in S.ourTicks ? S.ourTicks[o[0]] : o[2];
       if(on!==want && !(o[0] in S.ourTicks)) return;
-      var li=el('li', on?'done':''); var bx=el('button','heart'+(on?' on':'')); bx.innerHTML='<svg viewBox="0 0 24 24">'+IC.ours+'</svg>';
-      bx.onclick=function(){ S.ourTicks[o[0]]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o[0]); });
+      var bk2=el('div','book '+G[k++%3]+(on?' done':'')); bk2.appendChild(el('div','lab',o[1].length>22?o[1].slice(0,21)+'…':o[1]));
+      var bx=el('button','heart'+(on?' on':'')); bx.innerHTML='<svg viewBox="0 0 24 24">'+IC.ours+'</svg>';
+      bx.onclick=function(e){ e.stopPropagation(); S.ourTicks[o[0]]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o[0]); });
         if(S.ourTicks[o[0]]!==o[2]) S.acts.push({t:'ours', id:o[0], done:S.ourTicks[o[0]]}); syncSend(); if(!on) cheer('hug','一起做到了'); refreshApp(); };
-      li.appendChild(bx); li.appendChild(el('span','tx',o[1])); ul.appendChild(li);
+      bk2.appendChild(bx); bk2.onclick=function(){ sheet('想一起做的', function(s2){ var q=el('p',null,o[1]); q.style.cssText='font:700 19px/1.5 var(--hand);color:var(--ink);margin:4px 0 0'; s2.appendChild(q); }); };
+      shelf.appendChild(bk2);
     });
-    if(!ul.children.length) c.appendChild(el('p','empty', want?'还没有做到的，慢慢来':'都做到啦'));
-    c.appendChild(ul); p.appendChild(c);
+    if(!shelf.children.length){ var e=el('div','card'); e.appendChild(el('p','empty', want?'还没有做到的，慢慢来':'都做到啦')); p.appendChild(e); }
+    else p.appendChild(shelf);
   }
   /* 纸条 */
   function notes(p){
@@ -526,7 +580,7 @@ textarea{resize:vertical; min-height:120px}
     ribbon(p, '他写给你的');
     D.notes.forEach(function(n, i){
       var sealed=n.sealed && !S.opened[i];
-      var c=el('button','env'+(sealed?' sealed':'')); c.appendChild(el('div','q',n.q)); c.appendChild(el('div','meta', sealed?'点一下拆信':n.meta)); c.appendChild(el('div','b',n.body));
+      var c=el('button','env'+(sealed?' sealed':'')); c.appendChild(el('div','q',n.q)); var mt=el('div','meta', sealed?'点一下拆信':n.meta); mt.appendChild(el('span','pill'+(sealed?' y':''), sealed?'封着的':'他写的')); c.appendChild(mt); c.appendChild(el('div','b',n.body));
       var sp=el('div','stamp'); sp.innerHTML='<svg viewBox="-12 -12 24 24" width="22" height="22">'+(i%2?star(0,0,9,'#F6DFA0'):'<g transform="scale(1.7)">'+HEART+'</g>')+'</svg>'; c.appendChild(sp); c.style.paddingRight='56px';
       c.onclick=function(){ if(sealed){ S.opened[i]=true; cheer('letter','拆开啦'); refreshApp(); } };
       p.appendChild(c);
@@ -549,7 +603,7 @@ textarea{resize:vertical; min-height:120px}
   function watchApp(p){
     var cds=countdowns(), c0=cds[0];
     var top=el('div','card taped'); top.style.textAlign='center'; stk(top,'star','left:-6px;bottom:-6px'); stk(top,'heart','right:-4px;top:-6px');
-    top.appendChild(svgEl(watchFace(c0), null, 'width:170px;height:128px;display:block;margin:0 auto'));
+    top.appendChild(svgEl(watchFace(c0,true), null, 'width:200px;height:150px;display:block;margin:0 auto'));
     var t=el('div','cap', c0.days===0 ? '今天是「'+c0.name+'」！' : '离「'+c0.name+'」还有 '+c0.days+' 天'); t.style.cssText+=';font-size:20px;color:var(--ink);margin-top:4px'; top.appendChild(t);
     p.appendChild(top);
     cds.forEach(function(c){
