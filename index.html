@@ -292,6 +292,16 @@ body{background-color:#FFFBF9}
 .ging-b{background:repeating-linear-gradient(0deg,#CFE0F388 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#CFE0F388 0 7px,transparent 7px 14px),#F7FAFE}
 .ging-y{background:repeating-linear-gradient(0deg,#F6DFA066 0 7px,transparent 7px 14px),repeating-linear-gradient(90deg,#F6DFA066 0 7px,transparent 7px 14px),#FFFCF2}
 .shelf{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.wall{display:grid; grid-template-columns:1fr 1fr; gap:16px 14px; padding:6px 2px 10px}
+.sn{position:relative; min-height:118px; padding:18px 12px 34px; border-radius:3px 3px 16px 3px; box-shadow:0 6px 12px #A5BED833, inset 0 -10px 12px -10px #0000000d; rotate:-1.6deg; text-align:left; cursor:pointer}
+.sn.tl{rotate:1.8deg} .sn.tr{rotate:-.5deg}   /* 用 rotate 不用 transform，进场动画会把 transform 冲掉 */
+.sn::before{content:""; position:absolute; top:-8px; left:50%; width:44px; height:15px; margin-left:-22px; transform:rotate(-3deg); background:repeating-linear-gradient(45deg,#FFFFFFB0 0 4px,#FFFFFF60 4px 8px); box-shadow:0 1px 2px #0000000d}
+.sn-y{background:#FFF4C9} .sn-p{background:#FCE3EC} .sn-b{background:#E3EEFA} .sn-g{background:#E7F3E8}
+.sn .lab{font:700 15px/1.45 var(--hand); color:#5F5C74; display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden}
+.sn .heart{position:absolute; right:8px; bottom:6px}
+.sn .did{position:absolute; left:10px; bottom:9px; font:700 12px/1 var(--hand); color:var(--pop2); border:1.5px solid var(--pop2); border-radius:6px; padding:3px 6px; transform:rotate(-8deg)}
+.sn.done .lab{color:#8E8BA0}
+.wall>*{animation:rise-in .4s cubic-bezier(.2,.9,.25,1) both} .wall>*:nth-child(2){animation-delay:.06s} .wall>*:nth-child(3){animation-delay:.12s} .wall>*:nth-child(4){animation-delay:.18s}
 .book{position:relative; aspect-ratio:3/4.2; border-radius:10px; border:1.5px solid #F3DFE8; padding:10px 7px 8px; display:flex; flex-direction:column; justify-content:space-between; text-align:center; box-shadow:0 3px 8px #EDD9E355; cursor:pointer}
 .book .lab{background:#FFFDFB; border:1.3px dashed #E8B9CC; border-radius:6px; padding:6px 4px; font:700 12.5px/1.35 var(--sans); color:#5F5C74}
 .book .heart{align-self:center}
@@ -333,7 +343,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928f';
+  var VERSION = '0928g';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -616,11 +626,11 @@ body{background-color:#FFFBF9}
     var seg=el('div','seg');
     [['TOGETHER','想一起做'],['DONE','做到啦']].forEach(function(k){ var b=el('button', S.oursTab===k[0]?'on':'', k[1]); b.onclick=function(){ S.oursTab=k[0]; refreshApp(); }; seg.appendChild(b); });
     p.appendChild(seg);
-    var want=S.oursTab==='DONE', shelf=el('div','shelf'), G=['ging-p','ging-b','ging-y'], k=0;
+    var want=S.oursTab==='DONE', shelf=el('div','wall'), G=['sn-y','sn-p','sn-b','sn-g'], k=0;   /* 09-28 她说不用做成书，改便利贴墙；书留给以后“讲书/写剧本” */
     D.ours.forEach(function(o){
       var on = o[0] in S.ourTicks ? S.ourTicks[o[0]] : o[2];
       if(on!==want && !(o[0] in S.ourTicks)) return;
-      var bk2=el('div','book '+G[k++%3]+(on?' done':'')); bk2.appendChild(el('div','lab',o[1].length>22?o[1].slice(0,21)+'…':o[1]));
+      var bk2=el('div','sn '+G[k%4]+(k%3===1?' tl':k%3===2?' tr':'')+(on?' done':'')); k++; bk2.appendChild(el('div','lab',o[1])); if(on) bk2.appendChild(el('span','did','做到啦'));
       var bx=el('button','heart'+(on?' on':'')); bx.innerHTML='<svg viewBox="0 0 24 24">'+IC.ours+'</svg>';
       bx.onclick=function(e){ e.stopPropagation(); S.ourTicks[o[0]]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o[0]); });
         if(S.ourTicks[o[0]]!==o[2]) S.acts.push({t:'ours', id:o[0], done:S.ourTicks[o[0]]}); syncSend(); if(!on) cheer('hug','一起做到了'); refreshApp(); };
