@@ -414,7 +414,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928t';
+  var VERSION = '0928u';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -663,9 +663,9 @@ body{background-color:#FFFBF9}
   function dock(){
     var dk=document.getElementById('dock'); dk.innerHTML='';
     [['KISS','亲亲','kiss','mua'],['HUG','抱抱','hug','抱紧了'],['MISS YOU','想你','look',null]].forEach(function(x){
-      var n=S.tapped[x[0]]||0;
+      var n=S.acts.filter(function(a){ return a.t==='touch' && a.k===x[0]; }).length;   // 09-28 按还没交的算，交了或撤了就跟着变（原来单独记，跟设置对不上）
       var b=el('button','dk'+(n?' on':'')); b.appendChild(el('b',null,x[1])); b.appendChild(el('i',null, n ? '×'+n : x[0].toLowerCase()));
-      b.onclick=function(){ S.tapped[x[0]]=(S.tapped[x[0]]||0)+1; add({t:'touch', k:x[0]}); cheer(x[2], x[3] || '想你 ×'+S.tapped[x[0]]); dock(); };
+      b.onclick=function(){ add({t:'touch', k:x[0]}); cheer(x[2], x[3] || '想你 ×'+(n+1)); dock(); };
       dk.appendChild(b);
     });
   }
@@ -1006,7 +1006,7 @@ body{background-color:#FFFBF9}
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
       lst.appendChild(el('div','cap','要交的 · 点 ✕ 撤一个')); var cw=el('div','undo');
       Object.keys(cnt).forEach(function(k){ var b=el('button','uchip', k+(cnt[k]>1?' ×'+cnt[k]:'')+'  ✕');
-        b.onclick=function(){ for(var i=S.acts.length-1;i>=0;i--) if(nm(S.acts[i])===k){ S.acts.splice(i,1); break; } syncSend(); refreshApp(); }; cw.appendChild(b); });
+        b.onclick=function(){ for(var i=S.acts.length-1;i>=0;i--) if(nm(S.acts[i])===k){ S.acts.splice(i,1); break; } syncSend(); dock(); refreshApp(); }; cw.appendChild(b); });
       lst.appendChild(cw); p.appendChild(lst); }
     var c=el('div','card blue'); c.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，在这里按上面那条一次交给他，房间会关上，他处理完递你一个新的。'));
     var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' 草稿:'+(draftReady?'读好了':'没读到')+' 版本:'+VERSION+' | '+location.hash.slice(0,80);
