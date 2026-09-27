@@ -179,6 +179,7 @@ textarea{resize:vertical; min-height:120px}
 .bpage{background:#FFFDF6; border-radius:14px; padding:14px 16px; box-shadow:inset 0 0 0 1.5px #F3E7D0; max-height:58dvh; overflow:auto}
 .bpage p{margin:0 0 .8em; font-size:16px; line-height:1.85; color:#5F5C74; text-indent:2em}
 .btn[disabled]{opacity:.4}
+.win.app-music{overflow:hidden; overscroll-behavior:none}   /* 09-28 她说唱片机锁住不滑 */
 .win.app-music{background:radial-gradient(circle, #EDD9E3 1.1px, transparent 1.4px) 0 0/15px 15px, linear-gradient(#FFF5F8,#FFFBF9 60%) !important}
 .lis{display:flex; flex-direction:column; align-items:center; padding:0 6px 20px}
 .lis-top{display:flex; align-items:flex-start; justify-content:center; gap:10px; margin-top:4px; margin-bottom:6px}
@@ -189,7 +190,7 @@ textarea{resize:vertical; min-height:120px}
 .bub::before{content:""; position:absolute; top:-5px; left:50%; margin-left:-5px; border:5px solid transparent; border-top:0; border-bottom-color:#fff}
 .bub.me{color:var(--pop2)}
 .lstat{margin-top:10px; font-size:13px; color:var(--soft); letter-spacing:.02em}
-.disc{position:relative; width:min(72vw,280px); aspect-ratio:1; margin:14px 0 6px}
+.disc{position:relative; width:min(72vw,280px,34dvh); aspect-ratio:1; margin:14px 0 6px}
 .disc .wave{position:absolute; inset:-6%; width:112%; height:112%; animation:spin 30s linear infinite}
 .disc .wave path{fill:#FCE3EC; stroke:#F2A9C2; stroke-width:1.6}
 .disc .rec{position:absolute; inset:9%; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 2px,#3A3540 2px 4px); box-shadow:0 8px 22px #7C5A6A55, inset 0 0 0 3px #4a4450; display:grid; place-items:center; animation:spin 12s linear infinite}
@@ -210,7 +211,7 @@ textarea{resize:vertical; min-height:120px}
 .lc svg{width:22px; height:22px; fill:none; stroke:var(--soft); stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 .lc.big{width:64px; height:64px; border:0; background:var(--pop2); box-shadow:0 6px 16px #EE9DB966}
 .lc.big svg{stroke:#fff; width:26px; height:26px; stroke-width:2.6}
-.lsaid{margin-top:16px; width:100%; display:flex; justify-content:space-between; align-items:center; border:1.5px solid #F3DFE8; background:#fff; border-radius:18px; padding:13px 16px; font:700 15px/1 var(--hand); color:var(--ink); box-shadow:0 3px 10px #EE9DB922}
+.lsaid{margin-top:14px; width:100%; display:flex; justify-content:space-between; align-items:center; border:1.5px solid #F3DFE8; background:#fff; border-radius:18px; padding:13px 16px; font:700 15px/1 var(--hand); color:var(--ink); box-shadow:0 3px 10px #EE9DB922}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -393,7 +394,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928k';
+  var VERSION = '0928l';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
