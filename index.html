@@ -198,7 +198,7 @@ textarea{resize:vertical; min-height:120px}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927e';
+  var VERSION = '0927f';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -255,7 +255,7 @@ textarea{resize:vertical; min-height:120px}
     s+='<g class="wag"><path d="M-13 16 q-12 -2 -9 -12 q5 -3 5 4" stroke="#E3EAF4" stroke-width="7.5" fill="none" stroke-linecap="round"/><path d="M-13 16 q-12 -2 -9 -12 q5 -3 5 4" stroke="#FFFFFF" stroke-width="5.5" fill="none" stroke-linecap="round"/></g>';
     s+='<ellipse cx="0" cy="13" rx="15" ry="15" fill="#FFFFFF" stroke="#E3EAF4" stroke-width="1.2"/>';
     s+='<ellipse cx="0" cy="-10" rx="19.5" ry="16" fill="#FFFFFF" stroke="#E3EAF4" stroke-width="1.2"/>';
-    s+='<path d="M-14 -20 q-14 2 -12 22 q2 6 7 1 q2 -12 5 -18 z" fill="#CFE0F3"/><path d="M14 -20 q14 2 12 22 q-2 6 -7 1 q-2 -12 -5 -18 z" fill="#CFE0F3"/>';
+    s+='<path d="M-14 -20 q-14 2 -12 22 q2 6 7 1 q2 -12 5 -18 z" fill="#B9D0EC" stroke="#9DB6D6" stroke-width="1"/><path d="M14 -20 q14 2 12 22 q-2 6 -7 1 q-2 -12 -5 -18 z" fill="#B9D0EC" stroke="#9DB6D6" stroke-width="1"/>';
     s+='<ellipse cx="-6.5" cy="-11" rx="2.5" ry="2.9" fill="#686578"/><ellipse cx="6.5" cy="-11" rx="2.5" ry="2.9" fill="#686578"/><circle cx="-5.6" cy="-12.2" r=".9" fill="#fff"/><circle cx="7.4" cy="-12.2" r=".9" fill="#fff"/>';
     s+='<ellipse cx="0" cy="-6" rx="2.2" ry="1.5" fill="#8C8AA0"/><path d="M-3 -3.5 q1.5 1.8 3 0 q1.5 1.8 3 0" stroke="#686578" stroke-width="1" fill="none" stroke-linecap="round"/>';
     s+='<ellipse cx="-11" cy="-4.5" rx="3.4" ry="2" fill="#F8C8D8" opacity=".7"/><ellipse cx="11" cy="-4.5" rx="3.4" ry="2" fill="#F8C8D8" opacity=".7"/>';
@@ -288,7 +288,7 @@ textarea{resize:vertical; min-height:120px}
   function toast(t){ cheer('look', t); }
 
   /* ---------- 头像：我画的几对 + 她自己加的（只存在她手机上） ---------- */
-  var AV_BG={tea:['#F0E4ED','#E2ECF8'], star:['#E2ECF8','#EDE6F6'], card:['#FFFFFF','#FFFFFF'], berry:['#FBE3EC','#FBE3EC'], watch:['#FFF3D9','#FFF3D9'], bow:['#F8C8D8','#CFE0F3']};
+  var AV_BG={tea:['#F0E4ED','#E2ECF8'], star:['#E2ECF8','#EDE6F6'], card:['#FFFFFF','#FFFFFF'], berry:['#FBE3EC','#FBE3EC'], watch:['#FFF3D9','#FFF3D9'], bow:['#F8C8D8','#EEF3FA']};
   var AV_NAME={tea:'下午茶', star:'看星星', card:'扑克牌', berry:'草莓', watch:'怀表', bow:'蝴蝶结'};
   function avSvg(who, theme){
     var bg=AV_BG[theme][who==='her'?0:1], col=who==='her'?'#EE9DB9':'#8FAAD0', deco='';
