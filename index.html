@@ -214,6 +214,21 @@ textarea{resize:vertical; min-height:120px}
 .lsaid{margin-top:14px; width:100%; display:flex; justify-content:space-between; align-items:center; border:1.5px solid #F3DFE8; background:#fff; border-radius:18px; padding:13px 16px; font:700 15px/1 var(--hand); color:var(--ink); box-shadow:0 3px 10px #EE9DB922}
 .undo{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
 .uchip{border:0; border-radius:999px; padding:7px 12px; background:#fff; box-shadow:0 0 0 1.5px #F3DFE8; font:700 15px/1 var(--hand); color:var(--ink)}
+.mini4{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px}
+.mini{position:relative; text-align:left; padding:11px 13px; min-height:96px; display:flex; flex-direction:column; justify-content:space-between; border-radius:22px}
+.mini .k{font:700 14px/1 var(--hand); color:var(--soft)}
+.mini .v{font:700 16px/1 var(--hand); color:var(--ink)}
+.mini .v b{font-size:30px; color:var(--deep)} .mini .v small{font-size:15px; margin-left:3px; color:var(--pop2)}
+.mini .s{font-size:12.5px; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mini .mr{display:flex; align-items:center; gap:8px}
+.mini.ms{background:#FFF8E2; border-color:#FFF8E2; rotate:-1deg}
+.mini.ms .k{color:#B39A62}
+.mini.ms .t{font:700 16px/1.35 var(--hand); color:var(--ink); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-top:4px}
+.mini .mdisc{width:42px; height:42px; flex:none; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 1.5px,#3A3540 1.5px 3px); display:grid; place-items:center; animation:spin 8s linear infinite}
+.mini .mdisc img{width:18px; height:18px; border-radius:50%; object-fit:cover; border:1.5px solid #fff}
+.mini .mtt{min-width:0; display:grid; gap:2px}
+.mini .mtt b{font:700 15px/1.2 var(--sans); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.mini .mtt span{font-size:12px; color:var(--soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -396,7 +411,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928r';
+  var VERSION = '0928s';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -598,14 +613,24 @@ body{background-color:#FFFBF9}
     [['6%','8%','✦','#A5BED8'],['50%','4%','♥','#F8C8D8'],['94%','86%','✧','#D0AEC0']].forEach(function(s,i){ var e=el('span','spark',s[2]); e.style.left=s[0]; e.style.top=s[1]; e.style.color=s[3]; e.style.animationDelay=(i*.7)+'s'; h.appendChild(e); });
     p.appendChild(h);
 
-    var cds=countdowns(), c0=cds[0];
-    var w=el('button','widget watchw'); w.appendChild(svgEl(watchFace(c0), null, 'width:62px;height:62px'));
-    var R=el('div'); R.appendChild(el('div','k','白兔子的怀表'));
-    var v=el('div','v'); v.innerHTML = c0.days===0 ? '<b>今天</b> '+c0.name : c0.name+' 还有 <b>'+c0.days+'</b> 天'; R.appendChild(v);
-    if(cds[1]) R.appendChild(el('div','s','下一个：'+cds[1].name+' · '+dd(cds[1].days)));
-    w.appendChild(R); w.onclick=function(){ openApp('watch', w); }; p.appendChild(w);
-
-    if(D.fromHim){ var st=el('div','sticky'); st.appendChild(el('div','k','小克留的')); st.appendChild(el('div','t',D.fromHim)); p.appendChild(st); }
+    /* 09-28 06:10 她说中间两个大框去掉，换四个小组件：怀表倒计时 / 小克留的 / 今天 / 在听 */
+    var cds=countdowns(), c0=cds[0], it0=todayItems(), dn0=it0.filter(isDone).length;
+    var m4=el('div','mini4');
+    function mini(cls, k, fn){ var b=el('button','widget mini '+cls); b.appendChild(el('div','k',k)); if(fn) b.onclick=function(){ fn(b); }; m4.appendChild(b); return b; }
+    var w=mini('mw','白兔子的怀表', function(b){ openApp('watch', b); });
+    var wr=el('div','mr'); wr.appendChild(svgEl(watchFace(c0), null, 'width:44px;height:44px'));
+    var wv=el('div','v'); wv.innerHTML = c0.days===0 ? '<b>今天</b>' : '<b>'+c0.days+'</b><small>天</small>'; wr.appendChild(wv); w.appendChild(wr);
+    w.appendChild(el('div','s', c0.days===0 ? c0.name : '到'+c0.name));
+    var st=mini('ms','小克留的', function(){ if(D.fromHim) sheet('小克留的', function(sh){ var q=el('p',null,D.fromHim); q.style.cssText='font:700 19px/1.6 var(--hand);color:var(--ink);margin:4px 0 0'; sh.appendChild(q); }); });
+    st.appendChild(el('div','t', D.fromHim || '今天还没留'));
+    var td=mini('mt','今天', function(b){ openApp('plan', b); });
+    var tv=el('div','v'); tv.innerHTML = it0.length ? '<b>'+dn0+'</b><small>/'+it0.length+' 件</small>' : '<small>还没排</small>'; td.appendChild(tv);
+    var mm=D.today.money||{}; td.appendChild(el('div','s', '正经饭 '+(mm.proper||0)+' 顿'+(mm.spent?' · 花了 '+mm.spent:'')));
+    var ls=(D.listen||{}).songs||[], lx=ls[ls.length-1];
+    var mu=mini('mu','在听', function(b){ S.si=ls.length-1; openApp('music', b); });
+    var mr=el('div','mr'); var cd=el('div','mdisc'); if(lx&&lx.cover) cd.innerHTML='<img src="'+lx.cover+'?param=80y80" alt="">'; mr.appendChild(cd);
+    var mt=el('div','mtt'); mt.appendChild(el('b',null, lx?lx.name:'还没有歌')); mt.appendChild(el('span',null, lx?lx.artist:'贴一首给他')); mr.appendChild(mt); mu.appendChild(mr);
+    p.appendChild(m4);
 
     var items=todayItems(), done=items.filter(isDone).length;
     var g=el('div','apps');
