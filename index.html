@@ -43,7 +43,7 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .hero .av{width:76px; height:76px; border-radius:50%; overflow:hidden; border:3px solid #fff; box-shadow:0 0 0 2px var(--pop), 0 3px 10px #A5BED855; background:var(--surf); flex:none}
 .hero .av svg,.hero .av img{width:100%; height:100%; display:block; object-fit:cover}
 .hero .who{display:grid; justify-items:center; gap:7px}
-.hero .mood{border:0; background:#fff; border-radius:999px; padding:5px 11px; font:700 18px/1.2 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:124px; overflow:hidden; text-overflow:ellipsis}
+.hero .mood{border:0; background:#fff; border-radius:999px; padding:1px 9px 2px; font:700 17px/1.15 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:124px; overflow:hidden; text-overflow:ellipsis}
 .hero .mood.me{color:var(--pop2); box-shadow:0 0 0 1.5px var(--pop)}
 .moods{display:flex; flex-wrap:wrap; gap:8px}
 .moods .chip{border:0; border-radius:999px; padding:8px 14px; background:#fff; box-shadow:0 0 0 1.5px var(--line); font:700 16px/1.2 var(--hand); color:var(--ink)}
@@ -394,7 +394,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928o';
+  var VERSION = '0928p';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
