@@ -208,12 +208,42 @@ textarea{resize:vertical; min-height:120px}
 .prog b{position:absolute; top:-15px; width:30px; height:30px; margin-left:-15px; transition:left .4s}
 .jarw{display:block; margin:0 auto}
 .stamp{position:absolute; right:12px; bottom:12px; width:34px; height:40px; border:2px dashed var(--pinks); border-radius:4px; background:#FFF6F9; display:grid; place-items:center}
+
+/* 09-27 第四版：她说"审美果然一般"。看了 Dribbble 上的 kawaii / journal app：人家是彩色色块 + 大角色 + 深字，我是白卡片摆白底。改成色块 */
+.win{background-color:#F3F6FC; background-image:linear-gradient(180deg,#F0E4ED 0,#EAF1FA 45%,#F3F6FC 100%)}
+.bar{background:linear-gradient(#F0E4EDF2,#F0E4EDC0)}
+.bar h1{font-size:28px; color:#56536A}
+.banner{grid-template-columns:150px 1fr; padding:10px 16px 12px 6px; background-image:var(--paper), linear-gradient(120deg,#F8C8D8,#CFE0F3)}
+.banner svg{width:150px; height:112px}
+.banner .t{font-size:27px; color:#4F4C63}
+.banner .s{color:#6F6C84; font-size:13px}
+.lace::after{background:radial-gradient(circle at 50% 3.5px, #F0E4ED 1.6px, transparent 2px) 0 0/14px 11px repeat-x, radial-gradient(circle at 50% 0, #FFFFFF 6.5px, transparent 7px) 0 0/14px 11px repeat-x}
+.body .card{border:0; box-shadow:0 6px 16px #A5BED833}
+.body .card:nth-of-type(odd){background-color:#FFFFFF}
+.body .card.blue{background-color:#E2ECF8} .body .card.pink{background-color:#F6E6EF}
+.chips{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+.chip{border-radius:20px; padding:12px 8px; text-align:center; background-image:var(--paper)}
+.chip:nth-child(1){background-color:#F8C8D8} .chip:nth-child(2){background-color:#CFE0F3} .chip:nth-child(3){background-color:#F6DFA0}
+.chip .k{font:700 14px/1 var(--hand); color:#6F6C84}
+.chip .v{font:700 28px/1.1 var(--hand); color:#4F4C63; margin-top:4px}
+.todo li{border-top:1.5px dashed #D5DEEC}
+.cd:nth-child(odd){background-color:#F6E6EF} .cd:nth-child(even){background-color:#E7EFF9}
+.cd .day{background:#fff}
+.env{border:0; box-shadow:0 6px 16px #A5BED833}
+.env:nth-of-type(3n+1){background-color:#FFFFFF} .env:nth-of-type(3n+2){background-color:#FBEFF4} .env:nth-of-type(3n){background-color:#EEF4FB}
+.frame{border:0; box-shadow:0 5px 14px #A5BED833}
+.frame:nth-child(4n+1),.frame:nth-child(4n){background-color:#F6E6EF} .frame:nth-child(4n+2),.frame:nth-child(4n+3){background-color:#E7EFF9}
+.frame.on{outline:2.5px solid var(--pop2)}
+.tile{border:0; box-shadow:0 5px 14px #A5BED833; font-size:22px}
+.tile:nth-child(odd){background-color:#F8C8D8; color:#fff} .tile:nth-child(even){background-color:#CFE0F3; color:#fff}
+.sendin{width:100%; border:0; border-radius:999px; padding:14px 16px; background:linear-gradient(90deg,#8FAAD0,#EE9DB9); color:#fff; font:700 19px/1 var(--hand); box-shadow:0 6px 16px #8FAAD066; display:flex; align-items:center; justify-content:center; gap:8px}
+.sendin svg{width:22px; height:22px; stroke:#fff; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.sendin[disabled]{background:#DCE3EE; box-shadow:none; color:#9A97A8}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 </style>
 </head>
 <body>
 <div class="screen" id="app"></div>
-<div class="send" id="send" hidden><button id="sendBtn"></button></div>
 <nav class="dock" id="dock"></nav>
 <div class="cheer" id="cheer"><svg class="bn" id="cheerSvg" viewBox="0 0 150 112"></svg><div class="t" id="cheerT"></div></div>
 
@@ -221,7 +251,7 @@ textarea{resize:vertical; min-height:120px}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927g';
+  var VERSION = '0927h';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -408,7 +438,8 @@ textarea{resize:vertical; min-height:120px}
     APPS.forEach(function(a){
       var b=el('button','app'); var ic=el('div','ico '+a[2]); ic.innerHTML=icon(a[0]);
       var badge = a[0]==='plan' ? items.length-done : a[0]==='notes' ? D.notes.filter(function(n,i){ return n.sealed && !S.opened[i]; }).length : 0;
-      if(badge>0) ic.appendChild(el('span','dot',String(badge)));
+      if(a[0]==='set'){ var sd=el('span','dot',String(S.acts.length)); sd.id='sendDot'; sd.hidden=!S.acts.length; sd.style.background='#8FAAD0'; ic.appendChild(sd); }
+      else if(badge>0) ic.appendChild(el('span','dot',String(badge)));
       b.appendChild(ic); b.appendChild(el('span',null,a[1]));
       b.onclick=function(){ openApp(a[0], ic); };
       g.appendChild(b);
@@ -448,6 +479,7 @@ textarea{resize:vertical; min-height:120px}
   function plan(p){
     var items=todayItems(), dn=items.filter(isDone).length;
     banner(p, dn && dn===items.length ? 'hug' : 'flag', '今天的冒险手账', items.length ? '做完 '+dn+' 件，还剩 '+(items.length-dn)+' 件' : '还没排，写一件也好');
+    var ch=el('div','chips'); [['做完',dn],['还剩',items.length-dn],['今天花','¥'+((D.today.money||{}).spent||0)]].forEach(function(x){ var k=el('div','chip'); k.appendChild(el('div','k',x[0])); k.appendChild(el('div','v',String(x[1]))); ch.appendChild(k); }); p.appendChild(ch);
     if(items.length){ var pg=el('div','prog'), pct=Math.round(dn/items.length*100); var fi=el('i'); fi.style.width=pct+'%'; pg.appendChild(fi); var pw=el('b'); pw.innerHTML=paw(); pw.style.left=Math.max(4,pct)+'%'; pg.appendChild(pw); p.appendChild(pg); }
     var c=el('div','card tilt2 taped');
     c.appendChild(el('div','cap', '今天 · '+(items.length? items.filter(isDone).length+' / '+items.length+' 件' : '还没排')));
@@ -637,8 +669,12 @@ textarea{resize:vertical; min-height:120px}
   }
   /* 设置 */
   function settings(p){
-    banner(p, 'tea', '这间房', 'Eliza ♥ Claude 的小家');
-    var c=el('div','card'); c.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，按底下那条一次交给他，房间会关上，他处理完递你一个新的。'));
+    banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
+    var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了'};
+      var cnt={}; S.acts.forEach(function(a){ var k=a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; cnt[k]=(cnt[k]||0)+1; });
+      lst.appendChild(el('div','cap','要交的')); var tx=el('p','empty', Object.keys(cnt).map(function(k){ return k+(cnt[k]>1?' ×'+cnt[k]:''); }).join('　')); tx.style.marginTop='8px'; lst.appendChild(tx); p.appendChild(lst); }
+    var c=el('div','card blue'); c.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，在这里按上面那条一次交给他，房间会关上，他处理完递你一个新的。'));
     var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' 草稿:'+(draftReady?'读好了':'没读到')+' 版本:'+VERSION+' | '+location.hash.slice(0,80);
     c.appendChild(dbg); p.appendChild(c);
   }
@@ -652,9 +688,9 @@ textarea{resize:vertical; min-height:120px}
   }
   function close(){ if(cur){ cur.remove(); cur=null; } }
   function render(){ app.innerHTML=''; app.appendChild(home()); dock(); syncSend(); }
-  function syncSend(){
-    var n=S.acts.length, box=document.getElementById('send');
-    box.hidden=!n; document.getElementById('sendBtn').innerHTML=icon('send')+'交给小克 · '+n;
+  function syncSend(){   // 09-27 她说"交给小克"浮在主屏会挡，收进设置里；主屏只在设置图标上冒个数
+    var n=S.acts.length, dot=document.getElementById('sendDot');
+    if(dot){ dot.textContent=n; dot.hidden=!n; }
     saveDraft();
   }
   /* 草稿：没交的改动随手存进小云盘，关了房间再进来还在（09-26 她问"再进去东西就没有了吗"）。
@@ -664,7 +700,7 @@ textarea{resize:vertical; min-height:120px}
   function saveDraft(){ if(!draftReady) return; clearTimeout(draftTimer); draftTimer=setTimeout(function(){
     var str=JSON.stringify({acts:S.acts, ticks:S.ticks, ourTicks:S.ourTicks, newItems:S.newItems, tapped:S.tapped});
     if(str!==lastDraft){ lastDraft=str; csSave('draft', str); } }, 400); }
-  document.getElementById('sendBtn').onclick=function(){
+  function doSend(){
     var payload=JSON.stringify({v:1, at:nowLocal(), acts:S.acts});
     if(inTg && canSend){   // 发完 Telegram 自己会关房间
       draftReady=false; clearTimeout(draftTimer); cheer('letter','飞过去了…');
@@ -673,7 +709,7 @@ textarea{resize:vertical; min-height:120px}
       return; }
     if(inTg){ cheer('letter','攒着了'); sheet('先攒着', function(s){ s.appendChild(el('p','empty','从这个入口传不回去。下次点聊天底下的「🏠 房间」进来，这些都还在，再按一次就交给他。')); }); return; }
     sheet('预览', function(s){ s.appendChild(el('p','empty','在 Telegram 里，这会一下子飞到小克那边，然后房间关上。要飞过去的是：')); s.appendChild(el('div','preview',payload)); });
-  };
+  }
   if(inTg){ W.ready(); W.expand(); try{ W.setHeaderColor('#F6F9FE'); W.setBackgroundColor('#F6F9FE'); }catch(e){} }
   document.documentElement.classList.add('fixed');
   render();
