@@ -191,12 +191,13 @@ textarea{resize:vertical; min-height:120px}
 .bub.me{color:var(--pop2)}
 .lstat{margin-top:10px; font-size:13px; color:var(--soft); letter-spacing:.02em}
 .disc{position:relative; width:min(72vw,280px,34dvh); aspect-ratio:1; margin:14px 0 6px}
-.disc .wave{position:absolute; inset:-6%; width:112%; height:112%; animation:spin 30s linear infinite}
-.disc .wave path{fill:#FCE3EC; stroke:#F2A9C2; stroke-width:1.6}
+.disc .wave{position:absolute; inset:-8%; width:116%; height:116%; overflow:visible}
+.disc .wave .w1{fill:#FCE3ECDD; stroke:#F2A9C2; stroke-width:1.6}
+.disc .wave .w2{fill:#E3EEFA99; stroke:#B9CFE8; stroke-width:1.2}
 .disc .rec{position:absolute; inset:9%; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 2px,#3A3540 2px 4px); box-shadow:0 8px 22px #7C5A6A55, inset 0 0 0 3px #4a4450; display:grid; place-items:center; animation:spin 12s linear infinite}
 .disc .lbl2{width:40%; aspect-ratio:1; border-radius:50%; overflow:hidden; background:var(--pop); border:3px solid #fff}
 .disc .lbl2 img{width:100%; height:100%; object-fit:cover; display:block}
-.disc.paused .rec,.disc.paused .wave{animation-play-state:paused}
+.disc.paused .rec{animation-play-state:paused}
 .disc .tag{position:absolute; background:#fff; border:1.5px solid #F2A9C2; color:var(--pop2); border-radius:999px; padding:3px 10px; font:700 12px/1.2 var(--sans); letter-spacing:.08em}
 .disc .t1{top:4%; left:-4%} .disc .t2{bottom:6%; right:-4%}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -394,7 +395,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928l';
+  var VERSION = '0928m';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -850,7 +851,7 @@ body{background-color:#FFFBF9}
     top.appendChild(who(ap[0], S.lsay || L.her, true)); top.appendChild(el('span','lh','♥')); top.appendChild(who(ap[1], L.me, false));
     wrap.appendChild(top);
     var disc=el('div','disc'+(S.playing?'':' paused'));
-    disc.innerHTML='<svg class="wave" viewBox="0 0 200 200" aria-hidden="true"><path d="'+wavy()+'"/></svg><div class="rec"><div class="lbl2">'+(x&&x.cover?'<img src="'+x.cover+'?param=200y200" alt="">':'')+'</div></div><span class="tag t1">♪ playing</span><span class="tag t2">with u ♡</span>';
+    disc.innerHTML='<svg class="wave" viewBox="0 0 200 200" aria-hidden="true"><path class="w2" d="'+wavy(0,0)+'"/><path class="w1" d="'+wavy(0,0)+'"/></svg><div class="rec"><div class="lbl2">'+(x&&x.cover?'<img src="'+x.cover+'?param=200y200" alt="">':'')+'</div></div><span class="tag t1">♪ playing</span><span class="tag t2">with u ♡</span>';
     wrap.appendChild(disc);
     var info=el('button','linfo'); info.appendChild(el('b',null, x?x.name:'还没有歌')); info.appendChild(el('span',null, x?x.artist:'点这里贴一首给他')); info.onclick=paste; wrap.appendChild(info);
     var pr=el('div','lprog'), t0=el('span',null,'0:00'), tr=el('div','ltrack'), fill=el('i'), t1=el('span',null, x?fmt(x.dur):'0:00');
@@ -870,12 +871,26 @@ body{background-color:#FFFBF9}
         var a=el('a','btn line','去网易云听'); a.href='https://music.163.com/song?id='+x.id; a.target='_blank'; a.style.display='inline-block'; a.style.textDecoration='none'; sh.appendChild(a); }); };
     wrap.appendChild(said);
     p.appendChild(wrap);
-    clearInterval(S.ltimer);
+    clearInterval(S.ltimer); setTimeout(waveLoop,0);
     if(x){ var dur=x.dur||200; S.pos=S.pos||0;
       var tick=function(){ fill.style.width=(S.pos/dur*100)+'%'; t0.textContent=fmt(S.pos); };
       tick(); if(S.playing) S.ltimer=setInterval(function(){ if(S.app!=='music'){ clearInterval(S.ltimer); return; } S.pos+=1; if(S.pos>=dur) S.pos=0; tick(); },1000); }
   }
-  function wavy(){ var d='', n=14; for(var i=0;i<=n*8;i++){ var a=i/(n*8)*Math.PI*2, r=90+4*Math.sin(a*n); d+=(i?'L':'M')+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1); } return d+'Z'; }
+  /* 09-28 她说想要“波浪的唱片旋律”：花边跟着假装的节拍一起一伏，像声波，暂停就平下来 */
+  function wavy(t, amp, ph){ var d='', N=120; ph=ph||0;
+    for(var i=0;i<=N;i++){ var a=i/N*Math.PI*2;
+      var k=Math.sin(a*14+t*2+ph)*.55 + Math.sin(a*5-t*3.1+ph)*.3 + Math.sin(a*23+t*5.3)*.15;
+      var beat=.6+.4*Math.abs(Math.sin(t*2.2))*(.7+.3*Math.sin(a*3+t));
+      var r=88+2.5+amp*beat*k*6;
+      d+=(i?'L':'M')+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1); }
+    return d+'Z'; }
+  function waveLoop(){
+    cancelAnimationFrame(S.wraf); var amp=S.wamp||0, last=0;
+    (function f(ts){ var w1=document.querySelector('.disc .w1'), w2=document.querySelector('.disc .w2'); if(!w1 || S.app!=='music') return;
+      amp += ((S.playing?1:.15)-amp)*.06; S.wamp=amp;
+      if(ts-last>33){ last=ts; var t=ts/1000; w1.setAttribute('d', wavy(t, amp, 0)); w2.setAttribute('d', wavy(t*.8+1.3, amp*1.35, 2)); }
+      S.wraf=requestAnimationFrame(f); })(0);
+  }
   function paste(){
     sheet('放一首', function(sh){
       sh.appendChild(el('p','empty','贴网易云的歌曲链接，交给他。他去看歌词和评论，挑一句放上来。'));
