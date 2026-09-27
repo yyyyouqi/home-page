@@ -43,7 +43,7 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .hero .av{width:76px; height:76px; border-radius:50%; overflow:hidden; border:3px solid #fff; box-shadow:0 0 0 2px var(--pop), 0 3px 10px #A5BED855; background:var(--surf); flex:none}
 .hero .av svg,.hero .av img{width:100%; height:100%; display:block; object-fit:cover}
 .hero .who{display:grid; justify-items:center; gap:11px}
-.hero .mood{border:0; background:#fff; border-radius:999px; padding:4px 9px 1px; display:inline-flex; align-items:center; gap:3px; font:700 17px/1 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:124px; overflow:hidden; text-overflow:ellipsis}
+.hero .mood{border:0; background:#fff; border-radius:999px; padding:6px 11px 3px; display:inline-flex; align-items:center; gap:3px; font:700 17px/1 var(--hand); color:var(--deep); box-shadow:0 0 0 1.5px var(--line); white-space:nowrap; max-width:124px; overflow:hidden; text-overflow:ellipsis}
 .hero .mood.me{color:var(--pop2); box-shadow:0 0 0 1.5px var(--pop)}
 .moods{display:flex; flex-wrap:wrap; gap:8px}
 .moods .chip{border:0; border-radius:999px; padding:8px 14px; background:#fff; box-shadow:0 0 0 1.5px var(--line); font:700 16px/1.2 var(--hand); color:var(--ink)}
@@ -212,6 +212,8 @@ textarea{resize:vertical; min-height:120px}
 .lc.big{width:64px; height:64px; border:0; background:var(--pop2); box-shadow:0 6px 16px #EE9DB966}
 .lc.big svg{stroke:#fff; width:26px; height:26px; stroke-width:2.6}
 .lsaid{margin-top:14px; width:100%; display:flex; justify-content:space-between; align-items:center; border:1.5px solid #F3DFE8; background:#fff; border-radius:18px; padding:13px 16px; font:700 15px/1 var(--hand); color:var(--ink); box-shadow:0 3px 10px #EE9DB922}
+.undo{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.uchip{border:0; border-radius:999px; padding:7px 12px; background:#fff; box-shadow:0 0 0 1.5px #F3DFE8; font:700 15px/1 var(--hand); color:var(--ink)}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -394,7 +396,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928q';
+  var VERSION = '0928r';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -430,7 +432,8 @@ body{background-color:#FFFBF9}
   function svgEl(inner, cls, css){ var s=document.createElementNS('http://www.w3.org/2000/svg','svg'); s.setAttribute('viewBox','0 0 150 112'); if(cls) s.setAttribute('class',cls); if(css) s.style.cssText=css; s.innerHTML=inner; return s; }
   function nowLocal(){ var d=new Date(); return new Date(d - d.getTimezoneOffset()*6e4).toISOString().slice(0,16); }   // 她手机上的本地钟点；D.now 是我塞数据那一刻，不能拿来当现在
   function daysSince(a,b){ return Math.floor((new Date(b.slice(0,10)) - new Date(a))/864e5) + 1; }
-  function add(a){ S.acts.push(a); syncSend(); }
+  function add(a){ if(a.t==='mood') S.acts=S.acts.filter(function(x){ return x.t!=='mood'; });   // 状态只交最后一个
+    S.acts.push(a); syncSend(); }
   function todayItems(){ return (D.today.items||[]).concat(S.newItems); }
   function isDone(x){ return x.id in S.ticks ? S.ticks[x.id] : !!x.done; }
 
@@ -958,9 +961,14 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了'};
-      var cnt={}; S.acts.forEach(function(a){ var k=a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; cnt[k]=(cnt[k]||0)+1; });
-      lst.appendChild(el('div','cap','要交的')); var tx=el('p','empty', Object.keys(cnt).map(function(k){ return k+(cnt[k]>1?' ×'+cnt[k]:''); }).join('　')); tx.style.marginTop='8px'; lst.appendChild(tx); p.appendChild(lst); }
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架'};
+      var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
+      var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
+      /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
+      lst.appendChild(el('div','cap','要交的 · 点 ✕ 撤一个')); var cw=el('div','undo');
+      Object.keys(cnt).forEach(function(k){ var b=el('button','uchip', k+(cnt[k]>1?' ×'+cnt[k]:'')+'  ✕');
+        b.onclick=function(){ for(var i=S.acts.length-1;i>=0;i--) if(nm(S.acts[i])===k){ S.acts.splice(i,1); break; } syncSend(); refreshApp(); }; cw.appendChild(b); });
+      lst.appendChild(cw); p.appendChild(lst); }
     var c=el('div','card blue'); c.appendChild(el('p','empty','房间是一张空壳网页，数据藏在链接 # 后面，只在你手机上。你点的东西攒着，在这里按上面那条一次交给他，房间会关上，他处理完递你一个新的。'));
     var dbg=el('div','preview'); dbg.style.marginTop='12px'; dbg.textContent='数据:'+(H?'有':'无')+' 回传:'+(canSend?'能':'不能')+' 云盘:'+(CS?'有':'无')+' 草稿:'+(draftReady?'读好了':'没读到')+' 版本:'+VERSION+' | '+location.hash.slice(0,80);
     c.appendChild(dbg); p.appendChild(c);
