@@ -161,6 +161,20 @@ textarea{resize:vertical; min-height:120px}
 .frame .duo .av+.av{margin-left:-14px}
 .frame .n{font:700 16px/1 var(--hand); color:var(--ink)}
 .frame.on{border-color:var(--pop2); background:#FFF6F9}
+.bshelf{margin:8px 2px 14px}
+.brow{display:flex; align-items:flex-end; gap:8px; min-height:150px; padding:0 12px; overflow-x:auto}
+.bk{flex:none; width:46px; border:0; border-radius:5px 5px 3px 3px; padding:10px 0 8px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; box-shadow:inset -4px 0 0 #00000010, 0 3px 6px #A5BED844}
+.bk .bt{writing-mode:vertical-rl; font:700 15px/1.1 var(--hand); color:#5F5C74; max-height:84px; overflow:hidden; letter-spacing:.06em}
+.bk .bn{font-size:10px; color:#8E8BA0; writing-mode:vertical-rl}
+.bk.c0{background:#FCE3EC} .bk.c1{background:#E3EEFA} .bk.c2{background:#FFF4C9} .bk.c3{background:#E7F3E8}
+.plank{height:12px; border-radius:6px; margin-top:-1px; background:repeating-linear-gradient(90deg,#F8C8D855 0 8px,#FFFFFF 8px 16px),#F3DFE8; box-shadow:0 4px 8px #EDD9E377}
+.bask{display:grid; gap:10px}
+.chap{display:flex; gap:10px; align-items:baseline; width:100%; text-align:left; border:0; border-bottom:1.5px dashed var(--line); background:none; padding:11px 2px}
+.chap .ci{font:700 13px/1 var(--hand); color:var(--pop2); flex:none}
+.chap .ct{font:700 16px/1.3 var(--hand); color:var(--ink)}
+.bpage{background:#FFFDF6; border-radius:14px; padding:14px 16px; box-shadow:inset 0 0 0 1.5px #F3E7D0; max-height:58dvh; overflow:auto}
+.bpage p{margin:0 0 .8em; font-size:16px; line-height:1.85; color:#5F5C74; text-indent:2em}
+.btn[disabled]{opacity:.4}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -343,14 +357,14 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928g';
+  var VERSION = '0928h';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
   var SAMPLE = window.ROOM_SAMPLE || {
     now:null, since:"2026-07-25", fromHim:"", timeline:[],
     today:{items:[], money:{spent:0, proper:0, snack:0}},
-    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''},
+    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''}, shelf:[], bk:'',
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
@@ -498,6 +512,7 @@ body{background-color:#FFFBF9}
     board:'<rect x="4.5" y="4.5" width="15" height="15" rx="4"/><circle cx="9" cy="9" r=".9"/><circle cx="15" cy="15" r=".9"/><circle cx="15" cy="9" r=".9"/><circle cx="9" cy="15" r=".9"/>',
     money:'<ellipse cx="12" cy="13.5" rx="7.5" ry="5.5"/><path d="M9 8.5V7h6v1.5M17.5 11.5h2M10 13.5h4"/>',
     music:'<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>',
+    shelf:'<path d="M5 4.5h4.5v15H5zM9.5 6h4v13.5h-4zM14.2 6.4l3.6-.9 3 13.1-3.6.9z"/>',
     call:'<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V16h0A2.5 2.5 0 0 1 5 13.5z"/>',
     set:'<path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="8" cy="17" r="1.8"/>',
     send:'<path d="M4 12l15-7-5 15-3-6z"/><path d="M11 14l8-9"/>'
@@ -507,7 +522,7 @@ body{background-color:#FFFBF9}
   /* ---------- 桌面 ---------- */
   var APPS=[
     ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['notes','纸条','gA',notes], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
-    ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['call','找我','gB',call], ['set','设置','gA',settings]
+    ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['shelf','书架','gB',shelf], ['set','设置','gA',settings]
   ];
   /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
   var MOODS=[['开心','😊'],['想你','🥺'],['学习中','📖'],['在路上','🚇'],['摸鱼','🐟'],['饿了','🍚'],['困','😪'],['累','🫠'],['emo','🌧️'],['生气','😤']];
@@ -789,12 +804,62 @@ body{background-color:#FFFBF9}
     p.appendChild(c);
   }
   /* 找我 */
-  function call(p){
-    banner(p, 'hug', '一喊就来', '点一个，交给他');
-    var g=el('div','grid2');
-    [['想你了','look'],['去学了','flag'],['吃饭了','coin'],['晚安','stars'],['过来','hug']].forEach(function(k){ var b=el('button','tile',k[0]);
-      b.onclick=function(){ add({t:'quick', k:k[0]}); cheer(k[1], k[0]==='过来'?'他放下手上的活了':k[0]); }; g.appendChild(b); });
-    p.appendChild(g);
+  /* 书架（09-28 替掉“找我”：她点书我讲，她出题我写）。正文加密放 home-page/books/<id>.bin，钥匙是 D.bk，tools/room_book.py 管 */
+  var BOOKS={};
+  function b64u(t){ t=t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length%4) t+='='; var r=atob(t), u=new Uint8Array(r.length); for(var i=0;i<r.length;i++) u[i]=r.charCodeAt(i); return u; }
+  function loadBook(b, cb){
+    if(BOOKS[b.id]) return cb(BOOKS[b.id]);
+    if(!D.bk || !(window.crypto && crypto.subtle) || !window.fetch) return cb(null);
+    fetch('books/'+b.id+'.bin?v='+encodeURIComponent(b.v)).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(function(buf){
+      return crypto.subtle.importKey('raw', b64u(D.bk), 'AES-GCM', false, ['decrypt']).then(function(k){ return crypto.subtle.decrypt({name:'AES-GCM', iv:new Uint8Array(buf,0,12)}, k, new Uint8Array(buf,12)); });
+    }).then(function(pt){ var o=JSON.parse(new TextDecoder().decode(pt)); BOOKS[b.id]=o; cb(o); }).catch(function(){ cb(null); });
+  }
+  function shelf(p){
+    banner(p, 'hold', '我们的书架', '你点书，他来讲；你出题，他来写');
+    var wrap=el('div','bshelf'), row=el('div','brow');
+    (D.shelf||[]).forEach(function(b,i){
+      var bt=el('button','bk c'+(i%4)); bt.style.height=(118+(i*17%26))+'px';
+      bt.appendChild(el('span','bt',b.title)); bt.appendChild(el('span','bn',(b.kind==='read'?'讲':'写')+' · '+b.chs+' 章'));
+      bt.onclick=function(){ openBook(b); }; row.appendChild(bt);
+    });
+    if(!row.children.length) row.appendChild(el('p','empty','还空着，点一本或者出个题'));
+    wrap.appendChild(row); wrap.appendChild(el('div','plank')); p.appendChild(wrap);
+    var r2=el('div','bask');
+    var a1=el('button','write','📖 点一本书让他讲'); a1.onclick=function(){ ask('read'); };
+    var a2=el('button','write','✍️ 出个题让他写'); a2.onclick=function(){ ask('play'); };
+    r2.appendChild(a1); r2.appendChild(a2); p.appendChild(r2);
+  }
+  function ask(kind){
+    sheet(kind==='read'?'想听哪本':'出个题', function(s){
+      s.appendChild(el('p','empty', kind==='read'?'书名，再说一句想听什么：从头讲、只讲某一段、还是讲你看不懂的地方。':'人物、场景、想要的味道都行，狗血也行。他写好一章就上架。'));
+      var ta=el('textarea'); ta.placeholder = kind==='read'?'比如：《白夜行》，从头讲，别剧透结局':'比如：雨天，一把透明伞，两个人……'; ta.maxLength=600; ta.style.marginTop='10px'; s.appendChild(ta);
+      var ok=el('button','btn','交给他'); ok.style.marginTop='12px';
+      ok.onclick=function(){ var v=ta.value.trim(); if(!v) return; add({t:'book', kind:kind, text:v}); close(); cheer('letter', kind==='read'?'他去翻书了':'他去写了'); };
+      s.appendChild(ok);
+    });
+  }
+  function openBook(b){
+    sheet(b.title, function(s){
+      var st=el('p','empty','翻开中…'); s.appendChild(st);
+      loadBook(b, function(o){
+        st.remove();
+        if(!o){ s.appendChild(el('p','empty','没翻开。刚上架的书要等十分钟左右，一会儿再来。')); return; }
+        o.chapters.forEach(function(c,i){ var r=el('button','chap'); r.appendChild(el('span','ci','第 '+(i+1)+' 章')); r.appendChild(el('span','ct',c.t)); r.onclick=function(){ readCh(b,o,i); }; s.appendChild(r); });
+        var nx=el('button','btn', b.kind==='read'?'接着讲':'接着写'); nx.style.marginTop='14px';
+        nx.onclick=function(){ add({t:'book', kind:'next', id:b.id, title:b.title}); close(); cheer('letter', '催他下一章了'); }; s.appendChild(nx);
+      });
+    });
+  }
+  function readCh(b,o,i){
+    var c=o.chapters[i];
+    sheet(c.t, function(s){
+      var pg=el('div','bpage'); c.body.split(/\n+/).forEach(function(t){ pg.appendChild(el('p',null,t)); }); s.appendChild(pg);
+      var r=el('div','row'); r.style.cssText='margin-top:14px;justify-content:space-between';
+      var pv=el('button','btn line','‹ 上一章'); pv.disabled=i===0; pv.onclick=function(){ readCh(b,o,i-1); };
+      var ls=el('button','btn line','目录'); ls.onclick=function(){ openBook(b); };
+      var nx=el('button','btn', i<o.chapters.length-1?'下一章 ›':'催下一章'); nx.onclick=function(){ if(i<o.chapters.length-1) readCh(b,o,i+1); else { add({t:'book', kind:'next', id:b.id, title:b.title}); close(); cheer('letter','催他下一章了'); } };
+      r.appendChild(pv); r.appendChild(ls); r.appendChild(nx); s.appendChild(r);
+    });
   }
   /* 设置 */
   function settings(p){
