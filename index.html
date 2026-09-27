@@ -2,7 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- 09-28 禁掉缩放：iPhone 点输入框自动放大还不缩回，16px 没压住 -->
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>Our Little World</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +102,7 @@ html.fixed,html.fixed body{overflow:hidden; height:100%; overscroll-behavior:non
 .card{background:#fff; border:1.5px solid var(--line); border-radius:22px; padding:16px; box-shadow:0 4px 14px #A5BED82A}
 .card.tilt{transform:rotate(.6deg)} .card.tilt2{transform:rotate(-.8deg)}
 .cap{font:700 16px/1 var(--hand); color:var(--soft)}
-.empty{color:var(--soft); font-size:14px; margin:0}
+.empty{color:var(--soft); font-size:16px; margin:0}
 .seg{display:flex; gap:6px; flex-wrap:wrap}
 .seg button{border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:5px 14px; font:700 16px/1.2 var(--hand); color:var(--soft)}
 .seg button.on{background:var(--blue); border-color:var(--blue); color:#fff}
@@ -126,7 +127,7 @@ textarea{resize:vertical; min-height:120px}
 .btn.pink{background:var(--pop2)}
 .jar{font-size:14px; color:var(--soft); line-height:1.9}
 .jar b{color:var(--ink); font:700 24px/1 var(--hand)}
-.check{display:flex; gap:8px; align-items:center; font-size:14px; color:var(--soft)}
+.check{display:flex; gap:8px; align-items:center; font-size:16px; color:var(--soft)}
 .check input{accent-color:var(--pop2); width:17px; height:17px}
 
 /* 怀表 / 倒计时 */
@@ -314,7 +315,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928b';
+  var VERSION = '0928c';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -646,7 +647,7 @@ body{background-color:#FFFBF9}
   }
   /* 头像库 */
   function avatars(p){
-    banner(p, 'hold', '我们的样子', '挑一对挂在首页；想存相册就点开长按');
+    banner(p, 'hold', '我们的样子', '挑一对挂在首页');
     var g=el('div','frames');
     Object.keys(AV_BG).map(function(k){ return {id:k, name:AV_NAME[k]}; }).concat(mine().map(function(u){ return {id:u.id, name:u.name||'你加的'}; })).forEach(function(x){
       var f=el('button','frame'+(S.avatar===x.id?' on':'')); var duo=el('div','duo'), pr=avPair(x.id);
@@ -658,7 +659,7 @@ body{background-color:#FFFBF9}
     p.appendChild(g);
     var addb=el('button','write','＋ 加一对自己存的'); addb.onclick=addMine; p.appendChild(addb);
   }
-  function toPng(html, cb){   // 把头像画成 256 的 png，方便长按存
+  function toPng(html, cb){   // 把头像画成 256 的 png 放大看（09-28 她说长按存不了也不需要，提示撤了）
     if(html.indexOf('<img')===0){ cb(html.match(/src="([^"]+)"/)[1]); return; }
     var img=new Image(); img.onload=function(){ var c=document.createElement('canvas'); c.width=c.height=256; c.getContext('2d').drawImage(img,0,0,256,256); try{ cb(c.toDataURL('image/png')); }catch(e){ cb(null); } };
     img.onerror=function(){ cb(null); }; img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(html);
@@ -667,7 +668,7 @@ body{background-color:#FFFBF9}
     sheet(x.name, function(s){
       var box=el('div','big2'); s.appendChild(box); var pr=avPair(x.id), ims=[el('img'), el('img')];
       ims.forEach(function(im,i){ im.alt=''; box.appendChild(im); toPng(pr[i], function(url){ if(url) im.src=url; }); });
-      s.appendChild(el('p','empty','左边是你，右边是我。长按图片可以存到相册。'));
+      s.appendChild(el('p','empty','左边是你，右边是我。'));
       var r=el('div','row'); r.style.marginTop='12px';
       var use=el('button','btn','用这对'); use.onclick=function(){ S.avatar=x.id; try{ localStorage.setItem('room-avatar', x.id); }catch(e){} close(); cheer('hold','换上了'); refreshApp(); };
       r.appendChild(use);
