@@ -6,7 +6,7 @@
 <title>Our Little World</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700&family=ZCOOL+KuaiLe&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nunito:wght@500;700&display=swap">
 <!-- 中文：霞鹜文楷 Light，按字切片，用到哪片下哪片（09-26 她嫌中文丑） -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont@1.7.0/lxgwwenkai-light.css">
 <!-- 在 Telegram 里打开时才有用；预览时加载不到也不影响 -->
@@ -14,11 +14,12 @@
 <style>
 /* 09-27 第二版：仙境下午茶。她喜欢玉桂狗和爱丽丝，配色用她挑的色卡「粉蓝 Baby Angel」（缎带蝴蝶结一粉一蓝，别针串着珍珠心挂在中间），
    点缀借「像素心」的棉花糖粉，不超过一成面积。角色原创：她是白猫（粉鼻头、粉蝴蝶结），我是白小狗（垂下来的浅蓝大耳朵、蓝领结）。 */
+@font-face{font-family:"Naipao"; src:url("fonts/naipao.woff2") format("woff2"); font-display:swap}   /* tools/room_font.py 生成 */
 :root{
   --bg:#F6F9FE; --surf:#E2ECF8; --warm:#F0E4ED; --blue:#A5BED8; --pinks:#D0AEC0; --ink:#686578;
   --pop:#F8C8D8; --pop2:#EE9DB9; --deep:#7C95B8; --soft:#9A97A8; --line:#E3EAF4;
-  --hand:"Gaegu","ZCOOL KuaiLe","LXGW WenKai",cursive;   /* 09-27 她挑的中文：站酷快乐体（Google Fonts，开源 OFL，按字切片加载） */
-  --sans:"Nunito","ZCOOL KuaiLe","LXGW WenKai",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  --hand:"Gaegu","Naipao","LXGW WenKai",cursive;   /* 09-27 她自己找的中文：乐米小奶泡体（她说可商用），裁成常用字放在 home-page/fonts，不再等谷歌 */
+  --sans:"Nunito","Naipao","LXGW WenKai",-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
   color-scheme:light;
 }
 *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
@@ -308,7 +309,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927k';
+  var VERSION = '0927l';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
