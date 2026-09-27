@@ -161,6 +161,10 @@ textarea{resize:vertical; min-height:120px}
 .frame .duo .av+.av{margin-left:-14px}
 .frame .n{font:700 16px/1 var(--hand); color:var(--ink)}
 .frame.on{border-color:var(--pop2); background:#FFF6F9}
+.app-shelf .body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.bdock{position:fixed; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); max-width:420px; margin:0 auto; z-index:8; display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px; border-radius:30px; background:#FFFFFFB8; backdrop-filter:blur(14px); border:1.5px solid #fff; box-shadow:0 8px 24px #A5BED844}
+.bdock .dk{padding:13px 4px}
+.book .lab{font-size:14.5px} .book .bmeta{font:700 13px/1 var(--hand); color:#8E8BA0; text-align:center}
 .bshelf{margin:8px 2px 14px}
 .brow{display:flex; align-items:flex-end; gap:8px; min-height:150px; padding:0 12px; overflow-x:auto}
 .bk{flex:none; width:46px; border:0; border-radius:5px 5px 3px 3px; padding:10px 0 8px; display:flex; flex-direction:column; align-items:center; justify-content:space-between; box-shadow:inset -4px 0 0 #00000010, 0 3px 6px #A5BED844}
@@ -357,7 +361,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928h';
+  var VERSION = '0928i';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -816,18 +820,18 @@ body{background-color:#FFFBF9}
   }
   function shelf(p){
     banner(p, 'hold', '我们的书架', '你点书，他来讲；你出题，他来写');
-    var wrap=el('div','bshelf'), row=el('div','brow');
+    /* 09-28 04:18 她说书架要恋爱清单以前那种一本本的书；两个按钮压成一行钉在最底下 */
+    var sh=el('div','shelf'), G=['ging-p','ging-b','ging-y'];
     (D.shelf||[]).forEach(function(b,i){
-      var bt=el('button','bk c'+(i%4)); bt.style.height=(118+(i*17%26))+'px';
-      bt.appendChild(el('span','bt',b.title)); bt.appendChild(el('span','bn',(b.kind==='read'?'讲':'写')+' · '+b.chs+' 章'));
-      bt.onclick=function(){ openBook(b); }; row.appendChild(bt);
+      var bk=el('div','book '+G[i%3]); bk.appendChild(el('div','lab',b.title));
+      bk.appendChild(el('div','bmeta',(b.kind==='read'?'讲':'写')+' · '+b.chs+' 章'));
+      bk.onclick=function(){ openBook(b); }; sh.appendChild(bk);
     });
-    if(!row.children.length) row.appendChild(el('p','empty','还空着，点一本或者出个题'));
-    wrap.appendChild(row); wrap.appendChild(el('div','plank')); p.appendChild(wrap);
-    var r2=el('div','bask');
-    var a1=el('button','write','📖 点一本书让他讲'); a1.onclick=function(){ ask('read'); };
-    var a2=el('button','write','✍️ 出个题让他写'); a2.onclick=function(){ ask('play'); };
-    r2.appendChild(a1); r2.appendChild(a2); p.appendChild(r2);
+    if(!sh.children.length){ var e=el('div','card'); e.appendChild(el('p','empty','还空着，点一本或者出个题')); p.appendChild(e); } else p.appendChild(sh);
+    var bar=el('div','bdock');
+    var a1=el('button','dk'); a1.appendChild(el('b',null,'点书听他讲')); a1.onclick=function(){ ask('read'); };
+    var a2=el('button','dk'); a2.appendChild(el('b',null,'出题让他写')); a2.onclick=function(){ ask('play'); };
+    bar.appendChild(a1); bar.appendChild(a2); p.appendChild(bar);
   }
   function ask(kind){
     sheet(kind==='read'?'想听哪本':'出个题', function(s){
