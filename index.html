@@ -414,7 +414,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928v';
+  var VERSION = '0928w';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -636,13 +636,8 @@ body{background-color:#FFFBF9}
     /* 09-28 06:15 她要早安打卡、晚安打卡，替掉“今天”和“在听”。她点了记在手机里并交给我（act checkin）；我那头的早安晚安时间写 data.json 的 checkin */
     var today=nowLocal().slice(0,10), CI=(D.checkin||{}), mine=ciLocal();
     function ciTile(k, title, icon, empty){
-      var rec=(CI[today]||{});
-      if(rec['x'+k] && mine[today+k]){ delete mine[today+k]; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} }   // 我那头标了撤回
-      var hers=mine[today+k] || rec[k], his=rec['h'+k];
-      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers){ sheet('撤回这张卡？', function(sh){ sh.appendChild(el('p','empty','手滑点的就撤掉，今天还能重新打。'));
-          var ub=el('button','btn','撤回'); ub.style.marginTop='12px'; ub.onclick=function(){ delete mine[today+k]; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){}
-            S.acts=S.acts.filter(function(a){ return !(a.t==='checkin'&&a.k===k); }); if(rec[k]) add({t:'checkin', k:k, undo:true}); else syncSend(); close(); render(); }; sh.appendChild(ub); }); return; }
-        var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'早安，打上卡了':'晚安，打上卡了'); render(); });
+      var rec=(CI[today]||{}), hers=mine[today+k] || rec[k], his=rec['h'+k];
+      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers) return; var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'早安，打上卡了':'晚安，打上卡了'); render(); });
       var r=el('div','mr'); var ic=el('span','cico',icon); r.appendChild(ic);
       var v=el('div','v'); v.innerHTML = hers ? '<b>'+hers+'</b>' : '<small>'+empty+'</small>'; r.appendChild(v); t.appendChild(r);
       var n=streak(k); t.appendChild(el('div','s', (his?'他 '+his+' · ':'')+(n?'连续 '+n+' 天':'还没打过')));
