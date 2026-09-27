@@ -361,7 +361,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928i';
+  var VERSION = '0928j';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -389,6 +389,8 @@ body{background-color:#FFFBF9}
     var ks=[]; for(var i=0;i<n;i++) ks.push(key+'_'+i);
     CS.getItems(ks, function(e2,v){ if(e2) return cb(null); try{ cb(JSON.parse(ks.map(function(k){ return v[k]||''; }).join(''))); }catch(x){ cb(null); } }); }); }
   var S = {app:null, oursTab:'TOGETHER', acts:[], ticks:{}, ourTicks:{}, opened:{}, newItems:[], tapped:{}, avatar:'tea'};
+  /* 09-28 她说拆过的信下次又封上：拆过的按信的第一句记在手机里，不再封 */
+  try{ S.opened=JSON.parse(localStorage.getItem('room-opened')||'{}'); }catch(e){}
   var app = document.getElementById('app');
 
   function el(tag, cls, text){ var e=document.createElement(tag); if(cls) e.className=cls; if(text!=null) e.textContent=text; return e; }
@@ -573,7 +575,7 @@ body{background-color:#FFFBF9}
     var g=el('div','apps');
     APPS.forEach(function(a){
       var b=el('button','app'); var ic=el('div','ico '+a[2]); ic.innerHTML=icon(a[0]);
-      var badge = a[0]==='plan' ? items.length-done : a[0]==='notes' ? D.notes.filter(function(n,i){ return n.sealed && !S.opened[i]; }).length : 0;
+      var badge = a[0]==='plan' ? items.length-done : a[0]==='notes' ? D.notes.filter(function(n){ return n.sealed && !S.opened[n.q]; }).length : 0;
       if(a[0]==='set'){ var sd=el('span','dot',String(S.acts.length)); sd.id='sendDot'; sd.hidden=!S.acts.length; sd.style.background='#8FAAD0'; ic.appendChild(sd); }
       else if(badge>0) ic.appendChild(el('span','dot',String(badge)));
       b.appendChild(ic); b.appendChild(el('span',null,a[1]));
@@ -664,10 +666,10 @@ body{background-color:#FFFBF9}
     banner(p, 'letter', '信箱', '他写的，和你写的');
     ribbon(p, '他写给你的');
     D.notes.forEach(function(n, i){
-      var sealed=n.sealed && !S.opened[i];
+      var sealed=n.sealed && !S.opened[n.q];
       var c=el('button','env'+(sealed?' sealed':'')); c.appendChild(el('div','q',n.q)); var mt=el('div','meta', sealed?'点一下拆信':n.meta); mt.appendChild(el('span','pill'+(sealed?' y':''), sealed?'封着的':'他写的')); c.appendChild(mt); c.appendChild(el('div','b',n.body));
       var sp=el('div','stamp'); sp.innerHTML='<svg viewBox="-12 -12 24 24" width="22" height="22">'+(i%2?star(0,0,9,'#F6DFA0'):'<g transform="scale(1.7)">'+HEART+'</g>')+'</svg>'; c.appendChild(sp); c.style.paddingRight='56px';
-      c.onclick=function(){ if(sealed){ S.opened[i]=true; cheer('letter','拆开啦'); refreshApp(); } };
+      c.onclick=function(){ if(sealed){ S.opened[n.q]=true; try{ localStorage.setItem('room-opened', JSON.stringify(S.opened)); }catch(e){} cheer('letter','拆开啦'); refreshApp(); } };
       p.appendChild(c);
     });
     if(S.acts.some(function(a){ return a.t==='note'; })) ribbon(p, '你写给他的', true);
