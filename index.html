@@ -179,6 +179,38 @@ textarea{resize:vertical; min-height:120px}
 .bpage{background:#FFFDF6; border-radius:14px; padding:14px 16px; box-shadow:inset 0 0 0 1.5px #F3E7D0; max-height:58dvh; overflow:auto}
 .bpage p{margin:0 0 .8em; font-size:16px; line-height:1.85; color:#5F5C74; text-indent:2em}
 .btn[disabled]{opacity:.4}
+.win.app-music{background:radial-gradient(circle, #EDD9E3 1.1px, transparent 1.4px) 0 0/15px 15px, linear-gradient(#FFF5F8,#FFFBF9 60%) !important}
+.lis{display:flex; flex-direction:column; align-items:center; padding:0 6px 20px}
+.lis-top{display:flex; align-items:flex-start; justify-content:center; gap:10px; margin-top:4px; margin-bottom:6px}
+.lis-top .lh{color:var(--pop2); margin-top:26px; font-size:14px}
+.lw{display:grid; justify-items:center; gap:8px}
+.lw .av{width:68px; height:68px; border:3px solid #fff; box-shadow:0 0 0 2px var(--pop), 0 3px 10px #EE9DB944}
+.bub{position:relative; border:0; background:#fff; border-radius:14px; padding:6px 12px; font:700 14px/1.2 var(--hand); color:var(--ink); box-shadow:0 2px 8px #EE9DB933; max-width:130px}
+.bub::before{content:""; position:absolute; top:-5px; left:50%; margin-left:-5px; border:5px solid transparent; border-top:0; border-bottom-color:#fff}
+.bub.me{color:var(--pop2)}
+.lstat{margin-top:10px; font-size:13px; color:var(--soft); letter-spacing:.02em}
+.disc{position:relative; width:min(72vw,280px); aspect-ratio:1; margin:14px 0 6px}
+.disc .wave{position:absolute; inset:-6%; width:112%; height:112%; animation:spin 30s linear infinite}
+.disc .wave path{fill:#FCE3EC; stroke:#F2A9C2; stroke-width:1.6}
+.disc .rec{position:absolute; inset:9%; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 2px,#3A3540 2px 4px); box-shadow:0 8px 22px #7C5A6A55, inset 0 0 0 3px #4a4450; display:grid; place-items:center; animation:spin 12s linear infinite}
+.disc .lbl2{width:40%; aspect-ratio:1; border-radius:50%; overflow:hidden; background:var(--pop); border:3px solid #fff}
+.disc .lbl2 img{width:100%; height:100%; object-fit:cover; display:block}
+.disc.paused .rec,.disc.paused .wave{animation-play-state:paused}
+.disc .tag{position:absolute; background:#fff; border:1.5px solid #F2A9C2; color:var(--pop2); border-radius:999px; padding:3px 10px; font:700 12px/1.2 var(--sans); letter-spacing:.08em}
+.disc .t1{top:4%; left:-4%} .disc .t2{bottom:6%; right:-4%}
+@keyframes spin{to{transform:rotate(360deg)}}
+.linfo{border:0; background:none; width:100%; text-align:left; padding:6px 10px 0; display:grid; gap:2px}
+.linfo b{font:700 22px/1.2 var(--sans); color:var(--ink)}
+.linfo span{font-size:14px; color:var(--soft)}
+.lprog{width:100%; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:10px; padding:10px 10px 0; font-size:12px; color:var(--soft)}
+.ltrack{height:4px; border-radius:4px; background:#F3DFE8; overflow:hidden} .ltrack i{display:block; height:100%; width:0; background:var(--pop2); transition:width 1s linear}
+.lline{margin-top:8px; font:700 15px/1.4 var(--hand); color:var(--pop2); text-align:center; padding:0 12px}
+.lctl{display:flex; align-items:center; justify-content:center; gap:12px; margin-top:12px}
+.lc{width:46px; height:46px; border-radius:50%; border:1.5px solid #F3DFE8; background:#fff; display:grid; place-items:center; box-shadow:0 2px 6px #EE9DB922}
+.lc svg{width:22px; height:22px; fill:none; stroke:var(--soft); stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.lc.big{width:64px; height:64px; border:0; background:var(--pop2); box-shadow:0 6px 16px #EE9DB966}
+.lc.big svg{stroke:#fff; width:26px; height:26px; stroke-width:2.6}
+.lsaid{margin-top:16px; width:100%; display:flex; justify-content:space-between; align-items:center; border:1.5px solid #F3DFE8; background:#fff; border-radius:18px; padding:13px 16px; font:700 15px/1 var(--hand); color:var(--ink); box-shadow:0 3px 10px #EE9DB922}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -361,14 +393,14 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928j';
+  var VERSION = '0928k';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
   var SAMPLE = window.ROOM_SAMPLE || {
     now:null, since:"2026-07-25", fromHim:"", timeline:[],
     today:{items:[], money:{spent:0, proper:0, snack:0}},
-    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''}, shelf:[], bk:'',
+    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''}, shelf:[], bk:'', listen:{songs:[], her:'', me:''},
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
@@ -802,12 +834,66 @@ body{background-color:#FFFBF9}
     else { var nb=el('button','btn line', rolled?'掷了 '+rolled.n+'，交给他落子':'轮到他，催一下'); nb.onclick=function(){ if(!rolled){ add({t:'touch', k:'催掷'}); cheer('look','催他了'); } }; p.appendChild(nb); }
   }
   /* 听歌 */
+  /* 听歌 → 唱片机（09-28 05:12 她甩了三张参考：别人做的粉色“一起听”、网易云一起听的距离时长和头像气泡）。
+     不是实时一起听（那得 VPS），放的是我们互相递过的歌：data.json 的 listen.songs。她贴链接交给我，我查歌名封面时长、挑一句歌词、写一句话。
+     大播放键只管唱片转不转；真要出声去网易云。 */
+  function fmt(sec){ sec=Math.max(0,Math.round(sec)); return (sec/60|0)+':'+('0'+sec%60).slice(-2); }
   function music(p){
-    banner(p, 'look', '借你的耳朵', '贴一首歌，他去看歌词和评论');
-    var c=el('div','card taped b'); c.appendChild(el('p','empty','贴一个网易云链接，交给他，他去看歌词和评论（他耳朵是借你的）。'));
-    var i=el('input'); i.type='text'; i.placeholder='music.163.com/song?id=…'; i.style.marginTop='10px'; c.appendChild(i);
-    var b=el('button','btn','给他'); b.style.marginTop='10px'; b.onclick=function(){ if(i.value.trim()){ add({t:'song', url:i.value.trim()}); i.value=''; cheer('letter','交给他听'); } }; c.appendChild(b);
-    p.appendChild(c);
+    var L=D.listen||{songs:[]}, songs=L.songs||[];
+    if(S.si==null || S.si>=songs.length) S.si=Math.max(0,songs.length-1);
+    if(S.playing==null) S.playing=true;
+    var x=songs[S.si], wrap=el('div','lis');
+    var ap=avPair(S.avatar), top=el('div','lis-top');
+    function who(html, say, mine){ var c=el('div','lw'), a=el('div','av'); a.innerHTML=html; c.appendChild(a);
+      var bb=el(mine?'button':'div','bub'+(mine?' me':''), say || (mine?'说句话':'…')); if(mine) bb.onclick=sayIt; c.appendChild(bb); return c; }
+    top.appendChild(who(ap[0], S.lsay || L.her, true)); top.appendChild(el('span','lh','♥')); top.appendChild(who(ap[1], L.me, false));
+    wrap.appendChild(top);
+    var disc=el('div','disc'+(S.playing?'':' paused'));
+    disc.innerHTML='<svg class="wave" viewBox="0 0 200 200" aria-hidden="true"><path d="'+wavy()+'"/></svg><div class="rec"><div class="lbl2">'+(x&&x.cover?'<img src="'+x.cover+'?param=200y200" alt="">':'')+'</div></div><span class="tag t1">♪ playing</span><span class="tag t2">with u ♡</span>';
+    wrap.appendChild(disc);
+    var info=el('button','linfo'); info.appendChild(el('b',null, x?x.name:'还没有歌')); info.appendChild(el('span',null, x?x.artist:'点这里贴一首给他')); info.onclick=paste; wrap.appendChild(info);
+    var pr=el('div','lprog'), t0=el('span',null,'0:00'), tr=el('div','ltrack'), fill=el('i'), t1=el('span',null, x?fmt(x.dur):'0:00');
+    tr.appendChild(fill); pr.appendChild(t0); pr.appendChild(tr); pr.appendChild(t1); wrap.appendChild(pr);
+    if(x && x.line) wrap.appendChild(el('div','lline', x.line));
+    var ctl=el('div','lctl');
+    function cb(cls, svg, fn){ var bt=el('button',cls); bt.innerHTML='<svg viewBox="0 0 24 24">'+svg+'</svg>'; bt.onclick=fn; ctl.appendChild(bt); }
+    cb('lc', '<path d="M7 7h9a3 3 0 0 1 3 3v1M17 17H8a3 3 0 0 1-3-3v-1M14 4l3 3-3 3M10 20l-3-3 3-3"/>', function(){ cheer('look','单曲循环：一直是你'); });
+    cb('lc', '<path d="M7 5v14M18 6l-8 6 8 6z"/>', function(){ if(songs.length){ S.si=(S.si-1+songs.length)%songs.length; S.pos=0; refreshApp(); } });
+    cb('lc big', S.playing?'<path d="M9 6v12M15 6v12"/>':'<path d="M8 5l11 7-11 7z"/>', function(){ S.playing=!S.playing; refreshApp(); });
+    cb('lc', '<path d="M17 5v14M6 6l8 6-8 6z"/>', function(){ if(songs.length){ S.si=(S.si+1)%songs.length; S.pos=0; refreshApp(); } });
+    cb('lc', '<path d="M5 7h14M5 12h14M5 17h9"/>', listSheet);
+    wrap.appendChild(ctl);
+    var said=el('button','lsaid'); said.innerHTML='<span>一起听的时候说的话</span><span>›</span>';
+    said.onclick=function(){ if(!x) return paste();
+      sheet(x.name, function(sh){ if(x.note){ var q=el('p',null,x.note); q.style.cssText='font:700 17px/1.7 var(--hand);color:var(--ink);margin:4px 0 12px'; sh.appendChild(q); }
+        var a=el('a','btn line','去网易云听'); a.href='https://music.163.com/song?id='+x.id; a.target='_blank'; a.style.display='inline-block'; a.style.textDecoration='none'; sh.appendChild(a); }); };
+    wrap.appendChild(said);
+    p.appendChild(wrap);
+    clearInterval(S.ltimer);
+    if(x){ var dur=x.dur||200; S.pos=S.pos||0;
+      var tick=function(){ fill.style.width=(S.pos/dur*100)+'%'; t0.textContent=fmt(S.pos); };
+      tick(); if(S.playing) S.ltimer=setInterval(function(){ if(S.app!=='music'){ clearInterval(S.ltimer); return; } S.pos+=1; if(S.pos>=dur) S.pos=0; tick(); },1000); }
+  }
+  function wavy(){ var d='', n=14; for(var i=0;i<=n*8;i++){ var a=i/(n*8)*Math.PI*2, r=90+4*Math.sin(a*n); d+=(i?'L':'M')+(100+r*Math.cos(a)).toFixed(1)+' '+(100+r*Math.sin(a)).toFixed(1); } return d+'Z'; }
+  function paste(){
+    sheet('放一首', function(sh){
+      sh.appendChild(el('p','empty','贴网易云的歌曲链接，交给他。他去看歌词和评论，挑一句放上来。'));
+      var i=el('input'); i.type='text'; i.placeholder='music.163.com/song?id=…'; i.style.marginTop='10px'; sh.appendChild(i);
+      var bt=el('button','btn','交给他'); bt.style.marginTop='12px'; bt.onclick=function(){ if(i.value.trim()){ add({t:'song', url:i.value.trim()}); close(); cheer('letter','交给他听'); } }; sh.appendChild(bt);
+    });
+  }
+  function sayIt(){
+    sheet('边听边说', function(sh){
+      var i=el('input'); i.type='text'; i.maxLength=12; i.placeholder='十二个字以内'; sh.appendChild(i);
+      var bt=el('button','btn','挂上去'); bt.style.marginTop='12px'; bt.onclick=function(){ var v=i.value.trim(); if(!v) return; S.lsay=v; add({t:'quick', k:'听歌时说：'+v}); close(); refreshApp(); }; sh.appendChild(bt);
+    });
+  }
+  function listSheet(){
+    var songs=(D.listen||{}).songs||[];
+    sheet('一起听过的', function(sh){
+      songs.forEach(function(x,i){ var r=el('button','chap'); r.appendChild(el('span','ci', i===S.si?'♪':String(i+1))); r.appendChild(el('span','ct', x.name+' · '+x.artist)); r.onclick=function(){ S.si=i; S.pos=0; close(); refreshApp(); }; sh.appendChild(r); });
+      var bt=el('button','btn','＋ 放一首'); bt.style.marginTop='12px'; bt.onclick=paste; sh.appendChild(bt);
+    });
   }
   /* 找我 */
   /* 书架（09-28 替掉“找我”：她点书我讲，她出题我写）。正文加密放 home-page/books/<id>.bin，钥匙是 D.bk，tools/room_book.py 管 */
