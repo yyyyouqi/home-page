@@ -232,6 +232,8 @@ textarea{resize:vertical; min-height:120px}
 .mini.ci .cico{font-size:26px; line-height:1}
 .mini.ci-m{background:#FFFBEF} .mini.ci-n{background:#F1F4FC}
 .mini.ci.done .v b{color:var(--pop2)}
+.hero .mood .mt2{display:inline-block}
+.ios .hero .mood .mt2{transform:translateY(.14em)}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -414,7 +416,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928y';
+  var VERSION = '0928z';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -615,7 +617,7 @@ body{background-color:#FFFBF9}
     function side(html, mood, mineSide){
       var c=el('div','who'), a=el('div','av'); a.innerHTML=html; c.appendChild(a);
       var m=MOODS.filter(function(x){ return x[0]===mood; })[0] || ['','·'], st=el(mineSide?'button':'div','mood'+(mineSide?' me':''));
-      st.textContent = mood ? m[1]+' '+mood : (mineSide?'＋ 状态':'…');
+      st.innerHTML = mood ? '<span class="me2">'+m[1]+'</span><span class="mt2">'+mood+'</span>' : '<span class="mt2">'+(mineSide?'＋ 状态':'…')+'</span>';
       if(mineSide) st.onclick=pickMood;
       c.appendChild(st); return c;
     }
@@ -1046,6 +1048,7 @@ body{background-color:#FFFBF9}
   }
   if(inTg){ W.ready(); W.expand(); try{ W.setHeaderColor('#F6F9FE'); W.setBackgroundColor('#F6F9FE'); }catch(e){} }
   document.documentElement.classList.add('fixed');
+  if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.documentElement.classList.add('ios');   // 09-28 iPhone 不认 ascent-override，奶泡体在胶囊里偏上，单独往下挪
   render();
   if(H) csSave('room', JSON.stringify(H));
   else csLoad('room', function(v){ if(v){ D=build(v); render(); } });
