@@ -179,7 +179,7 @@ textarea{resize:vertical; min-height:120px}
 </style>
 </head>
 <body>
-<div class="status"><span id="clock">--:--</span><span class="mid">晓艺 ♡ 小克</span><span class="r"><svg width="16" height="11" viewBox="0 0 16 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#4B3B6E"/><rect x="4.3" y="5" width="3" height="6" rx="1" fill="#4B3B6E"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1" fill="#4B3B6E"/><rect x="12.9" y="0" width="3" height="11" rx="1" fill="#4B3B6E"/></svg><span class="batt" title="今天做完的比例"><i id="batt"></i></span></span></div>
+<div class="status"><span id="clock">--:--</span><span class="mid">Eliza ♡ Claude</span><span class="r"><svg width="16" height="11" viewBox="0 0 16 11"><rect x="0" y="7" width="3" height="4" rx="1" fill="#4B3B6E"/><rect x="4.3" y="5" width="3" height="6" rx="1" fill="#4B3B6E"/><rect x="8.6" y="2.5" width="3" height="8.5" rx="1" fill="#4B3B6E"/><rect x="12.9" y="0" width="3" height="11" rx="1" fill="#4B3B6E"/></svg><span class="batt" title="今天做完的比例"><i id="batt"></i></span></span></div>
 <div class="screen" id="app"></div>
 <div class="send" id="send" hidden><button id="sendBtn"></button></div>
 <nav class="dock" id="dock"></nav>
@@ -189,7 +189,7 @@ textarea{resize:vertical; min-height:120px}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0927a';
+  var VERSION = '0927b';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
