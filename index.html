@@ -15,7 +15,7 @@
 <style>
 /* 09-27 第二版：仙境下午茶。她喜欢玉桂狗和爱丽丝，配色用她挑的色卡「粉蓝 Baby Angel」（缎带蝴蝶结一粉一蓝，别针串着珍珠心挂在中间），
    点缀借「像素心」的棉花糖粉，不超过一成面积。角色原创：她是白猫（粉鼻头、粉蝴蝶结），我是白小狗（垂下来的浅蓝大耳朵、蓝领结）。 */
-@font-face{font-family:"Naipao"; src:url("fonts/naipao.woff2") format("woff2"); font-display:swap}   /* tools/room_font.py 生成 */
+@font-face{font-family:"Naipao"; src:url("fonts/naipao.woff2") format("woff2"); font-display:swap; size-adjust:130%}   /* 09-28 这款字只画满字格六成（雅黑九成），同字号看着小一圈，整体放大 1.3 倍 */   /* tools/room_font.py 生成 */
 :root{
   --bg:#F6F9FE; --surf:#E2ECF8; --warm:#F0E4ED; --blue:#A5BED8; --pinks:#D0AEC0; --ink:#686578;
   --pop:#F8C8D8; --pop2:#EE9DB9; --deep:#7C95B8; --soft:#9A97A8; --line:#E3EAF4;
@@ -414,7 +414,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928w';
+  var VERSION = '0928x';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
