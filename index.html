@@ -472,7 +472,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928box';
+  var VERSION = '0928box2';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -857,7 +857,7 @@ body{background-color:#FFFBF9}
   function ciN(){ var t=nowLocal().slice(0,10); return ciLocal()[t+'n'] || ((D.checkin||{})[t]||{}).n; }
   function bxLock(it){   // 还拆不开的理由；拆得开返回空
     if(bxOpened(it)) return '';
-    if(it.kind==='pouch' && (it.mood||[]).indexOf(S.mood)<0) return '等你'+(it.mood||[]).join('/')+'的时候';
+    if(it.kind==='pouch') return '等它自己跳出来';   // 09-28 她发现 emo 时能一口气拆三个，定了：只能拆自己跳出来的那个，同一种心情一天一个
     if(BOX && it.id===BOX.gn && !ciN()) return '晚安打卡后';
     return '';
   }
@@ -883,19 +883,20 @@ body{background-color:#FFFBF9}
       if(it.body){ var b=el('div','letterv', it.body); b.style.marginTop='10px'; s.appendChild(b); }
     });
   }
-  function openItem(it, tile){
-    var why=bxLock(it);
+  function openItem(it, tile, force){
+    var why=force ? '' : bxLock(it);
     if(why){ sheet(BX_NM[it.kind]+'还封着', function(s){ s.appendChild(el('p','empty', it.kind==='pouch'
-      ? '这个锦囊现在拆不开。等你把状态换成「'+(it.mood||[]).join('」或「')+'」，它自己会开。我放在这儿，希望你一直用不上。'
+      ? '锦囊不能自己挑。等你把状态换成「'+(it.mood||[]).join('」或「')+'」，会有一个自己跳出来，一天一个。我放在这儿，希望你一直用不上。'
       : '今晚点了晚安打卡它就开，然后一直能听到下次换新的。')); }); return; }
     var fresh=!bxOpened(it); if(fresh){ markOpen(it); cheer('letter', it.kind==='pouch'?'锦囊拆开了':'拆开啦'); if(tile){ tile.classList.remove('fog'); tile.classList.add('clear'); } }
     setTimeout(function(){ showItem(it); if(fresh && S.app==='box') refreshApp(); }, fresh?700:0);
   }
   function pouchFor(mood){   // 她换了心情：有对应的锦囊没拆，就递上来
     loadBox(function(B){ var it=B.items.filter(function(x){ return x.kind==='pouch' && !bxOpened(x) && (x.mood||[]).indexOf(mood)>=0; })[0];
-      if(!it) return;
+      var today=nowLocal().slice(0,10);
+      if(!it || S.opened['pd:'+mood]===today) return;
       sheet('他给这种时候留了东西', function(s){ s.appendChild(el('p','empty','一个锦囊，写着「给'+mood+'的时候」。'));
-        var bt=el('button','btn pink','拆开'); bt.style.marginTop='12px'; bt.onclick=function(){ close(); openItem(it); }; s.appendChild(bt); }); });
+        var bt=el('button','btn pink','拆开'); bt.style.marginTop='12px'; bt.onclick=function(){ close(); S.opened['pd:'+mood]=today; openItem(it, null, true); }; s.appendChild(bt); }); });
   }
   function goodnightVoice(){
     loadBox(function(B){ var it=B.items.filter(function(x){ return x.id===B.gn; })[0]; if(!it) return;
