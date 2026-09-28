@@ -431,7 +431,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928ae';
+  var VERSION = '0928af';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -601,7 +601,7 @@ body{background-color:#FFFBF9}
   var MORE=[['notes','小克留的','gA',notes]];   // 09-28 纸条不上主屏了（她说不怎么用），从“小克留的”那格进
   function appOf(k){ return APPS.concat(MORE).filter(function(x){ return x[0]===k; })[0]; }
   var APPS=[
-    ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['map','地图','gA',mapApp], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
+    ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
     ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['shelf','书架','gB',shelf], ['set','设置','gA',settings]
   ];
   /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
@@ -960,7 +960,8 @@ body{background-color:#FFFBF9}
       var bt=el('button','btn','＋ 放一首'); bt.style.marginTop='12px'; bt.onclick=paste; sh.appendChild(bt);
     });
   }
-  /* 地图（09-28 13:20 改成平铺：她要看得见中文地名、自己划）。Leaflet + 高德底图（中文地名），CSS 滤镜调成夜色。
+  /* 09-28 13:28 她试了说效果一般（拖不自由、界面跟着动、白块不加载），先从主屏撤了，代码留着以后重做。
+     地图（09-28 13:20 改成平铺：她要看得见中文地名、自己划）。Leaflet + 高德底图（中文地名），CSS 滤镜调成夜色。
      不插旗，点星星：蓝星 = 她自己想去的，粉星 = 我们俩想一起去的。她在地图上按一下就能点一颗（交 place，带经纬度），
      点星星能“带我去那里玩一玩”（交 trip），我写一章放进书架《带你去玩》。data.json 的 places：{n,lat,lng,k:'her'|'us',d,t} */
   var LEAF='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/', leafLoading=null;
