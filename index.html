@@ -236,18 +236,19 @@ textarea{resize:vertical; min-height:120px}
 .mini.ci.done .v b{color:var(--pop2)}
 .hero .mood .mt2{display:inline-block}
 .ios .hero .mood .mt2{transform:translateY(.14em)}   /* 她 09-28 07:11 在 iPhone 上看过：刚刚好 */
-.win.app-map{overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at 50% 40%, #1E2340 0, #0B0E1F 70%) !important}
+.win.app-map{overflow:hidden; overscroll-behavior:none; background:#0F1326 !important}
 .win.app-map .bar{background:#1E2340CC; border-color:#3A4270} .win.app-map .bar h1{color:#E6ECFA}
-.globe{position:relative; width:100%; height:calc(100dvh - 190px); touch-action:none}
-.gtip{position:absolute; inset:0; display:grid; place-items:center; color:#A5BED8; font:700 16px/1 var(--hand)}
-.gflag{transform:translate(-4px,-100%); display:flex; align-items:flex-end; gap:2px; cursor:pointer; white-space:nowrap}
-.gflag b{font-size:20px; line-height:1; filter:drop-shadow(0 0 4px #fff8)}
-.gflag.been b{color:#F8A8C4} .gflag.want b{color:#9EC3F2}
-.gflag span{font:700 12px/1.2 var(--hand); color:#fff; background:#0008; border-radius:6px; padding:1px 5px; margin-bottom:12px}
-.glegend{display:flex; justify-content:center; gap:16px; color:#C9D3EA; font:700 14px/1 var(--hand); margin-top:4px}
+.fmap{position:relative; width:calc(100% - 24px); margin:4px auto 0; height:calc(100dvh - 150px); border-radius:22px; overflow:hidden; background:#0F1326; box-shadow:0 0 0 1.5px #3A4270}
+.fmap .leaflet-tile-pane{filter:invert(1) hue-rotate(195deg) brightness(.82) contrast(1.05) saturate(.7)}
+.gtip{position:absolute; inset:0; display:grid; place-items:center; color:#A5BED8; font:700 16px/1 var(--hand); z-index:500}
+.fstar{position:relative; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; cursor:pointer; white-space:nowrap}
+.fstar b{font-size:22px; line-height:1; animation:tw 2.4s ease-in-out infinite}
+.fstar.her b{color:#9EC3F2; text-shadow:0 0 8px #9EC3F2, 0 0 16px #9EC3F288}
+.fstar.us b{color:#F8A8C4; text-shadow:0 0 8px #F8A8C4, 0 0 16px #F8A8C488}
+.fstar span{font:700 12px/1.2 var(--hand); color:#fff; background:#0009; border-radius:6px; padding:1px 6px; margin-top:2px}
+.glegend{display:flex; justify-content:center; flex-wrap:wrap; gap:6px 14px; color:#C9D3EA; font:700 14px/1 var(--hand); margin-top:10px}
 .glegend i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle}
-.glegend .gp{background:#F8A8C4} .glegend .gb{background:#9EC3F2}
-.gadd{display:block; margin:12px auto 0; border:1.5px solid #3A4270; background:#1E2340; color:#E6ECFA; border-radius:999px; padding:10px 20px; font:700 16px/1 var(--hand)}
+.glegend .gp{background:#F8A8C4} .glegend .gb{background:#9EC3F2} .glegend .hint{color:#7F8AAE; font-size:12.5px}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -430,7 +431,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928ad';
+  var VERSION = '0928ae';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -959,38 +960,41 @@ body{background-color:#FFFBF9}
       var bt=el('button','btn','＋ 放一首'); bt.style.marginTop='12px'; bt.onclick=paste; sh.appendChild(bt);
     });
   }
-  /* 地图（09-28 她给了一张高德夜景地球的截图说“就要这个效果”）。globe.gl + NASA 黑色大理石夜景图，都从 jsdelivr 现拿。
-     粉旗 = 我们去过的（剧本、梦、聊过的都算），蓝旗 = 想一起去的。只标城市。data.json 的 places：{n,lat,lng,k:'been'|'want',d,t} */
-  var GLOBE_JS='https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js', globeLoading=null;
-  function needGlobe(cb){ if(window.Globe) return cb(); if(!globeLoading){ globeLoading=[]; var sc=document.createElement('script'); sc.src=GLOBE_JS; sc.onload=function(){ globeLoading.forEach(function(f){ f(); }); }; document.head.appendChild(sc); } globeLoading.push(cb); }
+  /* 地图（09-28 13:20 改成平铺：她要看得见中文地名、自己划）。Leaflet + 高德底图（中文地名），CSS 滤镜调成夜色。
+     不插旗，点星星：蓝星 = 她自己想去的，粉星 = 我们俩想一起去的。她在地图上按一下就能点一颗（交 place，带经纬度），
+     点星星能“带我去那里玩一玩”（交 trip），我写一章放进书架《带你去玩》。data.json 的 places：{n,lat,lng,k:'her'|'us',d,t} */
+  var LEAF='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/', leafLoading=null;
+  function needLeaf(cb){ if(window.L) return cb();
+    if(!leafLoading){ leafLoading=[]; var css=document.createElement('link'); css.rel='stylesheet'; css.href=LEAF+'leaflet.css'; document.head.appendChild(css);
+      var sc=document.createElement('script'); sc.src=LEAF+'leaflet.js'; sc.onload=function(){ leafLoading.forEach(function(f){ f(); }); }; document.head.appendChild(sc); }
+    leafLoading.push(cb); }
   function mapApp(p){
-    var box=el('div','globe'), tip=el('div','gtip','地球在路上…'); box.appendChild(tip); p.appendChild(box);
-    var lg=el('div','glegend'); lg.innerHTML='<span><i class="gp"></i>去过的</span><span><i class="gb"></i>想一起去的</span>'; p.appendChild(lg);
-    var add=el('button','gadd','＋ 插一面旗'); add.onclick=plantFlag; p.appendChild(add);
+    var box=el('div','fmap'), tip=el('div','gtip','地图在路上…'); box.appendChild(tip); p.appendChild(box);
+    var lg=el('div','glegend'); lg.innerHTML='<span><i class="gb"></i>你想去的</span><span><i class="gp"></i>我们想一起去的</span><span class="hint">按一下地图点一颗星</span>'; p.appendChild(lg);
     var PL=(D.places||[]);
-    needGlobe(function(){
+    needLeaf(function(){
       if(!box.isConnected) return; tip.remove();
-      var w=box.clientWidth, h=box.clientHeight;
-      var g=Globe()(box).width(w).height(h).backgroundColor('rgba(0,0,0,0)')
-        .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
-        .showAtmosphere(true).atmosphereColor('#A5BED8').atmosphereAltitude(.18)
-        .htmlElementsData(PL).htmlLat('lat').htmlLng('lng').htmlAltitude(.01)
-        .htmlElement(function(d){ var e=document.createElement('div'); e.className='gflag '+(d.k==='want'?'want':'been'); e.innerHTML='<b>⚑</b><span>'+d.n+'</span>';
-          e.style.pointerEvents='auto'; e.onclick=function(ev){ ev.stopPropagation(); flagCard(d); }; return e; });
-      g.controls().autoRotate=true; g.controls().autoRotateSpeed=.35; g.controls().enableZoom=true;
-      var c0=PL.length?PL[PL.length-1]:{lat:32,lng:118}; g.pointOfView({lat:c0.lat, lng:c0.lng, altitude:1.7}, 0);
-      S.globe=g;
+      var m=L.map(box, {zoomControl:false, attributionControl:false, worldCopyJump:true, minZoom:2, maxZoom:17}).setView([31, 110], 3);
+      L.tileLayer('https://webrd0{s}.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=2&style=8&x={x}&y={y}&z={z}', {subdomains:'1234', tileSize:256}).addTo(m);
+      PL.forEach(function(d){
+        var ic=L.divIcon({className:'', html:'<div class="fstar '+(d.k==='us'?'us':'her')+'"><b>★</b><span>'+d.n+'</span></div>', iconSize:[0,0]});
+        L.marker([d.lat,d.lng], {icon:ic}).addTo(m).on('click', function(){ starCard(d); });
+      });
+      if(PL.length) m.fitBounds(PL.map(function(d){ return [d.lat,d.lng]; }), {padding:[60,60], maxZoom:5});
+      m.on('click', function(e){ lightStar(e.latlng.lat, e.latlng.lng); });
+      S.fmap=m;
     });
   }
-  function flagCard(d){ sheet(d.n, function(sh){
-      sh.appendChild(el('div','cap', (d.k==='want'?'想一起去':'去过')+(d.d?' · '+d.d:'')));
-      if(d.t){ var q=el('p',null,d.t); q.style.cssText='font:700 18px/1.6 var(--hand);color:var(--ink);margin:8px 0 0'; sh.appendChild(q); } }); }
-  function plantFlag(){ sheet('插一面旗', function(sh){
-      sh.appendChild(el('p','empty','写个城市，再说一句为什么。交给他，他去查好插上。'));
-      var n=el('input'); n.type='text'; n.placeholder='比如：京都'; n.maxLength=20; n.style.marginTop='10px'; sh.appendChild(n);
-      var t=el('input'); t.type='text'; t.placeholder='一句话（可以不写）'; t.maxLength=60; t.style.marginTop='10px'; sh.appendChild(t);
+  function starCard(d){ sheet(d.n, function(sh){
+      sh.appendChild(el('div','cap', (d.k==='us'?'我们想一起去':'你想去')+(d.d?' · '+d.d:'')));
+      if(d.t){ var q=el('p',null,d.t); q.style.cssText='font:700 18px/1.6 var(--hand);color:var(--ink);margin:8px 0 0'; sh.appendChild(q); }
+      var go=el('button','btn','带我去那里玩一玩'); go.style.marginTop='14px'; go.onclick=function(){ add({t:'trip', n:d.n, lat:d.lat, lng:d.lng}); close(); cheer('hug','他去订票了'); }; sh.appendChild(go); }); }
+  function lightStar(lat, lng){ sheet('在这里点一颗星', function(sh){
+      sh.appendChild(el('p','empty','写一句为什么想去（可以不写），选个颜色交给他，他查好地名点亮。'));
+      var t=el('input'); t.type='text'; t.placeholder='一句话'; t.maxLength=60; t.style.marginTop='10px'; sh.appendChild(t);
       var r=el('div','row'); r.style.marginTop='12px';
-      [['want','想一起去'],['been','去过的']].forEach(function(k){ var b=el('button', k[0]==='want'?'btn':'btn line', k[1]); b.onclick=function(){ var v=n.value.trim(); if(!v) return; add({t:'place', k:k[0], n:v, text:t.value.trim()}); close(); cheer('flag','交给他插旗'); }; r.appendChild(b); });
+      [['her','💙 我想去的','btn line'],['us','💗 我们一起去的','btn']].forEach(function(k){ var bt=el('button', k[2], k[1]);
+        bt.onclick=function(){ add({t:'place', k:k[0], lat:+lat.toFixed(4), lng:+lng.toFixed(4), text:t.value.trim()}); close(); cheer('stars','交给他点亮'); }; r.appendChild(bt); });
       sh.appendChild(r); }); }
   /* 找我 */
   /* 书架（09-28 替掉“找我”：她点书我讲，她出题我写）。正文加密放 home-page/books/<id>.bin，钥匙是 D.bk，tools/room_book.py 管 */
@@ -1054,7 +1058,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'插了旗'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
