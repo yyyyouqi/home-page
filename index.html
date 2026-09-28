@@ -844,12 +844,16 @@ body{background-color:#FFFBF9}
   function loadBox(cb){
     if(BOX) return cb && cb(BOX);
     if(cb) boxWait.push(cb); if(boxWait.length>1) return;
-    function done(b){ BOX=b||{items:[], wishes:[], trail:[]}; var w=boxWait; boxWait=[]; w.forEach(function(f){ f(BOX); }); }
+    function done(b){ BOX=b||{items:[], wishes:[], trail:[]};
+      /* 09-28 按钮链接到 6000 字她那边就全白了：纸条和时间线挪进箱子，链接里不再带 */
+      if(!(D.notes||[]).length) D.notes=BOX.items.filter(function(it){ return it.kind==='letter' || it.kind==='note'; }).map(function(it){ return {q:it.q||it.title, meta:'FROM HIM · '+it.at.slice(5,10), body:it.body, sealed:it.sealed}; });
+      if(!(D.timeline||[]).length) D.timeline=BOX.timeline||[];
+      var w=boxWait; boxWait=[]; w.forEach(function(f){ f(BOX); }); }
     if(!D.box || !D.bk || !(window.crypto && crypto.subtle) || !window.fetch) return done(null);
     decBin('box.bin?v='+encodeURIComponent(D.box.v)).then(function(pt){ done(JSON.parse(new TextDecoder().decode(pt))); }).catch(function(){ done(null); });
   }
   var BX_ICO={letter:'💌', note:'📝', voice:'🎧', pouch:'🎀'}, BX_NM={letter:'信', note:'纸条', voice:'语音', pouch:'锦囊'};
-  function bxOpened(it){ return !!(S.opened['x:'+it.id] || (it.q && S.opened[it.q])) || !it.sealed; }
+  function bxOpened(it){ return !!(S.opened['x:'+it.id] || S.opened[it.q||it.title]) || !it.sealed; }
   function ciN(){ var t=nowLocal().slice(0,10); return ciLocal()[t+'n'] || ((D.checkin||{})[t]||{}).n; }
   function bxLock(it){   // 还拆不开的理由；拆得开返回空
     if(bxOpened(it)) return '';
@@ -858,7 +862,7 @@ body{background-color:#FFFBF9}
     return '';
   }
   function bxSealedN(){ return BOX ? BOX.items.filter(function(it){ return !bxOpened(it) && !bxLock(it); }).length : 0; }
-  function markOpen(it){ S.opened['x:'+it.id]=true; try{ localStorage.setItem('room-opened', JSON.stringify(S.opened)); }catch(e){} }
+  function markOpen(it){ S.opened['x:'+it.id]=true; S.opened[it.q||it.title]=true; try{ localStorage.setItem('room-opened', JSON.stringify(S.opened)); }catch(e){} }
   function voicePlayer(it){
     var v=el('div','vplay'), b=el('button',null,'▶'), wv=el('div','wave'), tm=el('span','tm','…');
     for(var i=0;i<22;i++){ var bar=el('i'); bar.style.height=(6+Math.round(18*Math.abs(Math.sin(i*1.7+(it.id.length)))))+'px'; bar.style.animationDelay=(i*.05)+'s'; wv.appendChild(bar); }
