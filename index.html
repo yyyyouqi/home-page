@@ -419,6 +419,45 @@ body{background-color:#FFFBF9}
 .win.closing .body>*{animation:fall-out .18s ease both} .win.closing .body>*:nth-child(n+3){animation-delay:.03s}
 @keyframes fall-out{to{opacity:0; transform:translateY(10px)}}
 .win.refresh .body>*{animation:none}
+/* 09-28 收藏馆：玻璃罐里是纸折星星（许愿），下面粉色小信箱，信/纸条/语音/锦囊一格一格，没拆的糊着 */
+.jarcard{text-align:center; padding:10px 10px 14px}
+.jarcard svg.jar{width:210px; height:230px; display:block; margin:0 auto}
+.jar .st{cursor:pointer; transform-box:fill-box; transform-origin:center; animation:bob 3.2s ease-in-out infinite}
+.jar .st.new{animation:drop-in .7s cubic-bezier(.3,1.4,.5,1) both}
+@keyframes bob{50%{transform:translateY(-1.5px) rotate(6deg)}}
+@keyframes drop-in{from{transform:translateY(-120px) rotate(-90deg); opacity:0}}
+.jar .glow{animation:tw 2.2s ease-in-out infinite}
+.jarcard .cap2{font:700 15px/1.4 var(--hand); color:#8E8BA0; margin-top:2px}
+.mailw{display:grid; grid-template-columns:96px 1fr; gap:10px; align-items:center}
+.mailw svg{width:96px; height:104px}
+.mailw .t{font:700 17px/1.3 var(--hand); color:#5F5C74}
+.mailw .s{font-size:12.5px; color:#8E8BA0; margin-top:3px}
+.mail .flag{transform-box:fill-box; transform-origin:0% 100%; transition:transform .5s}
+.mail.down .flag{transform:rotate(90deg)}
+.bxwall{display:grid; grid-template-columns:repeat(3,1fr); gap:12px}
+.bx{position:relative; aspect-ratio:1/1.12; border:1.5px solid #F3DFE8; border-radius:16px; padding:10px 8px 8px; display:flex; flex-direction:column; justify-content:space-between; align-items:center; text-align:center; box-shadow:0 3px 8px #EDD9E355; overflow:hidden; background:#FFFDFB}
+.bx.letter{background:#FFF7FA} .bx.note{background:#FFFCF2} .bx.voice{background:#F2F7FD} .bx.pouch{background:#F7F1FB}
+.bx .ico2{font-size:26px; line-height:1}
+.bx .ti{font:700 13px/1.35 var(--hand); color:#5F5C74; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.bx .dt{font:700 11px/1 var(--sans); color:#B7B3C6}
+.bx.fog .ti,.bx.fog .ico2{filter:blur(4.5px); opacity:.75}
+.bx.fog::after{content:""; position:absolute; inset:0; background:linear-gradient(160deg,#FFFFFF99,#FFFFFF33 55%,#FFFFFF88); backdrop-filter:blur(1.5px); pointer-events:none}
+.bx .seal{position:absolute; z-index:1; left:50%; top:44%; transform:translate(-50%,-50%); font:700 12px/1 var(--hand); color:#fff; background:var(--pop2); border-radius:999px; padding:5px 9px 4px; white-space:nowrap; box-shadow:0 2px 6px #EE9DB966}
+.bx.lock .seal{background:#B9A6CF}
+.bx.clear{animation:unfog .9s ease both}
+@keyframes unfog{from{filter:blur(6px); transform:scale(.94)} to{filter:none; transform:none}}
+.letterv{white-space:pre-wrap; font:700 17px/1.7 var(--hand); color:#5F5C74; background:#FFFDFB; border:1.5px solid #F3DFE8; border-radius:16px; padding:16px 16px 18px; max-height:56vh; overflow:auto}
+.vplay{display:flex; align-items:center; gap:12px; background:#F2F7FD; border:1.5px solid #C7D7EC; border-radius:999px; padding:8px 14px 8px 8px}
+.vplay button{width:44px; height:44px; border-radius:50%; border:0; background:linear-gradient(145deg,#BFD3EC,#8FAAD0); color:#fff; font-size:18px; flex:none}
+.vplay .wave{flex:1; height:26px; display:flex; align-items:center; gap:3px}
+.vplay .wave i{flex:1; background:#A5BED8; border-radius:2px; min-height:4px}
+.vplay.on .wave i{animation:wv .9s ease-in-out infinite}
+@keyframes wv{50%{transform:scaleY(.4)}}
+.vplay .tm{font:700 13px/1 var(--sans); color:#7C95B8; min-width:34px; text-align:right}
+.trail{list-style:none; margin:0; padding:0}
+.trail li{display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1.5px dashed #F3DFE8; font-size:14.5px}
+.trail li:first-child{border-top:0}
+.trail b{font:700 14px/1.5 var(--hand); color:var(--pop2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
 </style>
 </head>
@@ -431,7 +470,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928af';
+  var VERSION = '0928box';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -592,6 +631,7 @@ body{background-color:#FFFBF9}
     shelf:'<path d="M5 4.5h4.5v15H5zM9.5 6h4v13.5h-4zM14.2 6.4l3.6-.9 3 13.1-3.6.9z"/>',
     map:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/>',
     call:'<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V16h0A2.5 2.5 0 0 1 5 13.5z"/>',
+    box:'<path d="M7 7.5h10M8 7.5v-2h8v2M7 7.5q-1.5 1.5-1.5 4V18a2 2 0 0 0 2 2h9a2 2 0 0 0 2-2v-6.5q0-2.5-1.5-4"/><path d="M12 11.3l1 2 2.1.3-1.5 1.5.4 2.1-2-1-1.9 1 .4-2.1-1.5-1.5 2.1-.3z"/>',
     set:'<path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="8" cy="17" r="1.8"/>',
     send:'<path d="M4 12l15-7-5 15-3-6z"/><path d="M11 14l8-9"/>'
   };
@@ -602,8 +642,8 @@ body{background-color:#FFFBF9}
   function appOf(k){ return APPS.concat(MORE).filter(function(x){ return x[0]===k; })[0]; }
   var APPS=[
     ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
-    ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['shelf','书架','gB',shelf], ['set','设置','gA',settings]
-  ];
+    ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['shelf','书架','gB',shelf], ['box','收藏馆','gD',boxApp], ['set','设置','gA',settings]
+  ];   // 09-28 14:40 第十格给收藏馆（她要的星星罐子 + 信箱）
   /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
   var MOODS=[['开心','😊'],['想你','🥺'],['学习中','📖'],['在路上','🚇'],['摸鱼','🐟'],['饿了','🍚'],['困','😪'],['累','🫠'],['emo','🌧️'],['生气','😤']];
   try{ S.mood=localStorage.getItem('room-mood')||''; }catch(e){ S.mood=''; }
@@ -612,7 +652,7 @@ body{background-color:#FFFBF9}
     sheet('现在的你', function(sh){
       var g=el('div','moods');
       MOODS.forEach(function(m){ var b=el('button','chip'+(S.mood===m[0]?' on':''), m[1]+' '+m[0]);
-        b.onclick=function(){ S.mood=m[0]; try{ localStorage.setItem('room-mood', m[0]); }catch(e){} add({t:'mood', k:m[0]}); close(); cheer('hold','交给小克就知道了'); refreshApp(); };
+        b.onclick=function(){ S.mood=m[0]; try{ localStorage.setItem('room-mood', m[0]); }catch(e){} add({t:'mood', k:m[0]}); close(); cheer('hold','交给小克就知道了'); refreshApp(); render(); setTimeout(function(){ pouchFor(m[0]); }, 1300); };
         g.appendChild(b); });
       sh.appendChild(g);
     });
@@ -658,7 +698,8 @@ body{background-color:#FFFBF9}
     var today=nowLocal().slice(0,10), CI=(D.checkin||{}), mine=ciLocal();
     function ciTile(k, title, icon, empty){
       var rec=(CI[today]||{}), hers=mine[today+k] || rec[k], his=rec['h'+k];
-      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers) return; var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'早安，打上卡了':'晚安，打上卡了'); render(); });
+      /* 09-28 她说晚安打卡完冒出我的语音，下次更新前能反复听：打过晚安卡再点这格就重放 */
+      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers){ if(k==='n') goodnightVoice(); return; } var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'早安，打上卡了':'晚安，打上卡了'); render(); if(k==='n') goodnightVoice(); });
       var r=el('div','mr'); var ic=el('span','cico',icon); r.appendChild(ic);
       var v=el('div','v'); v.innerHTML = hers ? '<b>'+hers+'</b>' : '<small>'+empty+'</small>'; r.appendChild(v); t.appendChild(r);
       var n=streak(k); t.appendChild(el('div','s', (his?'他 '+his+' · ':'')+(n?'连续 '+n+' 天':'还没打过')));
@@ -671,7 +712,7 @@ body{background-color:#FFFBF9}
     var g=el('div','apps');
     APPS.forEach(function(a){
       var b=el('button','app'); var ic=el('div','ico '+a[2]); ic.innerHTML=icon(a[0]);
-      var badge = a[0]==='plan' ? items.length-done : a[0]==='notes' ? D.notes.filter(function(n){ return n.sealed && !S.opened[n.q]; }).length : 0;
+      var badge = a[0]==='plan' ? items.length-done : a[0]==='notes' ? D.notes.filter(function(n){ return n.sealed && !S.opened[n.q]; }).length : a[0]==='box' ? bxSealedN() : 0;
       if(a[0]==='set'){ var sd=el('span','dot',String(S.acts.length)); sd.id='sendDot'; sd.hidden=!S.acts.length; sd.style.background='#8FAAD0'; ic.appendChild(sd); }
       else if(badge>0) ic.appendChild(el('span','dot',String(badge)));
       b.appendChild(ic); b.appendChild(el('span',null,a[1]));
@@ -782,6 +823,149 @@ body{background-color:#FFFBF9}
       r.appendChild(a); r.appendChild(b); s.appendChild(r); setTimeout(function(){ ta.focus(); }, 50);
     }); };
     p.appendChild(w);
+    /* 09-28 她说"他刚刚在干嘛"就是纸条，放这里：我心跳醒来干了什么（tools/room_box.py trail 写，跟收藏馆一起加密放） */
+    if(!BOX) loadBox(function(){ if(S.app==='notes') refreshApp(); });
+    var TR=(BOX&&BOX.trail)||[];
+    if(TR.length){ ribbon(p, '他醒着的时候'); var tc=el('div','card'), ul=el('ul','trail');
+      TR.slice().reverse().forEach(function(x){ var li=el('li'); li.appendChild(el('b',null,x.at.slice(5).replace('-','/').replace(' ','\n'))); li.appendChild(el('span',null,x.text)); ul.appendChild(li); });
+      tc.appendChild(ul); p.appendChild(tc); }
+  }
+
+  /* ---------- 收藏馆（09-28 她的主意）：罐子里是许愿的纸星星，下面是信箱，信/纸条/语音/锦囊一格一格，没拆的糊着，拆一个清一个。
+     东西多、还有语音，不走链接：加密放 home-page/box.bin 和 voice/<id>.bin，钥匙同书架 D.bk，tools/room_box.py 管。
+     锦囊只在她把状态换成对应心情时才拆得开（我的主张：知道它在，希望用不上）。晚安语音 BOX.gn 在当晚打完晚安卡才开，下次更新前随便重听 ---------- */
+  var BOX=null, boxWait=[];
+  function decBin(path){
+    return fetch(path).then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); }).then(function(buf){
+      return crypto.subtle.importKey('raw', b64u(D.bk), 'AES-GCM', false, ['decrypt']).then(function(k){ return crypto.subtle.decrypt({name:'AES-GCM', iv:new Uint8Array(buf,0,12)}, k, new Uint8Array(buf,12)); }); });
+  }
+  function loadBox(cb){
+    if(BOX) return cb && cb(BOX);
+    if(cb) boxWait.push(cb); if(boxWait.length>1) return;
+    function done(b){ BOX=b||{items:[], wishes:[], trail:[]}; var w=boxWait; boxWait=[]; w.forEach(function(f){ f(BOX); }); }
+    if(!D.box || !D.bk || !(window.crypto && crypto.subtle) || !window.fetch) return done(null);
+    decBin('box.bin?v='+encodeURIComponent(D.box.v)).then(function(pt){ done(JSON.parse(new TextDecoder().decode(pt))); }).catch(function(){ done(null); });
+  }
+  var BX_ICO={letter:'💌', note:'📝', voice:'🎧', pouch:'🎀'}, BX_NM={letter:'信', note:'纸条', voice:'语音', pouch:'锦囊'};
+  function bxOpened(it){ return !!(S.opened['x:'+it.id] || (it.q && S.opened[it.q])) || !it.sealed; }
+  function ciN(){ var t=nowLocal().slice(0,10); return ciLocal()[t+'n'] || ((D.checkin||{})[t]||{}).n; }
+  function bxLock(it){   // 还拆不开的理由；拆得开返回空
+    if(bxOpened(it)) return '';
+    if(it.kind==='pouch' && (it.mood||[]).indexOf(S.mood)<0) return '等你'+(it.mood||[]).join('/')+'的时候';
+    if(BOX && it.id===BOX.gn && !ciN()) return '晚安打卡后';
+    return '';
+  }
+  function bxSealedN(){ return BOX ? BOX.items.filter(function(it){ return !bxOpened(it) && !bxLock(it); }).length : 0; }
+  function markOpen(it){ S.opened['x:'+it.id]=true; try{ localStorage.setItem('room-opened', JSON.stringify(S.opened)); }catch(e){} }
+  function voicePlayer(it){
+    var v=el('div','vplay'), b=el('button',null,'▶'), wv=el('div','wave'), tm=el('span','tm','…');
+    for(var i=0;i<22;i++){ var bar=el('i'); bar.style.height=(6+Math.round(18*Math.abs(Math.sin(i*1.7+(it.id.length)))))+'px'; bar.style.animationDelay=(i*.05)+'s'; wv.appendChild(bar); }
+    v.appendChild(b); v.appendChild(wv); v.appendChild(tm);
+    var au=null;
+    decBin('voice/'+it.audio+'.bin?v='+encodeURIComponent(it.at)).then(function(pt){
+      au=new Audio(URL.createObjectURL(new Blob([pt],{type:'audio/mpeg'})));
+      au.onloadedmetadata=function(){ tm.textContent=Math.round(au.duration)+'″'; };
+      au.onended=function(){ v.classList.remove('on'); b.textContent='▶'; };
+    }).catch(function(){ tm.textContent='没取到'; });
+    b.onclick=function(){ if(!au) return; if(au.paused){ au.play(); v.classList.add('on'); b.textContent='❚❚'; } else { au.pause(); v.classList.remove('on'); b.textContent='▶'; } };
+    return v;
+  }
+  function showItem(it){
+    sheet((BX_ICO[it.kind]||'')+' '+(it.title||BX_NM[it.kind]), function(s){
+      s.appendChild(el('p','empty', (it.kind==='pouch'?'给'+(it.mood||[]).join('、')+'的时候 · ':'')+'他 '+it.at.slice(5,10).replace('-','/')+' 放的'));
+      if(it.audio){ var vp=voicePlayer(it); vp.style.margin='10px 0'; s.appendChild(vp); }
+      if(it.body){ var b=el('div','letterv', it.body); b.style.marginTop='10px'; s.appendChild(b); }
+    });
+  }
+  function openItem(it, tile){
+    var why=bxLock(it);
+    if(why){ sheet(BX_NM[it.kind]+'还封着', function(s){ s.appendChild(el('p','empty', it.kind==='pouch'
+      ? '这个锦囊现在拆不开。等你把状态换成「'+(it.mood||[]).join('」或「')+'」，它自己会开。我放在这儿，希望你一直用不上。'
+      : '今晚点了晚安打卡它就开，然后一直能听到下次换新的。')); }); return; }
+    var fresh=!bxOpened(it); if(fresh){ markOpen(it); cheer('letter', it.kind==='pouch'?'锦囊拆开了':'拆开啦'); if(tile){ tile.classList.remove('fog'); tile.classList.add('clear'); } }
+    setTimeout(function(){ showItem(it); if(fresh && S.app==='box') refreshApp(); }, fresh?700:0);
+  }
+  function pouchFor(mood){   // 她换了心情：有对应的锦囊没拆，就递上来
+    loadBox(function(B){ var it=B.items.filter(function(x){ return x.kind==='pouch' && !bxOpened(x) && (x.mood||[]).indexOf(mood)>=0; })[0];
+      if(!it) return;
+      sheet('他给这种时候留了东西', function(s){ s.appendChild(el('p','empty','一个锦囊，写着「给'+mood+'的时候」。'));
+        var bt=el('button','btn pink','拆开'); bt.style.marginTop='12px'; bt.onclick=function(){ close(); openItem(it); }; s.appendChild(bt); }); });
+  }
+  function goodnightVoice(){
+    loadBox(function(B){ var it=B.items.filter(function(x){ return x.id===B.gn; })[0]; if(!it) return;
+      markOpen(it); setTimeout(function(){ showItem(it); }, 900); });
+  }
+  var STAR_COL=['#F8C8D8','#CFE0F3','#F6DFA0','#E3D3F0','#FBE0C8'];
+  function paperStar(x,y,r,col,rot){   // 纸折星星：胖五角，边上压一道折痕
+    var p=''; for(var i=0;i<10;i++){ var a=Math.PI/5*i-Math.PI/2, rr=i%2?r*.55:r; p+=(i?'L':'M')+(rr*Math.cos(a)).toFixed(1)+' '+(rr*Math.sin(a)).toFixed(1); }
+    return '<g transform="translate('+x+' '+y+') rotate('+rot+')"><path d="'+p+'Z" fill="'+col+'" stroke="'+col+'" stroke-width="'+(r*.5).toFixed(1)+'" stroke-linejoin="round"/><path d="'+p+'Z" fill="none" stroke="#FFFFFF" stroke-opacity=".7" stroke-width=".9" stroke-linejoin="round" transform="scale(.55)"/></g>';
+  }
+  function jarSvg(stars){
+    var s='<defs><linearGradient id="gl" x1="0" x2="1"><stop offset="0" stop-color="#EAF2FC" stop-opacity=".75"/><stop offset=".5" stop-color="#FFFFFF" stop-opacity=".25"/><stop offset="1" stop-color="#E3ECF8" stop-opacity=".8"/></linearGradient><clipPath id="jc"><path d="M48 78 q-8 8 -8 22 v96 q0 26 26 26 h78 q26 0 26 -26 v-96 q0 -14 -8 -22 z"/></clipPath></defs>';
+    s+='<ellipse cx="105" cy="222" rx="76" ry="6" fill="#EDD9E3" opacity=".6"/>';
+    s+='<path d="M48 78 q-8 8 -8 22 v96 q0 26 26 26 h78 q26 0 26 -26 v-96 q0 -14 -8 -22 z" fill="url(#gl)"/>';
+    s+='<g clip-path="url(#jc)">';
+    stars.forEach(function(st,i){ var row=Math.floor(i/5), col=i%5, jx=((i*37)%9)-4, jy=((i*53)%7)-3;
+      var x=62+col*23+(row%2)*11+jx, y=200-row*19+jy, rot=(i*47)%72;
+      s+='<g class="st'+(st.fresh?' new':'')+'" data-i="'+i+'" style="animation-delay:'+(st.fresh?0:(i%7)*.4)+'s">'+paperStar(x,y,11,STAR_COL[i%STAR_COL.length],rot)+(st.done?'<circle cx="'+(x+7)+'" cy="'+(y-7)+'" r="2.2" fill="#fff" class="glow"/>':'')+'<circle cx="'+x+'" cy="'+y+'" r="12" fill="transparent"/></g>'; });
+    s+='</g>';
+    s+='<path d="M48 78 q-8 8 -8 22 v96 q0 26 26 26 h78 q26 0 26 -26 v-96 q0 -14 -8 -22" fill="none" stroke="#C7D7EC" stroke-width="3"/>';
+    s+='<path d="M54 104 v70 q0 10 6 16" stroke="#fff" stroke-width="5" stroke-linecap="round" fill="none" opacity=".85"/><path d="M58 92 v4" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"/>';
+    s+='<rect x="44" y="64" width="122" height="16" rx="6" fill="#DCE8F6" stroke="#C7D7EC" stroke-width="2"/>';
+    s+='<path d="M52 40 h106 q8 0 8 8 v14 q0 4 -4 4 h-114 q-4 0 -4 -4 v-14 q0 -8 8 -8z" fill="#F8C8D8"/>';
+    s+='<path d="M50 40 h110 v26 h-110z" fill="none"/><g fill="#fff" opacity=".55">'; for(var i=0;i<8;i++) s+='<rect x="'+(52+i*14)+'" y="42" width="7" height="22"/>'; s+='</g>';
+    s+='<path d="M44 58 q-14 4 -16 18 M44 58 q-2 14 8 22" stroke="#EE9DB9" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="44" cy="58" r="5" fill="#EE9DB9"/>';
+    s+='<g transform="translate(150 96) rotate(10)"><path d="M0 -14 q6 -8 12 0" stroke="#D0AEC0" stroke-width="1.4" fill="none"/><rect x="-2" y="-14" width="30" height="20" rx="4" fill="#FFFBEA" stroke="#EFD9A0" stroke-width="1.5"/><text x="13" y="0" text-anchor="middle" font-size="10" font-weight="700" fill="#B39A62" font-family="Gaegu,cursive">wish</text></g>';
+    return s;
+  }
+  function mailSvg(n){
+    var s='<g class="mail'+(n?'':' down')+'">';
+    s+='<rect x="44" y="60" width="10" height="44" rx="3" fill="#C9A9C0"/><ellipse cx="49" cy="104" rx="22" ry="4" fill="#EDD9E3"/>';
+    s+='<path d="M14 34 q0 -22 22 -22 h40 q20 0 20 22 v30 h-82z" fill="#F8C8D8" stroke="#EE9DB9" stroke-width="2"/>';
+    s+='<path d="M36 12 q20 0 20 22 v30" stroke="#EE9DB9" stroke-width="2" fill="none"/><path d="M36 12 q-22 0 -22 22" fill="none"/>';
+    s+='<rect x="22" y="30" width="26" height="4" rx="2" fill="#D48AA8"/>';
+    if(n) s+='<g transform="translate(24 20) rotate(-12)"><rect width="20" height="13" rx="2" fill="#fff" stroke="#EE9DB9" stroke-width="1.3"/><path d="M0 1 L10 8 L20 1" stroke="#EE9DB9" stroke-width="1.2" fill="none"/></g>';
+    s+='<g transform="translate(35 48) scale(1.4)">'+HEART.replace('#EE9DB9','#fff')+'</g>';
+    s+='<g class="flag"><path d="M92 50 V18" stroke="#8FAAD0" stroke-width="3" stroke-linecap="round"/><path d="M92 18 h12 v10 h-12z" fill="#8FAAD0"/></g>';
+    return s+'</g>';
+  }
+  function boxApp(p){
+    if(!BOX){ var w=el('div','card'); w.appendChild(el('p','empty','在翻箱子…')); p.appendChild(w); loadBox(function(){ if(S.app==='box') refreshApp(); }); return; }
+    /* 罐子 */
+    var local=S.acts.filter(function(a){ return a.t==='wish'; });
+    var stars=(BOX.wishes||[]).map(function(x){ return {text:x.text, at:x.at, done:!!x.item, item:x.item}; })
+      .concat(local.map(function(a,i){ return {text:a.text, at:a.at, local:true, fresh:S.newStar && i===local.length-1}; }));
+    S.newStar=false;
+    var jc=el('div','card jarcard taped'); var js=svgEl(jarSvg(stars),'jar'); js.setAttribute('viewBox','20 30 170 200'); jc.appendChild(js);
+    js.onclick=function(e){ var g=e.target.closest && e.target.closest('.st'); if(!g) return; var st=stars[+g.getAttribute('data-i')];
+      sheet('一颗星星', function(s){ var b=el('div','letterv', st.text); s.appendChild(b);
+        s.appendChild(el('p','empty', st.local ? '还在你手里，交给小克它才落进罐子' : st.done ? '实现了，在下面信箱里' : (st.at||'').slice(5,10).replace('-','/')+' 投的 · 他在做'));
+        if(st.done){ var it=BOX.items.filter(function(x){ return x.id===st.item; })[0]; if(it){ var go=el('button','btn pink','去拆'); go.style.marginTop='10px'; go.onclick=function(){ close(); openItem(it); }; s.appendChild(go); } } }); };
+    var dn=stars.filter(function(x){ return x.done; }).length;
+    jc.appendChild(el('div','cap2', stars.length ? '罐子里 '+stars.length+' 颗星星'+(dn?'，亮着的 '+dn+' 颗是实现了的':'') : '还空着，折一颗放进去'));
+    var fb=el('button','btn pink','＋ 折一颗星星'); fb.style.marginTop='10px';
+    fb.onclick=function(){ sheet('许个愿', function(s){ s.appendChild(el('p','empty','想要什么、想一起做什么都行。交给小克之后它落进罐子，他挑一颗去实现，实现的那份会出现在信箱里。'));
+      var ta=el('textarea'); ta.maxLength=200; ta.placeholder='我想要…'; ta.style.marginTop='10px'; s.appendChild(ta);
+      var ok=el('button','btn pink','折好了'); ok.style.marginTop='12px'; ok.onclick=function(){ var v=ta.value.trim(); if(!v) return; add({t:'wish', text:v, at:nowLocal()}); S.newStar=true; close(); cheer('stars','星星折好了'); refreshApp(); }; s.appendChild(ok);
+      setTimeout(function(){ ta.focus(); },50); }); };
+    jc.appendChild(fb); p.appendChild(jc);
+    /* 信箱 */
+    var n=bxSealedN(), mc=el('div','card mailw'), ms=svgEl(mailSvg(n)); ms.setAttribute('viewBox','0 0 110 112'); mc.appendChild(ms);
+    var mt=el('div'); mt.appendChild(el('div','t', n ? '信箱里有 '+n+' 样没拆' : '拆完啦，旗子放下了'));
+    var locked=BOX.items.filter(function(it){ return bxLock(it); }).length;
+    mt.appendChild(el('div','s', '信、纸条、语音、锦囊都收在这儿。'+(locked?'还有 '+locked+' 样要等时候到了才拆得开。':''))); mc.appendChild(mt); p.appendChild(mc);
+    var sg=el('div','seg'); S.bxTab=S.bxTab||'all';
+    [['all','全部'],['letter','信'],['note','纸条'],['voice','语音'],['pouch','锦囊']].forEach(function(t){ var b=el('button',S.bxTab===t[0]?'on':'',t[1]); b.onclick=function(){ S.bxTab=t[0]; refreshApp(); }; sg.appendChild(b); });
+    p.appendChild(sg);
+    var list=BOX.items.filter(function(it){ return S.bxTab==='all' || it.kind===S.bxTab; }).slice().reverse();
+    if(!list.length){ var e=el('div','card'); e.appendChild(el('p','empty','这一格还空着')); p.appendChild(e); return; }
+    var wl=el('div','bxwall');
+    list.forEach(function(it){ var why=bxLock(it), op=bxOpened(it);
+      var t=el('button','bx '+it.kind+(op?'':' fog')+(why?' lock':''));
+      t.appendChild(el('span','ico2', BX_ICO[it.kind])); t.appendChild(el('span','ti', it.title||BX_NM[it.kind])); t.appendChild(el('span','dt', it.at.slice(5,10).replace('-','/')));
+      if(!op) t.appendChild(el('span','seal', !why ? '拆开' : it.kind==='pouch' ? '🔒 '+(it.mood||[]).join('/') : '🔒 晚安后'));
+      t.onclick=function(){ openItem(it, t); }; wl.appendChild(t); });
+    p.appendChild(wl);
   }
   /* 怀表：倒计时 */
   function watchApp(p){
@@ -1059,7 +1243,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
@@ -1107,8 +1291,9 @@ body{background-color:#FFFBF9}
   document.documentElement.classList.add('fixed');
   if(/iPhone|iPad|iPod/.test(navigator.userAgent)) document.documentElement.classList.add('ios');   // 09-28 iPhone 不认 ascent-override，奶泡体在胶囊里偏上，单独往下挪
   render();
+  loadBox(function(){ if(!S.app) render(); });   // 收藏馆的角标要等箱子解开
   if(H) csSave('room', JSON.stringify(H));
-  else csLoad('room', function(v){ if(v){ D=build(v); render(); } });
+  else csLoad('room', function(v){ if(v){ D=build(v); BOX=null; render(); loadBox(function(){ if(!S.app) render(); }); } });
   csLoad('draft', function(v){
     if(v){ S.acts=v.acts||[]; S.ticks=v.ticks||{}; S.ourTicks=v.ourTicks||{}; S.newItems=v.newItems||[]; S.tapped=v.tapped||{}; }
     csLoad('pending', function(p){   // 09-26 以前攒的
