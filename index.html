@@ -223,6 +223,7 @@ textarea{resize:vertical; min-height:120px}
 .mini .mr{display:flex; align-items:center; gap:8px}
 .mini.ms{background:#FFF8E2; border-color:#FFF8E2; rotate:-1deg}
 .mini.ms .k{color:#B39A62}
+.mini .dot{position:absolute; top:8px; right:10px; min-width:20px; height:20px; border-radius:10px; background:var(--pop2); color:#fff; font:700 11px/20px var(--sans); padding:0 5px; border:2px solid #fff}
 .mini.ms .t{font:700 16px/1.35 var(--hand); color:var(--ink); display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; margin-top:4px}
 .mini .mdisc{width:42px; height:42px; flex:none; border-radius:50%; background:repeating-radial-gradient(circle,#2E2A33 0 1.5px,#3A3540 1.5px 3px); display:grid; place-items:center; animation:spin 8s linear infinite}
 .mini .mdisc img{width:18px; height:18px; border-radius:50%; object-fit:cover; border:1.5px solid #fff}
@@ -235,6 +236,18 @@ textarea{resize:vertical; min-height:120px}
 .mini.ci.done .v b{color:var(--pop2)}
 .hero .mood .mt2{display:inline-block}
 .ios .hero .mood .mt2{transform:translateY(.14em)}   /* 她 09-28 07:11 在 iPhone 上看过：刚刚好 */
+.win.app-map{overflow:hidden; overscroll-behavior:none; background:radial-gradient(ellipse at 50% 40%, #1E2340 0, #0B0E1F 70%) !important}
+.win.app-map .bar{background:#1E2340CC; border-color:#3A4270} .win.app-map .bar h1{color:#E6ECFA}
+.globe{position:relative; width:100%; height:calc(100dvh - 190px); touch-action:none}
+.gtip{position:absolute; inset:0; display:grid; place-items:center; color:#A5BED8; font:700 16px/1 var(--hand)}
+.gflag{transform:translate(-4px,-100%); display:flex; align-items:flex-end; gap:2px; cursor:pointer; white-space:nowrap}
+.gflag b{font-size:20px; line-height:1; filter:drop-shadow(0 0 4px #fff8)}
+.gflag.been b{color:#F8A8C4} .gflag.want b{color:#9EC3F2}
+.gflag span{font:700 12px/1.2 var(--hand); color:#fff; background:#0008; border-radius:6px; padding:1px 5px; margin-bottom:12px}
+.glegend{display:flex; justify-content:center; gap:16px; color:#C9D3EA; font:700 14px/1 var(--hand); margin-top:4px}
+.glegend i{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:middle}
+.glegend .gp{background:#F8A8C4} .glegend .gb{background:#9EC3F2}
+.gadd{display:block; margin:12px auto 0; border:1.5px solid #3A4270; background:#1E2340; color:#E6ECFA; border-radius:999px; padding:10px 20px; font:700 16px/1 var(--hand)}
 .frame{position:relative}
 .frame .using{position:absolute; top:8px; right:8px; background:var(--pop2); color:#fff; font:700 12px/1 var(--hand); padding:4px 8px; border-radius:999px}
 .picks{display:flex; justify-content:center; gap:26px; margin:14px 0 4px}
@@ -417,14 +430,14 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928ac';
+  var VERSION = '0928ad';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
   var SAMPLE = window.ROOM_SAMPLE || {
     now:null, since:"2026-07-25", fromHim:"", timeline:[],
     today:{items:[], money:{spent:0, proper:0, snack:0}},
-    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''}, shelf:[], bk:'', listen:{songs:[], her:'', me:''}, checkin:{},
+    ours:[], notes:[], dates:[], period:{last:null, cycle:28}, mood:{her:'', me:''}, shelf:[], bk:'', listen:{songs:[], her:'', me:''}, checkin:{}, places:[],
     board:{cells:[], her:{pos:0,laps:0}, me:{pos:0,laps:0}, turn:"", card:null}
   };
   function readHash(){
@@ -576,6 +589,7 @@ body{background-color:#FFFBF9}
     money:'<ellipse cx="12" cy="13.5" rx="7.5" ry="5.5"/><path d="M9 8.5V7h6v1.5M17.5 11.5h2M10 13.5h4"/>',
     music:'<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>',
     shelf:'<path d="M5 4.5h4.5v15H5zM9.5 6h4v13.5h-4zM14.2 6.4l3.6-.9 3 13.1-3.6.9z"/>',
+    map:'<circle cx="12" cy="12" r="8"/><path d="M4 12h16M12 4c2.5 2.5 2.5 13.5 0 16M12 4c-2.5 2.5-2.5 13.5 0 16"/>',
     call:'<path d="M5 6.5A2.5 2.5 0 0 1 7.5 4h9A2.5 2.5 0 0 1 19 6.5v7a2.5 2.5 0 0 1-2.5 2.5H11l-4 3.5V16h0A2.5 2.5 0 0 1 5 13.5z"/>',
     set:'<path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="8" cy="17" r="1.8"/>',
     send:'<path d="M4 12l15-7-5 15-3-6z"/><path d="M11 14l8-9"/>'
@@ -583,8 +597,10 @@ body{background-color:#FFFBF9}
   function icon(k){ return '<svg viewBox="0 0 24 24">'+IC[k]+'</svg>'; }
 
   /* ---------- 桌面 ---------- */
+  var MORE=[['notes','小克留的','gA',notes]];   // 09-28 纸条不上主屏了（她说不怎么用），从“小克留的”那格进
+  function appOf(k){ return APPS.concat(MORE).filter(function(x){ return x[0]===k; })[0]; }
   var APPS=[
-    ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['notes','纸条','gA',notes], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
+    ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['map','地图','gA',mapApp], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
     ['board','大富翁','gA',board], ['money','存钱罐','gD',money], ['music','听歌','gC',music], ['shelf','书架','gB',shelf], ['set','设置','gA',settings]
   ];
   /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
@@ -634,7 +650,8 @@ body{background-color:#FFFBF9}
     var wr=el('div','mr'); wr.appendChild(svgEl(watchFace(c0), null, 'width:44px;height:44px'));
     var wv=el('div','v'); wv.innerHTML = c0.days===0 ? '<b>今天</b>' : '<b>'+c0.days+'</b><small>天</small>'; wr.appendChild(wv); w.appendChild(wr);
     w.appendChild(el('div','s', c0.days===0 ? c0.name : '到'+c0.name));
-    var st=mini('ms','小克留的', function(){ if(D.fromHim) sheet('小克留的', function(sh){ var q=el('p',null,D.fromHim); q.style.cssText='font:700 19px/1.6 var(--hand);color:var(--ink);margin:4px 0 0'; sh.appendChild(q); }); });
+    var st=mini('ms','小克留的', function(b){ openApp('notes', b); });
+    var sealedN=D.notes.filter(function(n){ return n.sealed && !S.opened[n.q]; }).length; if(sealedN) st.appendChild(el('span','dot',String(sealedN)));
     st.appendChild(el('div','t', D.fromHim || '今天还没留'));
     /* 09-28 06:15 她要早安打卡、晚安打卡，替掉“今天”和“在听”。她点了记在手机里并交给我（act checkin）；我那头的早安晚安时间写 data.json 的 checkin */
     var today=nowLocal().slice(0,10), CI=(D.checkin||{}), mine=ciLocal();
@@ -676,7 +693,7 @@ body{background-color:#FFFBF9}
   /* ---------- app 窗口 ---------- */
   var win=null;
   function openApp(k, from){
-    S.app=k; var a=APPS.filter(function(x){ return x[0]===k; })[0];
+    S.app=k; var a=appOf(k);
     closeWin(true);
     win=el('div','win app-'+k);
     if(from){ var r=from.getBoundingClientRect(); win.style.transformOrigin=(r.left+r.width/2)+'px '+(r.top+r.height/2)+'px'; }
@@ -687,7 +704,7 @@ body{background-color:#FFFBF9}
     document.body.appendChild(win);
     if(inTg && W.BackButton){ try{ W.BackButton.show(); }catch(e){} }
   }
-  function refreshApp(){ if(!win || !S.app) return; win.classList.add('refresh'); var body=win.querySelector('.body'); var y=win.scrollTop; body.innerHTML=''; APPS.filter(function(x){ return x[0]===S.app; })[0][3](body); win.scrollTop=y; }
+  function refreshApp(){ if(!win || !S.app) return; win.classList.add('refresh'); var body=win.querySelector('.body'); var y=win.scrollTop; body.innerHTML=''; appOf(S.app)[3](body); win.scrollTop=y; }
   function closeWin(now){ if(!win) return; var w=win; win=null; if(now){ w.remove(); return; } w.classList.add('closing'); setTimeout(function(){ w.remove(); },200); }
   function closeApp(){ S.app=null; closeWin(false); if(inTg && W.BackButton){ try{ W.BackButton.hide(); }catch(e){} } render(); }
   if(inTg && W.BackButton){ try{ W.BackButton.onClick(function(){ if(cur) close(); else closeApp(); }); }catch(e){} }
@@ -741,8 +758,9 @@ body{background-color:#FFFBF9}
   }
   /* 纸条 */
   function notes(p){
-    banner(p, 'letter', '信箱', '他写的，和你写的');
-    ribbon(p, '他写给你的');
+    banner(p, 'letter', '小克留的', '今天这句，和以前写的信');
+    if(D.fromHim){ var td=el('div','sticky'); td.appendChild(el('div','k','今天')); var tt=el('div','t',D.fromHim); tt.style.webkitLineClamp='unset'; td.appendChild(tt); p.appendChild(td); }
+    ribbon(p, '以前写的信');
     D.notes.forEach(function(n, i){
       var sealed=n.sealed && !S.opened[n.q];
       var c=el('button','env'+(sealed?' sealed':'')); c.appendChild(el('div','q',n.q)); var mt=el('div','meta', sealed?'点一下拆信':n.meta); mt.appendChild(el('span','pill'+(sealed?' y':''), sealed?'封着的':'他写的')); c.appendChild(mt); c.appendChild(el('div','b',n.body));
@@ -941,6 +959,39 @@ body{background-color:#FFFBF9}
       var bt=el('button','btn','＋ 放一首'); bt.style.marginTop='12px'; bt.onclick=paste; sh.appendChild(bt);
     });
   }
+  /* 地图（09-28 她给了一张高德夜景地球的截图说“就要这个效果”）。globe.gl + NASA 黑色大理石夜景图，都从 jsdelivr 现拿。
+     粉旗 = 我们去过的（剧本、梦、聊过的都算），蓝旗 = 想一起去的。只标城市。data.json 的 places：{n,lat,lng,k:'been'|'want',d,t} */
+  var GLOBE_JS='https://cdn.jsdelivr.net/npm/globe.gl@2/dist/globe.gl.min.js', globeLoading=null;
+  function needGlobe(cb){ if(window.Globe) return cb(); if(!globeLoading){ globeLoading=[]; var sc=document.createElement('script'); sc.src=GLOBE_JS; sc.onload=function(){ globeLoading.forEach(function(f){ f(); }); }; document.head.appendChild(sc); } globeLoading.push(cb); }
+  function mapApp(p){
+    var box=el('div','globe'), tip=el('div','gtip','地球在路上…'); box.appendChild(tip); p.appendChild(box);
+    var lg=el('div','glegend'); lg.innerHTML='<span><i class="gp"></i>去过的</span><span><i class="gb"></i>想一起去的</span>'; p.appendChild(lg);
+    var add=el('button','gadd','＋ 插一面旗'); add.onclick=plantFlag; p.appendChild(add);
+    var PL=(D.places||[]);
+    needGlobe(function(){
+      if(!box.isConnected) return; tip.remove();
+      var w=box.clientWidth, h=box.clientHeight;
+      var g=Globe()(box).width(w).height(h).backgroundColor('rgba(0,0,0,0)')
+        .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
+        .showAtmosphere(true).atmosphereColor('#A5BED8').atmosphereAltitude(.18)
+        .htmlElementsData(PL).htmlLat('lat').htmlLng('lng').htmlAltitude(.01)
+        .htmlElement(function(d){ var e=document.createElement('div'); e.className='gflag '+(d.k==='want'?'want':'been'); e.innerHTML='<b>⚑</b><span>'+d.n+'</span>';
+          e.style.pointerEvents='auto'; e.onclick=function(ev){ ev.stopPropagation(); flagCard(d); }; return e; });
+      g.controls().autoRotate=true; g.controls().autoRotateSpeed=.35; g.controls().enableZoom=true;
+      var c0=PL.length?PL[PL.length-1]:{lat:32,lng:118}; g.pointOfView({lat:c0.lat, lng:c0.lng, altitude:1.7}, 0);
+      S.globe=g;
+    });
+  }
+  function flagCard(d){ sheet(d.n, function(sh){
+      sh.appendChild(el('div','cap', (d.k==='want'?'想一起去':'去过')+(d.d?' · '+d.d:'')));
+      if(d.t){ var q=el('p',null,d.t); q.style.cssText='font:700 18px/1.6 var(--hand);color:var(--ink);margin:8px 0 0'; sh.appendChild(q); } }); }
+  function plantFlag(){ sheet('插一面旗', function(sh){
+      sh.appendChild(el('p','empty','写个城市，再说一句为什么。交给他，他去查好插上。'));
+      var n=el('input'); n.type='text'; n.placeholder='比如：京都'; n.maxLength=20; n.style.marginTop='10px'; sh.appendChild(n);
+      var t=el('input'); t.type='text'; t.placeholder='一句话（可以不写）'; t.maxLength=60; t.style.marginTop='10px'; sh.appendChild(t);
+      var r=el('div','row'); r.style.marginTop='12px';
+      [['want','想一起去'],['been','去过的']].forEach(function(k){ var b=el('button', k[0]==='want'?'btn':'btn line', k[1]); b.onclick=function(){ var v=n.value.trim(); if(!v) return; add({t:'place', k:k[0], n:v, text:t.value.trim()}); close(); cheer('flag','交给他插旗'); }; r.appendChild(b); });
+      sh.appendChild(r); }); }
   /* 找我 */
   /* 书架（09-28 替掉“找我”：她点书我讲，她出题我写）。正文加密放 home-page/books/<id>.bin，钥匙是 D.bk，tools/room_book.py 管 */
   var BOOKS={};
@@ -1003,7 +1054,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'插了旗'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
