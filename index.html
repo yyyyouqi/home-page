@@ -179,7 +179,7 @@ textarea{resize:vertical; min-height:120px}
 .bpage{background:#FFFDF6; border-radius:14px; padding:14px 16px; box-shadow:inset 0 0 0 1.5px #F3E7D0; max-height:58dvh; overflow:auto}
 .bpage p{margin:0 0 .8em; font-size:16px; line-height:1.85; color:#5F5C74; text-indent:2em}
 .btn[disabled]{opacity:.4}
-.win.app-music{overflow:hidden; overscroll-behavior:none}   /* 09-28 她说唱片机锁住不滑 */
+.win.app-music,.win.app-money{overflow:hidden; overscroll-behavior:none}   /* 09-28 她说唱片机锁住不滑 */
 .win.app-music{background:radial-gradient(circle, #EDD9E3 1.1px, transparent 1.4px) 0 0/15px 15px, linear-gradient(#FFF5F8,#FFFBF9 60%) !important}
 .lis{display:flex; flex-direction:column; align-items:center; padding:0 6px 20px}
 .lis-top{display:flex; align-items:flex-start; justify-content:center; gap:10px; margin-top:4px; margin-bottom:6px}
@@ -417,7 +417,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0928ab';
+  var VERSION = '0928ac';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
