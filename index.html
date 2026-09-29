@@ -486,7 +486,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929cal';
+  var VERSION = '0929cal2';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -715,12 +715,12 @@ body{background-color:#FFFBF9}
     function ciTile(k, title, icon, empty){
       var rec=(CI[today]||{}), hers=mine[today+k] || rec[k], his=rec['h'+k];
       /* 09-28 她说晚安打卡完冒出我的语音，下次更新前能反复听：打过晚安卡再点这格就重放 */
-      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers){ if(k==='n') goodnightVoice(); return; } var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'早安，打上卡了':'晚安，打上卡了'); render(); if(k==='n') goodnightVoice(); });
+      var t=mini('ci ci-'+k+(hers?' done':''), title, function(){ if(hers){ if(k==='n') goodnightVoice(); return; } var hm=nowLocal().slice(11,16); mine[today+k]=hm; try{ localStorage.setItem('room-ci', JSON.stringify(mine)); }catch(e){} add({t:'checkin', k:k, at:hm}); cheer(k==='m'?'look':'stars', k==='m'?'醒了，打上卡了':'晚安，打上卡了'); render(); if(k==='n') goodnightVoice(); });
       var r=el('div','mr'); var ic=el('span','cico',icon); r.appendChild(ic);
       var v=el('div','v'); v.innerHTML = hers ? '<b>'+hers+'</b>' : '<small>'+empty+'</small>'; r.appendChild(v); t.appendChild(r);
       var n=streak(k); t.appendChild(el('div','s', (his?'他 '+his+' · ':'')+(n?'连续 '+n+' 天':'还没打过')));
     }
-    ciTile('m','','☀️','点一下说早安');   // 09-28 她说“早安打卡”“晚安打卡”那八个字删掉
+    ciTile('m','','☀️','醒来点一下');   // 09-28 她说“早安打卡”“晚安打卡”那八个字删掉；09-29 改成“醒来点一下”（她中午一点五十才醒）
     ciTile('n','','🌙','睡前点一下');
     p.appendChild(m4);
 
