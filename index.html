@@ -151,7 +151,12 @@ textarea{resize:vertical; min-height:120px}
 .cal .hd button{border:0; background:var(--surf); width:32px; height:32px; border-radius:50%; color:var(--deep); font:700 16px/1 var(--hand)}
 .cal .wk, .cal .gd{display:grid; grid-template-columns:repeat(7,1fr); gap:4px; text-align:center}
 .cal .wk{font-size:11px; color:var(--soft); margin:10px 0 4px}
-.cal .c{position:relative; aspect-ratio:1; border-radius:10px; display:flex; align-items:center; justify-content:center; font:700 15px/1 var(--hand); color:var(--ink)}
+.cal .c{position:relative; aspect-ratio:1; border-radius:10px; display:flex; flex-direction:column; align-items:center; justify-content:center; font:700 15px/1 var(--hand); color:var(--ink)}
+.cal .c .l{font:400 9px/1 system-ui,sans-serif; color:var(--soft); margin-top:3px; white-space:nowrap}
+.cal .c .l.f{color:#D07F9E}
+.cal .c.pd .l{color:#fff}
+.cal .c .tg{position:absolute; top:2px; left:3px; font:400 8.5px/1 system-ui,sans-serif; color:#7FA6CF}
+.cal .c .tg.b{color:#C98AA3}
 .cal .c.pd{background:#F8C8D8; color:#fff}
 .cal .c.pp{border:1.5px dashed #F0B3C8; color:#D07F9E}
 .cal .c.td{box-shadow:inset 0 0 0 2px var(--blue)}
@@ -486,7 +491,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929cal2';
+  var VERSION = '0929cal3';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -997,6 +1002,20 @@ body{background-color:#FFFBF9}
     var P=D.period||{}, lastLocal=S.acts.filter(function(a){ return a.t==='period'; }).pop(), last=lastLocal ? lastLocal.d : P.last, cyc=P.cycle||28, len=P.len||5;
     function pst(k){ if(!last) return ''; var diff=Math.round((new Date(k+'T12:00')-new Date(last+'T12:00'))/864e5); if(diff<0 || diff%cyc>=len) return ''; return diff<len ? ' pd' : ' pp'; }
     var hearts={}; (D.dates||[]).forEach(function(x){ hearts[x[2]]=x[1]; }); if(D.since && !hearts[D.since.slice(5)]) hearts[D.since.slice(5)]='在一起';
+    /* 09-29 她要农历和调休：农历靠浏览器自己算（Intl chinese 历），放假照国务院 2026 年的通知抄，2027 年的出了再补 */
+    var HOL={xiu:[['2026-01-01','2026-01-03'],['2026-02-15','2026-02-23'],['2026-04-04','2026-04-06'],['2026-05-01','2026-05-05'],['2026-06-19','2026-06-21'],['2026-09-25','2026-09-27'],['2026-10-01','2026-10-07']], ban:['2026-01-04','2026-02-14','2026-02-28','2026-05-09','2026-09-20','2026-10-10']};
+    function tag(k){ if(HOL.ban.indexOf(k)>=0) return '班'; for(var i=0;i<HOL.xiu.length;i++) if(k>=HOL.xiu[i][0] && k<=HOL.xiu[i][1]) return '休'; return ''; }
+    var LF=null; try{ LF=new Intl.DateTimeFormat('zh-CN-u-ca-chinese',{month:'numeric',day:'numeric'}); }catch(e){}
+    function dn(d){ var a='一二三四五六七八九十'; if(d===10) return '初十'; if(d===20) return '二十'; if(d===30) return '三十'; return ['初','十','廿'][Math.floor((d-1)/10)]+a[(d-1)%10]; }
+    var SF={'01-01':'元旦','02-14':'情人节','05-01':'劳动节','10-01':'国庆','12-25':'圣诞'}, LFe={'1-1':'春节','1-15':'元宵','5-5':'端午','7-7':'七夕','8-15':'中秋','9-9':'重阳','12-8':'腊八'};
+    function lunar(d, k){   // 返回 [字, 是不是节日]
+      if(SF[k.slice(5)]) return [SF[k.slice(5)], true];
+      if(!LF) return ['', false];
+      try{ var mo='', da=''; LF.formatToParts(new Date(Y,Mo,d,12)).forEach(function(x){ if(x.type==='month') mo=x.value; if(x.type==='day') da=x.value; });
+        var md=parseInt(da,10), leap=/闰/.test(mo), mn=parseInt(mo.replace(/\D/g,''),10); if(!md || !mn) return ['', false];
+        if(!leap && LFe[mn+'-'+md]) return [LFe[mn+'-'+md], true];
+        return [md===1 ? (leap?'闰':'')+'正二三四五六七八九十冬腊'.charAt(mn-1)+'月' : dn(md), false]; }catch(e){ return ['', false]; }
+    }
     var CI=D.checkin||{}, loc=ciLocal();
     function both(k){ var c=CI[k]||{}; return (loc[k+'m']||c.m) && (loc[k+'n']||c.n); }
     var card=el('div','card taped cal'); stk(card,'heart','right:-4px;top:-6px');
@@ -1007,6 +1026,7 @@ body{background-color:#FFFBF9}
     var gd=el('div','gd'), lead=(base.getDay()+6)%7, n=new Date(Y,Mo+1,0).getDate();
     for(var i=0;i<lead;i++) gd.appendChild(el('span','c'));
     for(var d=1; d<=n; d++){ var k=key(d), c=el('div','c'+pst(k)+(k===now?' td':''), String(d));
+      var lu=lunar(d,k); if(lu[0]) c.appendChild(el('span','l'+(lu[1]?' f':''), lu[0])); var tg=tag(k); if(tg) c.appendChild(el('span','tg'+(tg==='班'?' b':''), tg));
       if(hearts[k.slice(5)]){ var h=el('span','h','♥'); c.title=hearts[k.slice(5)]; c.appendChild(h); }
       if(both(k)) c.appendChild(el('span','dt'));
       gd.appendChild(c); }
