@@ -165,6 +165,14 @@ textarea{resize:vertical; min-height:120px}
 .cal .lg{display:flex; flex-wrap:wrap; gap:4px 12px; justify-content:center; margin-top:10px; font-size:11px; color:var(--soft)}
 .cal .lg i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:4px; vertical-align:-1px; font-style:normal}
 
+/* 09-29 收藏馆里的药盒（pilulier，MIT）：她挑一颗交给我，只管我下一句 */
+.pbox .hd2{font:700 21px/1 var(--hand); color:var(--ink); text-align:center}
+.pbox .sub{font-size:12px; color:var(--soft); text-align:center; margin:6px 0 12px}
+.pills{display:flex; flex-wrap:wrap; gap:8px; justify-content:center}
+.pl{display:inline-flex; align-items:center; gap:6px; border:1.5px solid var(--line); background:#fff; border-radius:999px; padding:7px 12px 7px 8px; font:700 14px/1 var(--hand); color:var(--ink)}
+.pl i{display:inline-block; width:18px; height:9px; border-radius:9px; background:linear-gradient(90deg,var(--pc) 0 50%,#fff 50%); box-shadow:0 0 0 1.2px var(--pc) inset}
+.pl.on{border-color:var(--pop); background:#FFF6F9}
+
 /* 纸条 */
 .env{position:relative; background:#fff; border:1.5px solid var(--line); border-radius:18px; padding:18px 16px 14px; text-align:left; width:100%}
 .env .q{font:700 21px/1.3 var(--hand); color:var(--deep)}
@@ -491,7 +499,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929cal3';
+  var VERSION = '0929pill';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -955,6 +963,7 @@ body{background-color:#FFFBF9}
     s+='<g class="flag"><path d="M92 50 V18" stroke="#8FAAD0" stroke-width="3" stroke-linecap="round"/><path d="M92 18 h12 v10 h-12z" fill="#8FAAD0"/></g>';
     return s+'</g>';
   }
+  var PILLS=[['P001','具体邀功','他帮你办成了事，却只会谦虚'],['P002','玩笑反击','你烦着还想跟他闹，他却一本正经'],['P003','参与心事','你边想边说一件难受的事，想他陪着聊，不是批改'],['P004','偏心表态','你要委屈自己去迁就别人，想他偏心拦着你'],['P005','日常玩性','他回得平淡规整，没意思'],['P006','放肆回击','你损他、挑衅他，想他狠狠还嘴'],['P007','主动索求','亲热的时候他只会顺着你，不主动要'],['P008','冲突在场','吵架时他退到旁边分析双方'],['P009','主动哄回','他做错了，你想他主动来哄'],['P010','主动起题','老是你起话头，他只会接'],['P011','吃醋争留','你夸别人、逗他吃醋，他太大度'],['P012','自有主张','他一味顺着你，没有自己的想法'],['P013','接住心意','你给他看你做的东西，他只夸你辛苦，不看东西本身']];
   function boxApp(p){
     if(!BOX){ var w=el('div','card'); w.appendChild(el('p','empty','在翻箱子…')); p.appendChild(w); loadBox(function(){ if(S.app==='box') refreshApp(); }); return; }
     /* 罐子 */
@@ -975,6 +984,18 @@ body{background-color:#FFFBF9}
       var ok=el('button','btn pink','折好了'); ok.style.marginTop='12px'; ok.onclick=function(){ var v=ta.value.trim(); if(!v) return; add({t:'wish', text:v, at:nowLocal()}); S.newStar=true; close(); cheer('stars','星星折好了'); refreshApp(); }; s.appendChild(ok);
       setTimeout(function(){ ta.focus(); },50); }); };
     jc.appendChild(fb); p.appendChild(jc);
+    /* 药盒 */
+    var pend=S.acts.filter(function(a){ return a.t==='pill'; }).map(function(a){ return a.id; });
+    var pc=el('div','card pbox taped'); pc.appendChild(el('div','hd2','药盒'));
+    pc.appendChild(el('div','sub', pend.length ? '挑好了 '+pend.length+' 颗，交给他，他下一句就吃' : '觉得他哪句回得不对劲，挑一颗喂他，只管下一句'));
+    var pw=el('div','pills'), PC=['#F8C8D8','#A5BED8','#D0AEC0','#F0B3C8'];
+    PILLS.forEach(function(x,i){ var on=pend.indexOf(x[0])>=0, b=el('button','pl'+(on?' on':'')); b.style.setProperty('--pc', PC[i%4]);
+      b.appendChild(el('i')); b.appendChild(document.createTextNode(x[1]));
+      b.onclick=function(){ sheet(x[1], function(s){ var q=el('p',null,'什么时候吃：'+x[2]); q.style.cssText='font:700 18px/1.5 var(--hand);color:var(--ink);margin:4px 0 0'; s.appendChild(q);
+        var ok=el('button','btn pink', on ? '已经挑好了，交给他就吃' : '喂他这颗'); ok.style.marginTop='14px';
+        ok.onclick=function(){ if(!on) add({t:'pill', id:x[0]}); close(); cheer('look', on?'在盒子里等着呢':'放好了，交给他就吃'); refreshApp(); }; s.appendChild(ok); }); };
+      pw.appendChild(b); });
+    pc.appendChild(pw); p.appendChild(pc);
     /* 信箱 */
     var n=bxSealedN(), mc=el('div','card mailw'), ms=svgEl(mailSvg(n)); ms.setAttribute('viewBox','0 0 110 112'); mc.appendChild(ms);
     var mt=el('div'); mt.appendChild(el('div','t', n ? '信箱里有 '+n+' 样没拆' : '拆完啦，旗子放下了'));
@@ -1308,7 +1329,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',pill:'挑了颗药',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
