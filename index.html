@@ -192,7 +192,9 @@ textarea{resize:vertical; min-height:120px}
 .frame.on{border-color:var(--pop2); background:#FFF6F9}
 .app-shelf .body{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .bdock{position:fixed; left:12px; right:12px; bottom:calc(12px + env(safe-area-inset-bottom,0px)); max-width:420px; margin:0 auto; z-index:8; display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:10px; border-radius:30px; background:#FFFFFFB8; backdrop-filter:blur(14px); border:1.5px solid #fff; box-shadow:0 8px 24px #A5BED844}
-.bdock .dk{padding:13px 4px}
+.bdock{padding:7px; gap:6px; border-radius:24px}
+.bdock .dk{padding:8px 4px; border-radius:16px}
+.bdock .dk b{font-size:16px}
 .book .lab{font-size:14.5px} .book .bmeta{font:700 13px/1 var(--hand); color:#8E8BA0; text-align:center}
 .bshelf{margin:8px 2px 14px}
 .brow{display:flex; align-items:flex-end; gap:8px; min-height:150px; padding:0 12px; overflow-x:auto}
@@ -499,7 +501,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929wish';
+  var VERSION = '0929shelf';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -1312,7 +1314,7 @@ body{background-color:#FFFBF9}
     }).then(function(pt){ var o=JSON.parse(new TextDecoder().decode(pt)); BOOKS[b.id]=o; cb(o); }).catch(function(){ cb(null); });
   }
   function shelf(p){
-    banner(p, 'hold', '我们的书架', '你点书，他来讲；你出题，他来写');
+    /* 09-29 她说顶上那个框删掉，底下两个按钮小一点、加 emoji */
     /* 09-28 04:18 她说书架要恋爱清单以前那种一本本的书；两个按钮压成一行钉在最底下 */
     var sh=el('div','shelf'), G=['ging-p','ging-b','ging-y'];
     (D.shelf||[]).forEach(function(b,i){
@@ -1322,8 +1324,8 @@ body{background-color:#FFFBF9}
     });
     if(!sh.children.length){ var e=el('div','card'); e.appendChild(el('p','empty','还空着，点一本或者出个题')); p.appendChild(e); } else p.appendChild(sh);
     var bar=el('div','bdock');
-    var a1=el('button','dk'); a1.appendChild(el('b',null,'点书听他讲')); a1.onclick=function(){ ask('read'); };
-    var a2=el('button','dk'); a2.appendChild(el('b',null,'出题让他写')); a2.onclick=function(){ ask('play'); };
+    var a1=el('button','dk'); a1.appendChild(el('b',null,'📖 点书听他讲')); a1.onclick=function(){ ask('read'); };
+    var a2=el('button','dk'); a2.appendChild(el('b',null,'✍️ 出题让他写')); a2.onclick=function(){ ask('play'); };
     bar.appendChild(a1); bar.appendChild(a2); p.appendChild(bar);
   }
   function ask(kind){
