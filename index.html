@@ -501,7 +501,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929shelf';
+  var VERSION = '0929moon';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -629,8 +629,8 @@ body{background-color:#FFFBF9}
     var P=D.period||{}, lastLocal=S.acts.filter(function(a){ return a.t==='period'; }).pop();
     var last=lastLocal ? lastLocal.d : P.last;
     if(last){ var t=new Date(now.slice(0,10)+'T00:00'), l=new Date(last+'T00:00'), cyc=P.cycle||28, k=Math.max(1, Math.ceil((t-l)/864e5/cyc)); var nd=new Date(+l+k*cyc*864e5);
-      out.push({id:'period', name:'大姨妈', kind:'period', days:Math.round((nd-t)/864e5), mmdd:'', last:last}); }
-    else out.push({id:'period', name:'大姨妈', kind:'period', days:null, mmdd:''});
+      out.push({id:'period', name:'月信', kind:'period', days:Math.round((nd-t)/864e5), mmdd:'', last:last}); }
+    else out.push({id:'period', name:'月信', kind:'period', days:null, mmdd:''});
     return out.sort(function(a,b){ return (a.days==null?999:a.days)-(b.days==null?999:b.days); });
   }
   function dd(n){ return n===0 ? '就是今天' : n==null ? '还没记' : '还有 '+n+' 天'; }
@@ -1087,7 +1087,7 @@ body{background-color:#FFFBF9}
       if(both(k)) c.appendChild(el('span','dt'));
       gd.appendChild(c); }
     card.appendChild(gd);
-    var lg=el('div','lg'); lg.innerHTML='<span><i style="background:#F8C8D8"></i>大姨妈</span><span><i style="border:1.5px dashed #F0B3C8"></i>大概下次</span><span><i style="color:#E57FA3">♥</i>纪念日</span><span><i style="width:5px;height:5px;border-radius:50%;background:var(--blue)"></i>早晚安都打了</span>';
+    var lg=el('div','lg'); lg.innerHTML='<span><i style="background:#F8C8D8"></i>月信</span><span><i style="border:1.5px dashed #F0B3C8"></i>大概下次</span><span><i style="color:#E57FA3">♥</i>纪念日</span><span><i style="width:5px;height:5px;border-radius:50%;background:var(--blue)"></i>早晚安都打了</span>';
     card.appendChild(lg);
     return card;
   }
@@ -1104,7 +1104,7 @@ body{background-color:#FFFBF9}
       b.appendChild(m);
       var l=el('div','left'); l.innerHTML = c.days==null ? '—' : c.days===0 ? '<b>今天</b>' : '还有<b>'+c.days+'</b>'; b.appendChild(l);
       b.onclick=function(){
-        if(c.kind==='period'){ sheet('大姨妈', function(s){ s.appendChild(el('p','empty','今天来了就点一下，他从今天开始重新算，也会提醒你多喝热的、别碰冰的。'));
+        if(c.kind==='period'){ sheet('月信', function(s){ s.appendChild(el('p','empty','今天来了就点一下，他从今天开始重新算，也会提醒你多喝热的、别碰冰的。'));
           var bt=el('button','btn pink','今天来了'); bt.style.marginTop='12px'; bt.onclick=function(){ S.acts=S.acts.filter(function(a){ return a.t!=='period'; }); add({t:'period', d:nowLocal().slice(0,10)}); close(); cheer('hug','抱抱，记下了'); refreshApp(); }; s.appendChild(bt); }); return; }
         var tl=(D.timeline||[]).filter(function(x){ return x[0]===c.mmdd; })[0];
         sheet(c.name, function(s){ s.appendChild(svgEl(scene(c.kind==='bday'?'tea':'hug'),'bn','width:160px;height:120px;display:block;margin:0 auto'));
@@ -1364,7 +1364,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'大姨妈来了',pill:'挑了颗药',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了恋爱清单',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'月信来了',pill:'挑了颗药',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
