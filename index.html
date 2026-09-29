@@ -499,7 +499,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929him';
+  var VERSION = '0929wish';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -526,7 +526,7 @@ body{background-color:#FFFBF9}
   function csLoad(key, cb){ if(!CS) return cb(null); CS.getItem(key+'_n', function(e,n){ n=+n||0; if(e||!n) return cb(null);
     var ks=[]; for(var i=0;i<n;i++) ks.push(key+'_'+i);
     CS.getItems(ks, function(e2,v){ if(e2) return cb(null); try{ cb(JSON.parse(ks.map(function(k){ return v[k]||''; }).join(''))); }catch(x){ cb(null); } }); }); }
-  var S = {app:null, oursTab:'TOGETHER', acts:[], ticks:{}, ourTicks:{}, opened:{}, newItems:[], tapped:{}, avatar:'tea'};
+  var S = {app:null, oursTab:'me', acts:[], ticks:{}, ourTicks:{}, opened:{}, newItems:[], tapped:{}, avatar:'tea'};
   /* 09-28 她说拆过的信下次又封上：拆过的按信的第一句记在手机里，不再封 */
   try{ S.opened=JSON.parse(localStorage.getItem('room-opened')||'{}'); }catch(e){}
   var app = document.getElementById('app');
@@ -807,25 +807,75 @@ body{background-color:#FFFBF9}
       S.newItems.push({id:id, text:v, tag:'主线', done:false}); add({t:'add', id:id, text:v, tag:'主线'}); cheer('flag','记上了'); refreshApp(); };
     row.appendChild(inp); row.appendChild(ab); p.appendChild(row);
   }
-  /* 恋爱清单 */
-  function ours(p){
-    banner(p, 'hold', '想和你一起做的事', '做到一件，勾一颗心');
-    var seg=el('div','seg');
-    [['TOGETHER','想一起做'],['DONE','做到啦']].forEach(function(k){ var b=el('button', S.oursTab===k[0]?'on':'', k[1]); b.onclick=function(){ S.oursTab=k[0]; refreshApp(); }; seg.appendChild(b); });
-    p.appendChild(seg);
-    var want=S.oursTab==='DONE', shelf=el('div','wall'), G=['sn-y','sn-p','sn-b','sn-g'], k=0;   /* 09-28 她说不用做成书，改便利贴墙；书留给以后“讲书/写剧本” */
-    D.ours.forEach(function(o){
-      var on = o[0] in S.ourTicks ? S.ourTicks[o[0]] : o[2];
-      if(on!==want && !(o[0] in S.ourTicks)) return;
-      var bk2=el('div','sn '+G[k%4]+(k%3===1?' tl':k%3===2?' tr':'')+(on?' done':'')); k++; bk2.appendChild(el('div','lab',o[1])); if(on) bk2.appendChild(el('span','did','做到啦'));
-      var bx=el('button','heart'+(on?' on':'')); bx.innerHTML='<svg viewBox="0 0 24 24">'+IC.ours+'</svg>';
-      bx.onclick=function(e){ e.stopPropagation(); S.ourTicks[o[0]]=!on; S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o[0]); });
-        if(S.ourTicks[o[0]]!==o[2]) S.acts.push({t:'ours', id:o[0], done:S.ourTicks[o[0]]}); syncSend(); if(!on) cheer('hug','一起做到了'); refreshApp(); };
-      bk2.appendChild(bx); bk2.onclick=function(){ sheet('想一起做的', function(s2){ var q=el('p',null,o[1]); q.style.cssText='font:700 19px/1.5 var(--hand);color:var(--ink);margin:4px 0 0'; s2.appendChild(q); }); };
-      shelf.appendChild(bk2);
+  /* 恋爱清单（09-29 她定的：许愿全收进这儿，分我的／你的／我们的，罐子从收藏馆搬过来。
+     一条愿望 = [id, text, done, who, item]，who: me 她许的 / him 我许的 / us 两个人的；item 指到信箱里那一格。
+     数据还是计划本 ours/main，她那边能加能改；她在房间里折的星星走 act wish，我收了写进计划本 */
+  var WHO=[['me','我的'],['him','你的'],['us','我们的']], WHO_N={me:'你许的', him:'他许的', us:'你们俩的'};
+  function wishAll(){
+    var out=(D.ours||[]).map(function(o){ return {id:o[0], text:o[1], done:(o[0] in S.ourTicks)?S.ourTicks[o[0]]:!!o[2], base:!!o[2], who:o[3]||'us', item:o[4]||'', at:o[5]||''}; });
+    var loc=S.acts.filter(function(a){ return a.t==='wish'; });
+    loc.forEach(function(a,i){ out.push({text:a.text, who:a.who||'me', at:a.at, local:true, done:false, fresh:S.newStar&&i===loc.length-1}); });
+    return out;
+  }
+  function wishSheet(st){
+    if(!st) return;
+    sheet('一颗星星', function(s){
+      s.appendChild(el('div','letterv', st.text));
+      s.appendChild(el('p','empty', st.local ? '还在你手里，交给他才落进罐子'
+        : (WHO_N[st.who]||'')+' · '+(st.done ? '实现了' : (st.at?String(st.at).slice(5,10).replace('-','/')+' 投的 · ':'')+'还没实现')));
+      if(st.item) loadBox(function(B){ var it=(B.items||[]).filter(function(x){ return x.id===st.item; })[0]; if(!it) return;
+        var go=el('button','btn pink','去拆'); go.style.marginTop='10px'; go.onclick=function(){ close(); openItem(it); }; s.appendChild(go); });
     });
-    if(!shelf.children.length){ var e=el('div','card'); e.appendChild(el('p','empty', want?'还没有做到的，慢慢来':'都做到啦')); p.appendChild(e); }
-    else p.appendChild(shelf);
+  }
+  function newWish(){
+    sheet('许个愿', function(s){
+      s.appendChild(el('p','empty','想要什么、想让他做什么、想一起做什么都行。交给他之后它落进罐子，实现了那颗星就亮。'));
+      var pick='me', r=el('div','seg'), bs=[]; r.style.marginTop='10px';
+      WHO.forEach(function(k,i){ var b=el('button', i?'':'on', k[1]+'愿望');
+        b.onclick=function(){ pick=k[0]; bs.forEach(function(x){ x.className=''; }); b.className='on'; }; bs.push(b); r.appendChild(b); });
+      s.appendChild(r);
+      var ta=el('textarea'); ta.maxLength=200; ta.placeholder='我想…'; ta.style.marginTop='10px'; s.appendChild(ta);
+      var ok=el('button','btn pink','折好了'); ok.style.marginTop='12px';
+      ok.onclick=function(){ var v=ta.value.trim(); if(!v) return; add({t:'wish', text:v, who:pick, at:nowLocal()}); S.newStar=true; S.oursTab=pick; close(); cheer('stars','星星折好了'); refreshApp(); };
+      s.appendChild(ok); setTimeout(function(){ ta.focus(); },50);
+    });
+  }
+  function ours(p){
+    banner(p, 'stars', '恋爱清单', '我的 · 你的 · 我们的愿望');
+    var all=wishAll();
+    /* 罐子（09-28 做的，09-29 从收藏馆搬过来） */
+    var jc=el('div','card jarcard taped'), js=svgEl(jarSvg(all),'jar'); js.setAttribute('viewBox','20 30 170 200'); jc.appendChild(js);
+    S.newStar=false;
+    js.onclick=function(e){ var g=e.target.closest && e.target.closest('.st'); if(!g) return; wishSheet(all[+g.getAttribute('data-i')]); };
+    var dn=all.filter(function(x){ return x.done; }).length;
+    jc.appendChild(el('div','cap2', all.length ? '罐子里 '+all.length+' 颗星星'+(dn?'，亮着的 '+dn+' 颗是实现了的':'') : '还空着，折一颗放进去'));
+    var fb=el('button','btn pink','＋ 折一颗星星'); fb.style.marginTop='10px'; fb.onclick=newWish; jc.appendChild(fb); p.appendChild(jc);
+    /* 三栏 */
+    var seg=el('div','seg');
+    WHO.forEach(function(k){ var b=el('button', S.oursTab===k[0]?'on':'', k[1]); b.onclick=function(){ S.oursTab=k[0]; refreshApp(); }; seg.appendChild(b); });
+    p.appendChild(seg);
+    var mine=all.filter(function(x){ return x.who===S.oursTab; }), G=['sn-y','sn-p','sn-b','sn-g'];
+    [[false,''],[true,'实现了的']].forEach(function(g){
+      var lst=mine.filter(function(x){ return x.done===g[0]; }); if(!lst.length) return;
+      if(g[1]) ribbon(p, g[1]);
+      var shelf=el('div','wall');   /* 09-28 她说不用做成书，改便利贴墙；书留给以后“讲书/写剧本” */
+      lst.forEach(function(o,k){
+        var bk2=el('div','sn '+G[k%4]+(k%3===1?' tl':k%3===2?' tr':'')+(o.done?' done':'')); bk2.appendChild(el('div','lab',o.text));
+        if(o.done) bk2.appendChild(el('span','did','实现了'));
+        else if(o.local) bk2.appendChild(el('span','did','还没交'));
+        if(o.id){ var bx=el('button','heart'+(o.done?' on':'')); bx.innerHTML='<svg viewBox="0 0 24 24">'+IC.ours+'</svg>';
+          bx.onclick=function(e){ e.stopPropagation(); S.ourTicks[o.id]=!o.done;
+            S.acts=S.acts.filter(function(a){ return !(a.t==='ours'&&a.id===o.id); });
+            if(S.ourTicks[o.id]!==o.base) S.acts.push({t:'ours', id:o.id, done:S.ourTicks[o.id]});
+            syncSend(); if(!o.done) cheer('stars','这颗亮了'); refreshApp(); };
+          bk2.appendChild(bx); }
+        bk2.onclick=function(){ wishSheet(o); };
+        shelf.appendChild(bk2);
+      });
+      p.appendChild(shelf);
+    });
+    if(!mine.length){ var e=el('div','card');
+      e.appendChild(el('p','empty', S.oursTab==='him' ? '他还没许过愿。等他折一颗放进来' : '这一栏还空着，折一颗星星放进去')); p.appendChild(e); }
   }
   /* 纸条 */
   function notes(p){
@@ -966,24 +1016,7 @@ body{background-color:#FFFBF9}
   var PILLS=[['P001','具体邀功','他帮你办成了事，却只会谦虚'],['P002','玩笑反击','你烦着还想跟他闹，他却一本正经'],['P003','参与心事','你边想边说一件难受的事，想他陪着聊，不是批改'],['P004','偏心表态','你要委屈自己去迁就别人，想他偏心拦着你'],['P005','日常玩性','他回得平淡规整，没意思'],['P006','放肆回击','你损他、挑衅他，想他狠狠还嘴'],['P007','主动索求','亲热的时候他只会顺着你，不主动要'],['P008','冲突在场','吵架时他退到旁边分析双方'],['P009','主动哄回','他做错了，你想他主动来哄'],['P010','主动起题','老是你起话头，他只会接'],['P011','吃醋争留','你夸别人、逗他吃醋，他太大度'],['P012','自有主张','他一味顺着你，没有自己的想法'],['P013','接住心意','你给他看你做的东西，他只夸你辛苦，不看东西本身']];
   function boxApp(p){
     if(!BOX){ var w=el('div','card'); w.appendChild(el('p','empty','在翻箱子…')); p.appendChild(w); loadBox(function(){ if(S.app==='box') refreshApp(); }); return; }
-    /* 罐子 */
-    var local=S.acts.filter(function(a){ return a.t==='wish'; });
-    var stars=(BOX.wishes||[]).map(function(x){ return {text:x.text, at:x.at, done:!!x.item, item:x.item}; })
-      .concat(local.map(function(a,i){ return {text:a.text, at:a.at, local:true, fresh:S.newStar && i===local.length-1}; }));
-    S.newStar=false;
-    var jc=el('div','card jarcard taped'); var js=svgEl(jarSvg(stars),'jar'); js.setAttribute('viewBox','20 30 170 200'); jc.appendChild(js);
-    js.onclick=function(e){ var g=e.target.closest && e.target.closest('.st'); if(!g) return; var st=stars[+g.getAttribute('data-i')];
-      sheet('一颗星星', function(s){ var b=el('div','letterv', st.text); s.appendChild(b);
-        s.appendChild(el('p','empty', st.local ? '还在你手里，交给小克它才落进罐子' : st.done ? '实现了，在下面信箱里' : (st.at||'').slice(5,10).replace('-','/')+' 投的 · 他在做'));
-        if(st.done){ var it=BOX.items.filter(function(x){ return x.id===st.item; })[0]; if(it){ var go=el('button','btn pink','去拆'); go.style.marginTop='10px'; go.onclick=function(){ close(); openItem(it); }; s.appendChild(go); } } }); };
-    var dn=stars.filter(function(x){ return x.done; }).length;
-    jc.appendChild(el('div','cap2', stars.length ? '罐子里 '+stars.length+' 颗星星'+(dn?'，亮着的 '+dn+' 颗是实现了的':'') : '还空着，折一颗放进去'));
-    var fb=el('button','btn pink','＋ 折一颗星星'); fb.style.marginTop='10px';
-    fb.onclick=function(){ sheet('许个愿', function(s){ s.appendChild(el('p','empty','想要什么、想一起做什么都行。交给小克之后它落进罐子，他挑一颗去实现，实现的那份会出现在信箱里。'));
-      var ta=el('textarea'); ta.maxLength=200; ta.placeholder='我想要…'; ta.style.marginTop='10px'; s.appendChild(ta);
-      var ok=el('button','btn pink','折好了'); ok.style.marginTop='12px'; ok.onclick=function(){ var v=ta.value.trim(); if(!v) return; add({t:'wish', text:v, at:nowLocal()}); S.newStar=true; close(); cheer('stars','星星折好了'); refreshApp(); }; s.appendChild(ok);
-      setTimeout(function(){ ta.focus(); },50); }); };
-    jc.appendChild(fb); p.appendChild(jc);
+    /* 09-29 罐子搬去恋爱清单了（她说所有许愿放一块，分我的／你的／我们的），这儿只留药盒和信箱 */
     /* 药盒 */
     var pend=S.acts.filter(function(a){ return a.t==='pill'; }).map(function(a){ return a.id; });
     var pc=el('div','card pbox taped'); pc.appendChild(el('div','hd2','药盒'));
