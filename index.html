@@ -490,7 +490,7 @@ body{background-color:#FFFBF9}
 .trail li:first-child{border-top:0}
 .trail b{font:700 14px/1.5 var(--hand); color:var(--pop2)}
 @media (prefers-reduced-motion:reduce){*{animation:none!important; transition:none!important}}
-.bar h1 small{display:block;font:italic 400 11px/1.2 Georgia,'Times New Roman',serif;letter-spacing:.08em;opacity:.55;margin-top:1px}
+.bar h1 small{font:italic 400 .62em Georgia,'Times New Roman',serif;letter-spacing:.04em;opacity:.6;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -673,7 +673,7 @@ body{background-color:#FFFBF9}
   var MORE=[['notes','边注','gA',notes,'Marginalia']];   // 09-28 纸条不上主屏了（她说不怎么用），从“他留的”那格进
   function appOf(k){ return APPS.concat(MORE).filter(function(x){ return x[0]===k; })[0]; }
   var APPS=[
-    ['plan','日课','gB',plan,'Almanac'], ['ours','许愿墙','gD',ours,'Wishes'], ['watch','日晷','gC',watchApp,'Sundial'], ['avatar','镜中','gB',avatars,'Portrait'],
+    ['plan','日课','gB',plan,'Almanac'], ['ours','星图','gD',ours,'Constellation'], ['watch','更漏','gC',watchApp,'Hourglass'], ['avatar','镜中','gB',avatars,'Portrait'],
     ['board','棋局','gA',board,'Gambit'], ['money','积羽','gD',money,'Tally'], ['music','共鸣','gC',music,'Resonance'], ['shelf','夜读','gB',shelf,'Fable'], ['box','奇珍','gD',boxApp,'Cabinet'], ['set','工坊','gA',settings,'Atelier']
   ];   // 09-28 14:40 第十格给收藏馆（她要的星星罐子 + 信箱）
   /* 状态：她的存她手机上，点了顺手交给我（act mood）；我的写在 data.json 的 mood.me */
@@ -771,7 +771,7 @@ body{background-color:#FFFBF9}
     closeWin(true);
     win=el('div','win app-'+k);
     if(from){ var r=from.getBoundingClientRect(); win.style.transformOrigin=(r.left+r.width/2)+'px '+(r.top+r.height/2)+'px'; }
-    var bar=el('div','bar'); var bk=el('button','back','‹'); bk.setAttribute('aria-label','回主屏'); bk.onclick=closeApp; bar.appendChild(bk); var h=el('h1',null,a[1]); if(a[4]) h.appendChild(el('small',null,a[4])); bar.appendChild(h);
+    var bar=el('div','bar'); var bk=el('button','back','‹'); bk.setAttribute('aria-label','回主屏'); bk.onclick=closeApp; bar.appendChild(bk); var h=el('h1',null,a[1]); if(a[4]) h.appendChild(el('small',null,' · '+a[4])); bar.appendChild(h);
     var mi=svgEl(cat(52,70,-8)+dog(98,70,8),'mini-ico'); mi.setAttribute('viewBox','20 26 110 76'); bar.appendChild(mi);
     win.appendChild(bar);
     var body=el('div','body'); a[3](body); win.appendChild(body);
@@ -844,7 +844,7 @@ body{background-color:#FFFBF9}
     });
   }
   function ours(p){
-    banner(p, 'stars', '许愿墙', '我的 · 你的 · 我们的愿望');
+    banner(p, 'stars', '星图', '我的 · 你的 · 我们的愿望');
     var all=wishAll();
     /* 罐子（09-28 做的，09-29 从收藏馆搬过来） */
     var jc=el('div','card jarcard taped'), js=svgEl(jarSvg(all),'jar'); js.setAttribute('viewBox','20 30 170 200'); jc.appendChild(js);
@@ -1365,7 +1365,7 @@ body{background-color:#FFFBF9}
   function settings(p){
     banner(p, 'letter', '交给小克', S.acts.length ? '攒了 '+S.acts.length+' 样，一按就飞过去' : '现在没有要交的');
     var sb=el('button','sendin'); sb.innerHTML=icon('send')+(S.acts.length ? '交给小克 · '+S.acts.length : '没有要交的'); sb.disabled=!S.acts.length; sb.onclick=doSend; p.appendChild(sb);
-    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了许愿墙',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'月信来了',pill:'挑了颗药',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
+    if(S.acts.length){ var lst=el('div','card pink'); var NM={touch:'碰了一下',tick:'勾了计划',add:'加了一件事',ours:'勾了星图',money:'记了一笔账',note:'写了纸条',roll:'掷了骰子',song:'发了首歌',quick:'喊了一声',period:'月信来了',pill:'挑了颗药',mood:'换了状态',book:'书架',checkin:'打卡',place:'点了颗星',trip:'要去玩',wish:'许了个愿'};
       var nm=function(a){ return a.t==='touch'?(a.k==='KISS'?'亲亲':a.k==='HUG'?'抱抱':a.k==='MISS YOU'?'想你':a.k):NM[a.t]||a.t; };
       var cnt={}; S.acts.forEach(function(a){ var k=nm(a); cnt[k]=(cnt[k]||0)+1; });
       /* 09-28 她说手滑点多了，“你没考虑过我手滑”：每样点一下 ✕ 撤掉最后一个 */
