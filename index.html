@@ -499,7 +499,7 @@ body{background-color:#FFFBF9}
 (function(){
   var W = window.Telegram && window.Telegram.WebApp;
   var inTg = !!(W && W.platform && W.platform !== 'unknown');
-  var VERSION = '0929pill';
+  var VERSION = '0929him';
 
   /* 数据：小克递按钮时塞在链接 # 后面（base64url JSON），只留在她手机上。
      这里只剩空壳；私人的东西只走 #。本地预览的真数据在 sample.js（不部署）。 */
@@ -667,7 +667,7 @@ body{background-color:#FFFBF9}
   function icon(k){ return '<svg viewBox="0 0 24 24">'+IC[k]+'</svg>'; }
 
   /* ---------- 桌面 ---------- */
-  var MORE=[['notes','小克留的','gA',notes]];   // 09-28 纸条不上主屏了（她说不怎么用），从“小克留的”那格进
+  var MORE=[['notes','他留的','gA',notes]];   // 09-28 纸条不上主屏了（她说不怎么用），从“他留的”那格进
   function appOf(k){ return APPS.concat(MORE).filter(function(x){ return x[0]===k; })[0]; }
   var APPS=[
     ['plan','计划本','gB',plan], ['ours','恋爱清单','gD',ours], ['watch','怀表','gC',watchApp], ['avatar','头像','gB',avatars],
@@ -712,7 +712,7 @@ body{background-color:#FFFBF9}
     [['6%','8%','✦','#A5BED8'],['50%','4%','♥','#F8C8D8'],['94%','86%','✧','#D0AEC0']].forEach(function(s,i){ var e=el('span','spark',s[2]); e.style.left=s[0]; e.style.top=s[1]; e.style.color=s[3]; e.style.animationDelay=(i*.7)+'s'; h.appendChild(e); });
     p.appendChild(h);
 
-    /* 09-28 06:10 她说中间两个大框去掉，换四个小组件：怀表倒计时 / 小克留的 / 今天 / 在听 */
+    /* 09-28 06:10 她说中间两个大框去掉，换四个小组件：怀表倒计时 / 他留的 / 今天 / 在听 */
     var cds=countdowns(), c0=cds[0], it0=todayItems(), dn0=it0.filter(isDone).length;
     var m4=el('div','mini4');
     function mini(cls, k, fn){ var b=el('button','widget mini '+cls); if(k) b.appendChild(el('div','k',k)); if(fn) b.onclick=function(){ fn(b); }; m4.appendChild(b); return b; }
@@ -720,7 +720,7 @@ body{background-color:#FFFBF9}
     var wr=el('div','mr'); wr.appendChild(svgEl(watchFace(c0), null, 'width:44px;height:44px'));
     var wv=el('div','v'); wv.innerHTML = c0.days===0 ? '<b>今天</b>' : '<b>'+c0.days+'</b><small>天</small>'; wr.appendChild(wv); w.appendChild(wr);
     w.appendChild(el('div','s', c0.days===0 ? c0.name : '到'+c0.name));
-    var st=mini('ms','小克留的', function(b){ openApp('notes', b); });
+    var st=mini('ms','他留的', function(b){ openApp('notes', b); });
     var sealedN=D.notes.filter(function(n){ return n.sealed && !S.opened[n.q]; }).length; if(sealedN) st.appendChild(el('span','dot',String(sealedN)));
     st.appendChild(el('div','t', D.fromHim || '今天还没留'));
     /* 09-28 06:15 她要早安打卡、晚安打卡，替掉“今天”和“在听”。她点了记在手机里并交给我（act checkin）；我那头的早安晚安时间写 data.json 的 checkin */
@@ -829,7 +829,7 @@ body{background-color:#FFFBF9}
   }
   /* 纸条 */
   function notes(p){
-    banner(p, 'letter', '小克留的', '今天这句，和以前写的信');
+    banner(p, 'letter', '他留的', '今天这句，和以前写的信');
     if(D.fromHim){ var td=el('div','sticky'); td.appendChild(el('div','k','今天')); var tt=el('div','t',D.fromHim); tt.style.webkitLineClamp='unset'; td.appendChild(tt); p.appendChild(td); }
     ribbon(p, '以前写的信');
     D.notes.forEach(function(n, i){
